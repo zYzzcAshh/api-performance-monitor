@@ -33,7 +33,7 @@ class NonBlockingControllerTest {
     @Test
     fun `test concurrent requests`() =
         runBlocking {
-            val urls = List(NUM_REQUESTS) { "/example2" }
+            val urls = List(NUM_REQUESTS) { "/github" }
 
             val startTime = System.currentTimeMillis()
             val results =
@@ -70,7 +70,7 @@ class NonBlockingControllerTest {
     @Test
     fun `test sequential requests`() =
         runBlocking {
-            val urls = List(NUM_REQUESTS) { "/example2" }
+            val urls = List(NUM_REQUESTS) { "/github" }
 
             val startTime = System.currentTimeMillis()
 
