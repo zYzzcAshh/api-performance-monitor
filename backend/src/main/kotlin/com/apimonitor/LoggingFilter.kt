@@ -15,11 +15,10 @@ class LoggingFilter : Filter {
     override fun doFilter(
         request: ServletRequest?,
         response: ServletResponse?,
-        chain: FilterChain?
+        chain: FilterChain?,
     ) {
         val httpRequest = request as HttpServletRequest
         logger.info("Incoming request: ${httpRequest.method} ${httpRequest.requestURI}")
         chain?.doFilter(request, response)
     }
-
 }

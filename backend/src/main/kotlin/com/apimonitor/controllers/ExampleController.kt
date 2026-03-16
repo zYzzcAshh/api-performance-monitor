@@ -10,24 +10,19 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/api")
 class ExampleController(
-    private val webClient: WebClient
+    private val webClient: WebClient,
 ) {
     @GetMapping("/hello")
-    fun sayHello(): String {
-        return "Hello, World!"
-    }
+    fun sayHello(): String = "Hello, World!"
 
     @GetMapping("/health")
-    fun healthCheck(): ResponseEntity<String> {
-        return ResponseEntity.ok("Server is alive")
-    }
+    fun healthCheck(): ResponseEntity<String> = ResponseEntity.ok("Server is alive")
 
     @GetMapping("/github")
-    fun getGithubData(): Mono<String> {
-        return webClient
+    fun getGithubData(): Mono<String> =
+        webClient
             .get()
             .uri("https://api.github.com")
             .retrieve()
             .bodyToMono(String::class.java)
-    }
 }
