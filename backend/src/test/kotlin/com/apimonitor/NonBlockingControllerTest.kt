@@ -19,6 +19,7 @@ import kotlin.test.assertNotNull
     Testing concurrent vs sequential requests to the ExampleController to demonstrate
     non-blocking behavior and time comparison using WebClient
  */
+
 @WebFluxTest(controllers = [ExampleController::class])
 class NonBlockingControllerTest {
     @Autowired
@@ -102,14 +103,14 @@ class NonBlockingControllerTest {
         @AfterAll
         @JvmStatic
         fun compareTimes() {
-            assertNotNull(concurrentTimes)
-            assertNotNull(sequentialTimes)
+            val concurrent = assertNotNull(concurrentTimes)
+            val sequential = assertNotNull(sequentialTimes)
 
-            val timeDifference = floor(sequentialTimes!!.toDouble() / concurrentTimes!!.toDouble() * 100) / 100
-            val faster = if (timeDifference > 0) concurrentTimes else sequentialTimes
+            val timeDifference = floor(sequential.toDouble() / concurrent.toDouble() * 100) / 100
+            val faster = if (timeDifference > 0) "Concurrent requests" else "Sequential requests"
 
             println(
-                "AfterAll: Sequential requests took $sequentialTimes ms - Concurrent requests took $concurrentTimes ms, $faster was $timeDifference times faster",
+                "AfterAll: Sequential requests took $sequential ms - Concurrent requests took $concurrent ms, $faster were $timeDifference times faster",
             )
         }
     }
