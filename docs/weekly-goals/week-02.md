@@ -1,42 +1,67 @@
 # Week Goals (17 Mar – 24 Mar)
 
-## 1. Backend Implementation
+## 1. Backend Setup (Ktor)
 
-- Criar projeto Spring Boot funcional
-- Implementar estrutura base de controllers
-- Implementar autenticação básica (register / login)
-- Criar endpoints CRUD para endpoints monitorizados
-
-###### Deliverable:
-backend project running with initial REST API
-
-
-## 2. Database
-
-- Configurar PostgreSQL
-- Criar schema inicial baseado no data model
-- Implementar migrations (Flyway ou Liquibase)
+- Criar projeto backend com Ktor
+- Configurar servidor HTTP básico
+- Definir estrutura do projeto (routes, services, models)
 
 ###### Deliverable:
-database schema criado e integrado com backend
+Ktor server a correr com estrutura base do projeto
 
 
-## 3. Monitoring Worker Prototype
+## 2. API Base (In-Memory)
 
-- Implementar worker simples que executa HTTP checks
-- Medir latência e status code
-- Enviar métricas para backend
-
-###### Deliverable:
-worker prototype a enviar métricas
-
-
-## 4. Integration (optional stretch goal)
-
-- integrar worker ⭢ backend ⭢ database
+- Implementar endpoints básicos:
+  - POST /auth/register
+  - POST /auth/login
+- Criar estrutura para gestão de endpoints monitorizados
+- Armazenar dados em memória (sem base de dados)
 
 ###### Deliverable:
-primeira execução completa de monitorização
+API funcional com autenticação básica e gestão de endpoints (in-memory)
+
+
+## 3. Monitoring Prototype
+
+- Implementar lógica simples de monitoring:
+  - Executar HTTP request a um endpoint
+  - Medir latency
+  - Capturar status code
+- Criar estrutura de métricas
+
+###### Deliverable:
+primeiro protótipo de monitorização funcional
+
+
+## 4. Worker (Simplified)
+
+- Criar componente worker básico
+- Executar checks periódicos (ex: scheduler simples)
+- Enviar métricas para o backend (ou logar localmente)
+
+###### Deliverable:
+worker simples a executar checks automaticamente
+
+
+## 5. Technical Decisions & Documentation
+
+- Atualizar documentação com:
+  - mudança para Ktor
+  - uso de in-memory storage (para já)
+
+###### Deliverable:
+documentação atualizada (docs/)
+
+
+## 6. Simple Metrics Aggregation (optional)
+
+- Calcular uptime básico
+- Calcular average latency
+
+Deliverable:
+endpoint com métricas agregadas
+
 
 ## Result (to fill next week)
 - done
