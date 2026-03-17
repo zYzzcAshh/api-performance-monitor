@@ -1,6 +1,6 @@
 package com.apimonitor
 
-import com.apimonitor.controllers.ExampleController
+import com.apimonitor.controller.ExampleController
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking

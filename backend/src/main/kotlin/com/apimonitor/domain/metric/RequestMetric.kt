@@ -1,4 +1,4 @@
-package com.apimonitor.domain
+package com.apimonitor.domain.metric
 
 import java.net.URI
 import java.time.Instant

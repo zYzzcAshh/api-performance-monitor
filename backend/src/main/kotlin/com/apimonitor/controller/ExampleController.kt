@@ -1,4 +1,4 @@
-package com.apimonitor.controllers
+package com.apimonitor.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
