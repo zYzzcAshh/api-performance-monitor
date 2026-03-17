@@ -6,6 +6,13 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class WebClientConfig {
+
     @Bean
-    fun webClient(): WebClient = WebClient.create()
+    fun defaultWebClient(): WebClient = WebClient.create()
+
+    @Bean
+    fun testApiWebClient(): WebClient =
+        WebClient.builder()
+            .baseUrl("https://api.github.com")
+            .build()
 }
