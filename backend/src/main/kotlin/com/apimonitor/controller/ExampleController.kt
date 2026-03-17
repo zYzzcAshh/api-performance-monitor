@@ -1,4 +1,4 @@
-package com.apimonitor.controllers
+package com.apimonitor.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,7 +10,8 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/api")
 class ExampleController(
-    private val webClient: WebClient,
+    private val defaultWebClient: WebClient,
+    private val testApiWebClient: WebClient,
 ) {
     @GetMapping("/hello")
     fun sayHello(): String = "Hello, World!"
@@ -18,11 +19,11 @@ class ExampleController(
     @GetMapping("/health")
     fun healthCheck(): ResponseEntity<String> = ResponseEntity.ok("Server is alive")
 
-    @GetMapping("/github")
-    fun getGithubData(): Mono<String> =
-        webClient
+    @GetMapping("/test")
+    fun getTestData(): Mono<String> =
+        testApiWebClient
             .get()
-            .uri("https://api.github.com")
+            .uri("/")
             .retrieve()
             .bodyToMono(String::class.java)
 }
