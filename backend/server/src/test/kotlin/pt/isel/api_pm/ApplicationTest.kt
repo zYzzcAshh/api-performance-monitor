@@ -60,7 +60,7 @@ class ApplicationTest {
             assertEquals("OK", body)
         }
 
-        println("concurrentRequests took ${concurrentMillis} ms")
+        println("concurrentRequests took $concurrentMillis ms")
         concurrentTime = concurrentMillis
     }
 
@@ -85,7 +85,7 @@ class ApplicationTest {
             assertEquals("OK", it.bodyAsText())
         }
 
-        println("sequentialRequests took ${sequentialMillis} ms")
+        println("sequentialRequests took $sequentialMillis ms")
         sequentialTime = sequentialMillis
     }
 }

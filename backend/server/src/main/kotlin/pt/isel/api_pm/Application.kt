@@ -1,5 +1,9 @@
 package pt.isel.api_pm
 
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
@@ -7,26 +11,14 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 
-val httpClient: HttpClient = HttpClient.newHttpClient()
+val ktorClient = HttpClient(CIO)
 
 suspend fun defaultExternalRequest(): Pair<Int, String> {
-    val request = HttpRequest.newBuilder()
-        .uri(URI.create("https://api.github.com/"))
-        .header("User-Agent", "Ktor-App")
-        .GET()
-        .build()
-
-    val response = withContext(Dispatchers.IO) {
-        httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+    val response = ktorClient.get("https://api.github.com/") {
+        header("User-Agent", "Ktor-App")
     }
-    return response.statusCode() to response.body()
+    return response.status.value to response.bodyAsText()
 }
 
 fun main() {
