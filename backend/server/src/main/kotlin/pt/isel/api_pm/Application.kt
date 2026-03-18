@@ -11,6 +11,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import pt.isel.api_pm.routes.authRoutes
+import pt.isel.api_pm.routes.userRoutes
 
 val ktorClient = HttpClient(CIO)
 
@@ -30,6 +32,9 @@ fun Application.module(
     externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest,
 ) {
     routing {
+        userRoutes()
+        authRoutes()
+
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
