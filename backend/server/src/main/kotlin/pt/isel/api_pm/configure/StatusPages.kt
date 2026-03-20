@@ -8,13 +8,13 @@ import io.ktor.server.response.respond
 import pt.isel.api_pm.exceptions.BadCredentialsException
 import pt.isel.api_pm.exceptions.ForbiddenException
 import pt.isel.api_pm.exceptions.InvalidTokenException
-import pt.isel.api_pm.exceptions.UserAlreadyExistsException
+import pt.isel.api_pm.exceptions.RegistrationFailedException
 import pt.isel.api_pm.exceptions.UserNotFoundException
 import javax.naming.AuthenticationException
 
 fun Application.configureStatusPages() {
     install(StatusPages) {
-        exception<UserAlreadyExistsException> { call, cause ->
+        exception<RegistrationFailedException> { call, cause ->
             call.respond(HttpStatusCode.Conflict, cause.message ?: "User already exists")
         }
 

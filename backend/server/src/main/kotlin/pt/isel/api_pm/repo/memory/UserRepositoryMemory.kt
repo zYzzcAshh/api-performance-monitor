@@ -26,16 +26,4 @@ class UserRepositoryMemory : UserRepository {
         val user = User(id, username, password, createdAt)
         users[id] = user
     }
-
-    override suspend fun loginUser(
-        username: String,
-        password: String,
-    ): String {
-        val user = users.values.find { it.username == username && it.passwordHash == password }
-        return "token-${user?.id}"
-    }
-
-    init {
-        users[0] = User(0, "admin", "admin", Clock.System.now())
-    }
 }
