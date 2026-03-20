@@ -1,4 +1,4 @@
-# 🚀 API Performance Monitor
+# API Performance Monitor
 
 A modern observability platform for monitoring API performance, availability, and reliability with support for both public and private services.
 
@@ -9,9 +9,9 @@ A modern observability platform for monitoring API performance, availability, an
 **API Performance Monitor** is a distributed monitoring platform designed to help developers and teams track the health of their APIs in real-time.
 
 It combines:
-- 🌐 Cloud-based control plane (SaaS)
-- ⚙️ Distributed monitoring workers
-- 🏠 Local agents for private / internal APIs
+- Cloud-based control plane (SaaS)
+- Distributed monitoring workers
+- Local agents for private / internal APIs
 
 The platform continuously executes HTTP checks and collects key metrics such as:
 - Latency
@@ -23,29 +23,29 @@ This allows users to detect failures early, analyze trends, and receive alerts w
 
 ---
 
-## ✨ Features
+## Features
 
-- 🔐 User authentication (register / login)
-- 🌍 API endpoint monitoring (custom intervals)
-- 📊 Real-time metrics collection (latency, status, success rate)
-- 📈 Historical data & dashboards
-- 🚨 Configurable alerting system
-- 🏠 Local monitoring agent for private APIs
-- ⚡ Asynchronous monitoring workers
+- User authentication (register / login)
+- API endpoint monitoring (custom intervals)
+- Real-time metrics collection (latency, status, success rate)
+- Historical data & dashboards
+- Configurable alerting system
+- Local monitoring agent for private APIs
+- Asynchronous monitoring workers
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The system is composed of five main components:
 
-- Frontend (React + TypeScript)
-- Backend (Spring Boot + Kotlin)
+- Client Application (Compose Multiplatform)
+- Backend Service (Ktor + Kotlin)
 - Monitoring Workers
 - Local Monitoring Agent
 - PostgreSQL Database
 
-### 🔄 Monitoring Flow
+### Monitoring Flow
 
 1. Users register endpoints to monitor  
 2. Workers execute periodic HTTP requests  
@@ -57,34 +57,30 @@ Workers operate asynchronously and independently from the backend.
 
 ---
 
-## 📊 Metrics
+## Metrics
 
 Each monitoring check generates a metric with the following structure:
 
 ```json
 {
-  "endpointId": "uuid",
+  "endpoint": "https://api.example.com",
   "timestamp": "2026-03-16T17:00:00Z",
-  "latencyMs": 123,
-  "statusCode": 200,
-  "success": true,
-  "error": null,
-  "workerId": "worker-1"
+  "latency": 123,
+  "statusCode": 200
 }
 ```
 
 Collected metrics include:
-- Latency
+- latency (in milliseconds)
 - HTTP status code
-- Success/failure
-- Error details
-- Timestamp
+- timestamp of the request
+- endpoint URL
 
 Uptime is computed dynamically based on monitoring results.
 
 ---
 
-## 🧠 Data Model
+## Data Model
 
 ###### Main entities:
 - Users
@@ -95,18 +91,18 @@ Each endpoint is periodically checked and produces time-series monitoring data.
 
 ---
 
-## 📈 API
+## API
 
-### 🔐 Auth
+### Auth
 POST /auth/register  
 POST /auth/login
 
-### 🌍 Endpoints
+### Endpoints
 GET /endpoints
 POST /endpoints
 DELETE /endpoints/{id}
 
-### 📊 Metrics
+### Metrics
 POST /metrics  
 GET /endpoints/{id}/metrics
 
@@ -125,19 +121,19 @@ Content-Type: application/json
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 | Layer       | Technology              |
 |------------|------------------------|
-| Backend     | Kotlin + Spring Boot   |
-| Frontend    | React + TypeScript     |
+| Backend     | Kotlin + Ktor          |
+| Frontend    | Compose Multiplatform  |
 | Database    | PostgreSQL             |
 | Workers     | Kotlin (async jobs)    |
 | Agent       | Kotlin (local runtime) |
 
 ---
 
-## 🧪 Project Status
+## Project Status
 
 🚧 Currently under development as part of the final-year project (PS 2025/2026).
 
@@ -150,7 +146,7 @@ Content-Type: application/json
 
 ---
 
-## 🎯 Goals
+## Our Main Goals
 
 - Provide a simple and scalable API monitoring solution
 - Support both public and private APIs securely
@@ -159,7 +155,7 @@ Content-Type: application/json
 
 ---
 
-## 👥 Team
+## Team
 
 - Francisco Aragão Dias  
 - Martim Ferreira  
@@ -169,7 +165,7 @@ Supervisor:
 
 ---
 
-## 📌 Future Work
+## Future Work
 
 - Alert integrations (Slack, Email, etc.)
 - Advanced dashboards & visualizations
@@ -178,6 +174,6 @@ Supervisor:
 
 ---
 
-## 📄 License
+## License
 
 © 2026 Francisco Aragão Dias | Martim Ferreira. All rights reserved.

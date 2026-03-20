@@ -1,35 +1,30 @@
 # Data Model
 
-![Data Model](./diagrams/data-model.png)
-
 ## users
 
 | field | type |
 |------|------|
-id | uuid
-email | text
-password_hash | text
+id | int
+username | string
+password_hash | string
 created_at | timestamp
 
 ## endpoints
 
 | field | type |
 |------|------|
-id | uuid
-user_id | uuid
-url | text
-http_method | text
-monitor_interval_seconds | integer
+id | int
+user_id | int
+url | url
+name | string
+intervalSeconds | long
+createdAt | timestamp
 
 ## monitoring_results
 
 | field | type |
 |------|------|
-id | uuid
-endpoint_id | uuid
+endpoint_id | string
 timestamp | timestamp
-latency_ms | integer
-status_code | integer
-success | boolean
-error_message | text
-worker_id | text
+latency | long
+status_code | int
