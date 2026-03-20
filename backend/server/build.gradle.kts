@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlinSerialization)
+
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
+
     application
 }
 
@@ -9,7 +12,7 @@ group = "pt.isel.api_pm"
 version = "1.0.0"
 application {
     mainClass.set("pt.isel.api_pm.ApplicationKt")
-    
+
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
@@ -23,7 +26,9 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.server.status.pages)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.jbcrypt)
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
 }

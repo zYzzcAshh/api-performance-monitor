@@ -20,72 +20,81 @@ class ApplicationTest {
         @AfterClass
         @JvmStatic
         fun afterAll() {
-            println("AfterAll: concurrentTime - $concurrentTime ms ; sequentialTime - $sequentialTime ms ; concurrentTime were ${"%.2f".format(sequentialTime.toDouble() / concurrentTime)} times faster than sequentialTime")
+            println(
+                "AfterAll: concurrentTime - $concurrentTime ms ; sequentialTime - $sequentialTime ms ; concurrentTime were ${"%.2f".format(
+                    sequentialTime.toDouble() / concurrentTime,
+                )} times faster than sequentialTime",
+            )
         }
     }
 
     @Test
-    fun testRoot() = testApplication {
-        application {
-            module()
+    fun testRoot() =
+        testApplication {
+            application {
+                module()
+            }
+            val response = client.get("/")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals("Ktor: ${Greeting().greet()}", response.bodyAsText())
         }
-        val response = client.get("/")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("Ktor: ${Greeting().greet()}", response.bodyAsText())
-    }
 
     @Test
-    fun concurrentRequests() = testApplication {
-        application {
-            module(externalRequest = { 200 to "OK" })
-        }
+    fun concurrentRequests() =
+        testApplication {
+            application {
+                module(externalRequest = { 200 to "OK" })
+            }
 
-        val start = System.currentTimeMillis()
-        val results = runBlocking {
-            (1..NUM_REQUESTS).map { idx ->
-                async {
-                    val resp: HttpResponse = client.get("/api/test")
-                    val status = resp.status
-                    val body = resp.bodyAsText()
-                    val threadName = Thread.currentThread().name
-                    println("concurrent request $idx executed on thread: $threadName")
-                    Triple(status, body, threadName)
+            val start = System.currentTimeMillis()
+            val results =
+                runBlocking {
+                    (1..NUM_REQUESTS)
+                        .map { idx ->
+                            async {
+                                val resp: HttpResponse = client.get("/api/test")
+                                val status = resp.status
+                                val body = resp.bodyAsText()
+                                val threadName = Thread.currentThread().name
+                                println("concurrent request $idx executed on thread: $threadName")
+                                Triple(status, body, threadName)
+                            }
+                        }.awaitAll()
                 }
-            }.awaitAll()
-        }
-        val concurrentMillis = System.currentTimeMillis() - start
+            val concurrentMillis = System.currentTimeMillis() - start
 
-        results.forEach { (status, body, _) ->
-            assertEquals(HttpStatusCode.OK, status)
-            assertEquals("OK", body)
-        }
+            results.forEach { (status, body, _) ->
+                assertEquals(HttpStatusCode.OK, status)
+                assertEquals("OK", body)
+            }
 
-        println("concurrentRequests took $concurrentMillis ms")
-        concurrentTime = concurrentMillis
-    }
+            println("concurrentRequests took $concurrentMillis ms")
+            concurrentTime = concurrentMillis
+        }
 
     @Test
-    fun sequentialRequests() = testApplication {
-        application {
-            module(externalRequest = { 200 to "OK" })
-        }
+    fun sequentialRequests() =
+        testApplication {
+            application {
+                module(externalRequest = { 200 to "OK" })
+            }
 
-        val start = System.currentTimeMillis()
-        val results = mutableListOf<HttpResponse>()
-        for (i in 1..NUM_REQUESTS) {
-            val resp: HttpResponse = client.get("/api/test")
-            val threadName = Thread.currentThread().name
-            println("sequential request $i executed on thread: $threadName")
-            results += resp
-        }
-        val sequentialMillis = System.currentTimeMillis() - start
+            val start = System.currentTimeMillis()
+            val results = mutableListOf<HttpResponse>()
+            for (i in 1..NUM_REQUESTS) {
+                val resp: HttpResponse = client.get("/api/test")
+                val threadName = Thread.currentThread().name
+                println("sequential request $i executed on thread: $threadName")
+                results += resp
+            }
+            val sequentialMillis = System.currentTimeMillis() - start
 
-        results.forEach {
-            assertEquals(HttpStatusCode.OK, it.status)
-            assertEquals("OK", it.bodyAsText())
-        }
+            results.forEach {
+                assertEquals(HttpStatusCode.OK, it.status)
+                assertEquals("OK", it.bodyAsText())
+            }
 
-        println("sequentialRequests took $sequentialMillis ms")
-        sequentialTime = sequentialMillis
-    }
+            println("sequentialRequests took $sequentialMillis ms")
+            sequentialTime = sequentialMillis
+        }
 }

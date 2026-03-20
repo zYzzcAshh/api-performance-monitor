@@ -12,15 +12,25 @@ class UserRepositoryPostgres : UserRepository {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getUserByUsername(username: String): User? {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun addUser(user: User) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun registerUser(username: String, password: String) {
+    override suspend fun registerUser(
+        username: String,
+        password: String,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun loginUser(username: String, password: String): String {
+    override suspend fun loginUser(
+        username: String,
+        password: String,
+    ): String {
         TODO("Not yet implemented")
     }
 }

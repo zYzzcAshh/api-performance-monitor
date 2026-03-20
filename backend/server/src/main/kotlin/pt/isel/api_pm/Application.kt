@@ -6,11 +6,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import pt.isel.api_pm.routes.authRoutes
@@ -19,9 +17,10 @@ import pt.isel.api_pm.routes.userRoutes
 val ktorClient = HttpClient(CIO)
 
 suspend fun defaultExternalRequest(): Pair<Int, String> {
-    val response = ktorClient.get("https://api.github.com/") {
-        header("User-Agent", "Ktor-App")
-    }
+    val response =
+        ktorClient.get("https://api.github.com/") {
+            header("User-Agent", "Ktor-App")
+        }
     return response.status.value to response.bodyAsText()
 }
 
@@ -30,12 +29,9 @@ fun main() {
         .start(wait = true)
 }
 
-fun Application.module(
-    externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest,
-) {
-    install(ContentNegotiation) {
-        json()
-    }
+fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest) {
+    configureContentNegotiation()
+    configureStatusPages()
 
     val dependencies = AppDependencies(useMemory = true)
 

@@ -5,7 +5,7 @@ import pt.isel.api_pm.domain.user.User
 import kotlin.time.Instant
 
 @Serializable
-data class UserDTO (
+data class UserDTO(
     val id: Int,
     val username: String,
     val createdAt: Instant,

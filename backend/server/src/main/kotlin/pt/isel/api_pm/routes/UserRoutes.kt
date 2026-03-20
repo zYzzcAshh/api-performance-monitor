@@ -1,14 +1,9 @@
 package pt.isel.api_pm.routes
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import pt.isel.api_pm.domain.user.RegisterRequest
 import pt.isel.api_pm.dto.toDTO
 import pt.isel.api_pm.service.UserService
 
