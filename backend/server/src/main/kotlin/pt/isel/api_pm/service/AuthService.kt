@@ -9,6 +9,7 @@ import pt.isel.api_pm.utils.PasswordHasher
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordHasher: PasswordHasher,
+    private val jwtService: JwtService,
 ) {
     suspend fun register(
         username: String,
@@ -27,6 +28,6 @@ class AuthService(
     ): String {
         val user = userRepository.getUserByUsername(username) ?: throw UserNotFoundException(username)
         if (!passwordHasher.verify(password, user.passwordHash)) throw BadCredentialsException()
-        return userRepository.loginUser(username, user.passwordHash)
+        return jwtService.generateToken(user.id)
     }
 }

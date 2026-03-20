@@ -1,4 +1,4 @@
-package pt.isel.api_pm
+package pt.isel.api_pm.configure
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -6,8 +6,11 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import pt.isel.api_pm.exceptions.BadCredentialsException
+import pt.isel.api_pm.exceptions.ForbiddenException
+import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.UserAlreadyExistsException
 import pt.isel.api_pm.exceptions.UserNotFoundException
+import javax.naming.AuthenticationException
 
 fun Application.configureStatusPages() {
     install(StatusPages) {
@@ -21,6 +24,22 @@ fun Application.configureStatusPages() {
 
         exception<UserNotFoundException> { call, cause ->
             call.respond(HttpStatusCode.NotFound, cause.message ?: "User not found")
+        }
+
+        exception<AuthenticationException> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, cause.message ?: "Authentication failed")
+        }
+
+        exception<InvalidTokenException> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, cause.message ?: "Invalid token")
+        }
+
+        exception<InvalidTokenException> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, cause.message ?: "Invalid token")
+        }
+
+        exception<ForbiddenException> { call, cause ->
+            call.respond(HttpStatusCode.Forbidden, cause.message ?: "Access denied")
         }
 
         exception<Throwable> { call, cause ->

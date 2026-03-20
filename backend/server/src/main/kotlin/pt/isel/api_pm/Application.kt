@@ -11,6 +11,9 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import pt.isel.api_pm.configure.configureAuthentication
+import pt.isel.api_pm.configure.configureContentNegotiation
+import pt.isel.api_pm.configure.configureStatusPages
 import pt.isel.api_pm.routes.authRoutes
 import pt.isel.api_pm.routes.userRoutes
 
@@ -32,6 +35,7 @@ fun main() {
 fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest) {
     configureContentNegotiation()
     configureStatusPages()
+    configureAuthentication()
 
     val dependencies = AppDependencies(useMemory = true)
 

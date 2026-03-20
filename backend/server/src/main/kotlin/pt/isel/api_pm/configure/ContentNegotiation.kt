@@ -1,4 +1,4 @@
-package pt.isel.api_pm
+package pt.isel.api_pm.configure
 
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
