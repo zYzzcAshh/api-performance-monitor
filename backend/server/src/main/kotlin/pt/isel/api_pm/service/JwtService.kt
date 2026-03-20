@@ -2,7 +2,6 @@ package pt.isel.api_pm.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.auth0.jwt.interfaces.DecodedJWT
 
 class JwtService {
     private val secret = "api-pm-secret"
@@ -19,11 +18,4 @@ class JwtService {
             .withExpiresAt(java.util.Date(now + validity))
             .sign(algorithm)
     }
-
-    fun verifyToken(token: String): DecodedJWT =
-        JWT
-            .require(algorithm)
-            .withIssuer(issuer)
-            .build()
-            .verify(token)
 }
