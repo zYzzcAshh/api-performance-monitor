@@ -4,7 +4,6 @@ import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointRepositoryPostgres : EndpointRepository {
-
     override suspend fun getAll(): List<MonitoredEndpoint> {
         TODO("Not yet implemented")
     }
@@ -13,11 +12,19 @@ class EndpointRepositoryPostgres : EndpointRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(endpoint: MonitoredEndpoint) {
+    override suspend fun add(
+        userId: Int,
+        url: String,
+        name: String,
+        intervalSeconds: Long,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun delete(id: Int) {
+    override suspend fun delete(
+        userId: Int,
+        monitoredEndpointId: Int,
+    ) {
         TODO("Not yet implemented")
     }
 }

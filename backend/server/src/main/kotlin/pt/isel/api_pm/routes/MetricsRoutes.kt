@@ -1,35 +1,43 @@
 package pt.isel.api_pm.routes
 
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import pt.isel.api_pm.dto.CheckRequest
+import pt.isel.api_pm.domain.endpoint.CheckRequest
+import pt.isel.api_pm.exceptions.InvalidTokenException
+import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
 
 fun Route.metricsRoutes(
     metricsService: MetricsService,
-    monitoringService: MonitoringService
+    monitoringService: MonitoringService,
 ) {
-
     route("/api/metrics") {
+        authenticate("auth-jwt") {
+            get {
+                call.respond(metricsService.getAll())
+            }
 
-        get {
-            call.respond(metricsService.getAll())
-        }
+            post("/check") {
+                val request = call.receive<CheckRequest>()
 
-        get("/{endpoint}") {
-            val endpoint = call.parameters["endpoint"]!!
-            call.respond(metricsService.getByEndpoint(endpoint))
-        }
+                val metric = monitoringService.checkEndpoint(request.url)
+                // metricsService.save(metric) should only save on the MonitoringWorker this is just a "manual" check
 
-        post("/check") {
-            val request = call.receive<CheckRequest>()
+                call.respond(metric)
+            }
 
-            val metric = monitoringService.checkEndpoint(request.url)
-            metricsService.save(metric)
+            get("/{endpoint}") {
+                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+                val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
 
-            call.respond(metric)
+                val endpointId = call.parameters["endpoint"]!!.toInt()
+                call.respond(metricsService.getByEndpoint(tokenUserId, endpointId))
+            }
         }
     }
 }

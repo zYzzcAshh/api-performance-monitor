@@ -2,6 +2,7 @@ package pt.isel.api_pm.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import java.util.Date
 
 class JwtService {
     private val secret = "api-pm-secret"
@@ -15,7 +16,7 @@ class JwtService {
             .create()
             .withIssuer(issuer)
             .withClaim("userId", userId)
-            .withExpiresAt(java.util.Date(now + validity))
+            .withExpiresAt(Date(now + validity))
             .sign(algorithm)
     }
 }

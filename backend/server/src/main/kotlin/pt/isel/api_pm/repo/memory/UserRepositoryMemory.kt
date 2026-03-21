@@ -2,10 +2,11 @@ package pt.isel.api_pm.repo.memory
 
 import pt.isel.api_pm.domain.user.User
 import pt.isel.api_pm.repo.UserRepository
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Clock
 
 class UserRepositoryMemory : UserRepository {
-    private val users = HashMap<Int, User>()
+    private val users = ConcurrentHashMap<Int, User>()
 
     override suspend fun getUsers(): List<User> = users.values.toList()
 

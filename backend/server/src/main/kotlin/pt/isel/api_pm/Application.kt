@@ -44,11 +44,12 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
 
     val dependencies = AppDependencies(useMemory = true)
 
-    val worker = MonitoringWorker(
-        dependencies.monitoringService,
-        dependencies.metricsService,
-        dependencies.endpointService
-    )
+    val worker =
+        MonitoringWorker(
+            dependencies.monitoringService,
+            dependencies.metricsService,
+            dependencies.endpointService,
+        )
 
     worker.start(CoroutineScope(Dispatchers.Default))
 
@@ -57,7 +58,7 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
         authRoutes(dependencies.authService)
         metricsRoutes(
             dependencies.metricsService,
-            dependencies.monitoringService
+            dependencies.monitoringService,
         )
         endpointRoutes(dependencies.endpointService)
 

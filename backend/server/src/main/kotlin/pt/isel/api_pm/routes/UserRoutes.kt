@@ -17,10 +17,12 @@ import pt.isel.api_pm.service.UserService
 fun Route.userRoutes(service: UserService) {
     route("/api/users") {
         get {
-            call.respond(service.getUsers().map { user ->
-                println("user: $user")
-                user.toDTO()
-            })
+            call.respond(
+                service.getUsers().map { user ->
+                    println("user: $user")
+                    user.toDTO()
+                },
+            )
         }
 
         authenticate("auth-jwt") {
