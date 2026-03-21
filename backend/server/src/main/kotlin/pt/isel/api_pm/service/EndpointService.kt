@@ -16,9 +16,11 @@ class EndpointService(
         name: String,
         intervalSeconds: Long,
     ) {
-        if (repo.getByUser(userId).any { it.url == url }) throw DuplicateEndpointException(url)
+        val normalizedUrl = url.removeSuffix("/")
 
-        repo.add(userId, url, name, intervalSeconds)
+        if (repo.getByUser(userId).any { it.url.removeSuffix("/") == normalizedUrl }) throw DuplicateEndpointException(url)
+
+        repo.add(userId, normalizedUrl, name, intervalSeconds)
     }
 
     suspend fun delete(
