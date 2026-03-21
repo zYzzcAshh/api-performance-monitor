@@ -6,6 +6,7 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import pt.isel.api_pm.exceptions.BadCredentialsException
+import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.ForbiddenException
 import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.RegistrationFailedException
@@ -40,6 +41,10 @@ fun Application.configureStatusPages() {
 
         exception<ForbiddenException> { call, cause ->
             call.respond(HttpStatusCode.Forbidden, cause.message ?: "Access denied")
+        }
+
+        exception<DuplicateEndpointException> { call, cause ->
+            call.respond(HttpStatusCode.Conflict, cause.message ?: "Endpoint already exists")
         }
 
         exception<Throwable> { call, cause ->

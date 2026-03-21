@@ -25,7 +25,7 @@ import pt.isel.api_pm.worker.MonitoringWorker
 
 val ktorClient = HttpClient(CIO)
 
-private val logger = LoggerFactory.getLogger("Application")
+private val logger = LoggerFactory.getLogger(Application::class.java)
 
 suspend fun defaultExternalRequest(): Pair<Int, String> {
     val response =
@@ -41,11 +41,11 @@ fun main() {
 }
 
 fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest) {
-    logger.info("Starting application...")
+    logger.info("Starting Application...")
 
     configureAll()
 
-    val dependencies = AppDependencies(useMemory = true)
+    val dependencies = AppDependencies()
 
     val worker =
         MonitoringWorker(

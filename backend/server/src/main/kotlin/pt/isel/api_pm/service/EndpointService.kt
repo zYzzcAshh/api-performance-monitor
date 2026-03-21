@@ -1,5 +1,6 @@
 package pt.isel.api_pm.service
 
+import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointService(
@@ -14,7 +15,11 @@ class EndpointService(
         url: String,
         name: String,
         intervalSeconds: Long,
-    ) = repo.add(userId, url, name, intervalSeconds)
+    ) {
+        if (repo.getByUser(userId).any { it.url == url }) throw DuplicateEndpointException(url)
+
+        repo.add(userId, url, name, intervalSeconds)
+    }
 
     suspend fun delete(
         userId: Int,

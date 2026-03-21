@@ -21,7 +21,7 @@ fun Route.endpointRoutes(service: EndpointService) {
                 val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
 
                 service.add(tokenUserId, request.url, request.name, request.intervalSeconds)
-                call.respond(HttpStatusCode.Created)
+                call.respondText("Endpoint created successfully", status = HttpStatusCode.Created)
             }
 
             get {
