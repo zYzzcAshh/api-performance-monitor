@@ -15,6 +15,7 @@ import pt.isel.api_pm.configure.configureAuthentication
 import pt.isel.api_pm.configure.configureContentNegotiation
 import pt.isel.api_pm.configure.configureStatusPages
 import pt.isel.api_pm.routes.authRoutes
+import pt.isel.api_pm.routes.metricsRoutes
 import pt.isel.api_pm.routes.userRoutes
 
 val ktorClient = HttpClient(CIO)
@@ -42,6 +43,11 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
     routing {
         userRoutes(dependencies.userService)
         authRoutes(dependencies.authService)
+
+        metricsRoutes(
+            dependencies.metricsService,
+            dependencies.monitoringService
+        )
 
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")

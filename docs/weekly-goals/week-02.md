@@ -25,9 +25,9 @@ API funcional com autenticação básica e gestão de endpoints (in-memory)
 ## 3. Monitoring Prototype
 
 - Implementar lógica simples de monitoring:
-  - Executar HTTP request a um endpoint
-  - Medir latency
-  - Capturar status code
+- Executar HTTP request a um endpoint
+- Medir latency
+- Capturar status code
 - Criar estrutura de métricas
 
 ###### Deliverable:
