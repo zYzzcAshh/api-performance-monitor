@@ -18,4 +18,6 @@ interface EndpointRepository {
         userId: Int,
         monitoredEndpointId: Int,
     )
+
+    suspend fun existsByUrlAndUser(userId: Int, url: String): Boolean
 }

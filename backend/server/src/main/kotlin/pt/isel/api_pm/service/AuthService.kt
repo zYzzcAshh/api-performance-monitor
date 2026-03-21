@@ -2,6 +2,7 @@ package pt.isel.api_pm.service
 
 import kotlinx.coroutines.runBlocking
 import pt.isel.api_pm.exceptions.BadCredentialsException
+import pt.isel.api_pm.exceptions.InvalidPasswordException
 import pt.isel.api_pm.exceptions.RegistrationFailedException
 import pt.isel.api_pm.exceptions.UserNotFoundException
 import pt.isel.api_pm.repo.UserRepository
@@ -12,6 +13,14 @@ class AuthService(
     private val passwordHasher: PasswordHasher,
     private val jwtService: JwtService,
 ) {
+    private fun isValidPassword(password: String): Boolean {
+        val hasMinLength = password.length >= 6
+        val hasUpperCase = password.any { it.isUpperCase() }
+        val hasDigit = password.any { it.isDigit() }
+
+        return hasMinLength && hasUpperCase && hasDigit
+    }
+
     suspend fun register(
         username: String,
         password: String,
@@ -20,6 +29,11 @@ class AuthService(
         if (existing != null) throw RegistrationFailedException(username)
 
         val hashedPassword = passwordHasher.hash(password)
+
+        if (!isValidPassword(password)) {
+            throw InvalidPasswordException()
+        }
+
         userRepository.registerUser(username, hashedPassword)
     }
 
@@ -34,7 +48,7 @@ class AuthService(
 
     init {
         runBlocking {
-            register("admin", "admin")
+            register("admin", "Admin1234")
         }
     }
 }
