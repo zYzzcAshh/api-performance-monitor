@@ -18,10 +18,12 @@ fun Route.metricsRoutes(
 ) {
     route("/api/metrics") {
         authenticate("auth-jwt") {
+            // To be removed in the future
             get {
                 call.respond(metricsService.getAll())
             }
 
+            // "Manually" check an endpoint, maybe to be removed in the future
             post("/check") {
                 val request = call.receive<CheckRequest>()
 

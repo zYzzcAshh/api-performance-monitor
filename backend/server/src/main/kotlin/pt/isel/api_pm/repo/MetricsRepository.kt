@@ -9,7 +9,10 @@ interface MetricsRepository {
         metric: RequestMetric,
     )
 
-    suspend fun getByEndpoint(userId: Int, monitoredEndpointId: Int): List<RequestMetric>
+    suspend fun getByEndpoint(
+        userId: Int,
+        monitoredEndpointId: Int,
+    ): List<RequestMetric>
 
     suspend fun getAll(): List<RequestMetric>
 }

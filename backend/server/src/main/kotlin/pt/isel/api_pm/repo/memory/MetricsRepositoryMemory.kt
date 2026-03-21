@@ -16,7 +16,10 @@ class MetricsRepositoryMemory : MetricsRepository {
         metrics.getOrPut(userId) { ConcurrentHashMap() }.getOrPut(monitoredEndpointId) { mutableListOf() }.add(metric)
     }
 
-    override suspend fun getByEndpoint(userId: Int, monitoredEndpointId: Int): List<RequestMetric> = metrics[userId]?.get(monitoredEndpointId)?.toList() ?: emptyList()
+    override suspend fun getByEndpoint(
+        userId: Int,
+        monitoredEndpointId: Int,
+    ): List<RequestMetric> = metrics[userId]?.get(monitoredEndpointId)?.toList() ?: emptyList()
 
     override suspend fun getAll(): List<RequestMetric> = metrics.values.flatMap { it.values }.flatten()
 }

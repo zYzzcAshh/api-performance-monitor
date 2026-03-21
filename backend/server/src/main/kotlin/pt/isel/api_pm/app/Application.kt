@@ -1,4 +1,4 @@
-package pt.isel.api_pm
+package pt.isel.api_pm.app
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -13,9 +13,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import pt.isel.api_pm.configure.configureAuthentication
-import pt.isel.api_pm.configure.configureContentNegotiation
-import pt.isel.api_pm.configure.configureStatusPages
+import org.slf4j.LoggerFactory
+import pt.isel.api_pm.Greeting
+import pt.isel.api_pm.SERVER_PORT
+import pt.isel.api_pm.configure.configureAll
 import pt.isel.api_pm.routes.authRoutes
 import pt.isel.api_pm.routes.endpointRoutes
 import pt.isel.api_pm.routes.metricsRoutes
@@ -23,6 +24,8 @@ import pt.isel.api_pm.routes.userRoutes
 import pt.isel.api_pm.worker.MonitoringWorker
 
 val ktorClient = HttpClient(CIO)
+
+private val logger = LoggerFactory.getLogger("Application")
 
 suspend fun defaultExternalRequest(): Pair<Int, String> {
     val response =
@@ -38,9 +41,9 @@ fun main() {
 }
 
 fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest) {
-    configureContentNegotiation()
-    configureStatusPages()
-    configureAuthentication()
+    logger.info("Starting application...")
+
+    configureAll()
 
     val dependencies = AppDependencies(useMemory = true)
 
@@ -62,7 +65,7 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
         )
         endpointRoutes(dependencies.endpointService)
 
-        get("/") {
+        get {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
 

@@ -19,7 +19,6 @@ fun Route.userRoutes(service: UserService) {
         get {
             call.respond(
                 service.getUsers().map { user ->
-                    println("user: $user")
                     user.toDTO()
                 },
             )

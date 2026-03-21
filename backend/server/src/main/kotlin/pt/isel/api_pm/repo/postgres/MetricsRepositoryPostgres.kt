@@ -4,11 +4,18 @@ import pt.isel.api_pm.domain.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 
 class MetricsRepositoryPostgres : MetricsRepository {
-    override suspend fun save(userId: Int, monitoredEndpointId: Int, metric: RequestMetric) {
+    override suspend fun save(
+        userId: Int,
+        monitoredEndpointId: Int,
+        metric: RequestMetric,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getByEndpoint(userId: Int, monitoredEndpointId: Int): List<RequestMetric> {
+    override suspend fun getByEndpoint(
+        userId: Int,
+        monitoredEndpointId: Int,
+    ): List<RequestMetric> {
         TODO("Not yet implemented")
     }
 

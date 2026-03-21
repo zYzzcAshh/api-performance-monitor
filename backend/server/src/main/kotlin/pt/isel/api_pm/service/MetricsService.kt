@@ -14,5 +14,8 @@ class MetricsService(
 
     suspend fun getAll(): List<RequestMetric> = repo.getAll()
 
-    suspend fun getByEndpoint(userId: Int, monitoredEndpointId: Int): List<RequestMetric> = repo.getByEndpoint(userId, monitoredEndpointId)
+    suspend fun getByEndpoint(
+        userId: Int,
+        monitoredEndpointId: Int,
+    ): List<RequestMetric> = repo.getByEndpoint(userId, monitoredEndpointId)
 }

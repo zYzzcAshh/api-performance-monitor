@@ -1,0 +1,78 @@
+# @use-environment dev
+# Complete requests
+
+###
+# Register a new user
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "example1",
+  "password": "example1"
+}
+
+###
+# Login with the registered user
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "example1",
+  "password": "example1"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+%}
+
+###
+# Create a new endpoint monitor
+POST {{baseUrl}}/api/endpoints/create
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "url": "https://example.com",
+  "name": "Example Endpoint",
+  "intervalSeconds": 60
+}
+
+###
+# Create a new endpoint monitor
+POST {{baseUrl}}/api/endpoints/create
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "url": "https://example2.com",
+  "name": "Example2 Endpoint",
+  "intervalSeconds": 75
+}
+
+###
+# Get all endpoint being monitored
+GET {{baseUrl}}/api/endpoints
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+# Delete an endpoint monitor
+DELETE {{baseUrl}}/api/endpoints/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+# Get metrics for a certain endpoint
+GET {{baseUrl}}/api/metrics/0
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+

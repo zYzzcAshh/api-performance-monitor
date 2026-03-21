@@ -5,6 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import pt.isel.api_pm.service.EndpointService
 import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
@@ -16,9 +17,13 @@ class MonitoringWorker(
 ) {
     companion object {
         const val MINIMUM_INTERVAL_MILLIS: Long = 60000
+
+        private val logger = LoggerFactory.getLogger(MonitoringWorker::class.java)
     }
 
     fun start(scope: CoroutineScope) {
+        logger.info("Starting MonitoringWorker...")
+
         scope.launch {
             while (true) {
                 val endpoints = endpointService.getAll()
@@ -29,10 +34,11 @@ class MonitoringWorker(
                             try {
                                 val metric = monitoringService.checkEndpoint(endpoint.url)
                                 metricsService.save(endpoint.userId, endpoint.id, metric)
-                                println("Saved metric for userId=${endpoint.userId}, endpointId=${endpoint.id}, url=${endpoint.url}")
-                                println("Checked ${endpoint.url} -> ${metric.statusCode} (${metric.latency}ms)")
+
+                                logger.info("Saved metric for userId=${endpoint.userId}, endpointId=${endpoint.id}, url=${endpoint.url}")
+                                logger.info("Checked ${endpoint.url} -> ${metric.statusCode} (${metric.latency}ms)")
                             } catch (e: Exception) {
-                                println("Error checking ${endpoint.url}: ${e.message}")
+                                logger.error("Error checking ${endpoint.url}: ${e.message}")
                             }
                         }
                     }

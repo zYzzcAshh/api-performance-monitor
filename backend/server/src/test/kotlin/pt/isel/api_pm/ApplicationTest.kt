@@ -8,6 +8,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.junit.AfterClass
+import pt.isel.api_pm.app.module
 import kotlin.test.*
 
 class ApplicationTest {
