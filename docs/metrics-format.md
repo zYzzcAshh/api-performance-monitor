@@ -5,12 +5,14 @@ At this stage, the system uses a simplified metric structure aligned with the cu
 
 Example metric payload:
 
+```json
 {
   "endpoint": "https://api.example.com",
   "timestamp": "2026-03-16T17:00:00Z",
   "latency": 123,
   "statusCode": 200
 }
+```
 
 Collected metrics include:
 

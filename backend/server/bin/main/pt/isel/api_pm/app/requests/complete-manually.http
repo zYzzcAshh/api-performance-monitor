@@ -1,0 +1,76 @@
+# Complete requests
+
+@baseUrl = http://localhost:8080
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDEzNTIzN30.dzatCOQtyYEEHSW-jNssgqaONOq4ioY6T2q23M6da7k
+
+###
+# Register a new user
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "example1",
+  "password": "example1"
+}
+
+###
+# Login with the registered user
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "example1",
+  "password": "example1"
+}
+
+###
+# Create a new endpoint monitor
+POST {{baseUrl}}/api/endpoints/create
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "url": "https://example.com",
+  "name": "Example Endpoint",
+  "intervalSeconds": 60
+}
+
+###
+# Create a new endpoint monitor
+POST {{baseUrl}}/api/endpoints/create
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "url": "https://example2.com",
+  "name": "Example2 Endpoint",
+  "intervalSeconds": 75
+}
+
+###
+# Get all endpoint being monitored
+GET {{baseUrl}}/api/endpoints
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+# Delete an endpoint monitor
+DELETE {{baseUrl}}/api/endpoints/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+# Get metrics for a certain endpoint
+GET {{baseUrl}}/api/metrics/0
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+

@@ -18,7 +18,21 @@ class EndpointService(
     ) {
         val normalizedUrl = url.removeSuffix("/")
 
-        if (repo.getByUser(userId).any { it.url.removeSuffix("/") == normalizedUrl }) throw DuplicateEndpointException(url)
+        if (repo.getByUser(userId).any { it.url.removeSuffix("/") == normalizedUrl }) {
+            throw DuplicateEndpointException(url)
+        }
+
+        if (!isValidUrl(normalizedUrl)) {
+            throw IllegalArgumentException("Invalid URL")
+        }
+
+        if (intervalSeconds < 50) {
+            throw IllegalArgumentException("Interval must be >= 50 seconds")
+        }
+
+        if (repo.existsByUrlAndUser(userId, normalizedUrl)) {
+            throw DuplicateEndpointException(url)
+        }
 
         repo.add(userId, normalizedUrl, name, intervalSeconds)
     }
@@ -27,4 +41,13 @@ class EndpointService(
         userId: Int,
         monitoredEndpointId: Int,
     ) = repo.delete(userId, monitoredEndpointId)
+
+    private fun isValidUrl(url: String): Boolean {
+        return try {
+            java.net.URL(url)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

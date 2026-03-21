@@ -8,6 +8,7 @@ import io.ktor.server.response.respond
 import pt.isel.api_pm.exceptions.BadCredentialsException
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.ForbiddenException
+import pt.isel.api_pm.exceptions.InvalidPasswordException
 import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.RegistrationFailedException
 import pt.isel.api_pm.exceptions.UserNotFoundException
@@ -49,6 +50,10 @@ fun Application.configureStatusPages() {
 
         exception<Throwable> { call, cause ->
             call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred: ${cause.message}")
+        }
+
+        exception<InvalidPasswordException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Invalid password")
         }
     }
 }

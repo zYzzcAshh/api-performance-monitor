@@ -27,4 +27,8 @@ class EndpointRepositoryPostgres : EndpointRepository {
     ) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun existsByUrlAndUser(userId: Int, url: String): Boolean {
+        TODO("Not yet implemented")
+    }
 }

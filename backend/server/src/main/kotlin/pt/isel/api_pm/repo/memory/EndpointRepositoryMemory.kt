@@ -42,4 +42,8 @@ class EndpointRepositoryMemory : EndpointRepository {
     ) {
         endpoints[userId]?.remove(monitoredEndpointId)
     }
+
+    override suspend fun existsByUrlAndUser(userId: Int, url: String): Boolean {
+        return endpoints[userId]?.values?.any { it.url == url } ?: false
+    }
 }
