@@ -1,10 +1,12 @@
 package pt.isel.api_pm
 
 import pt.isel.api_pm.repo.UserRepository
+import pt.isel.api_pm.repo.memory.EndpointRepositoryMemory
 import pt.isel.api_pm.repo.memory.MetricsRepositoryMemory
 import pt.isel.api_pm.repo.memory.UserRepositoryMemory
 import pt.isel.api_pm.repo.postgres.UserRepositoryPostgres
 import pt.isel.api_pm.service.AuthService
+import pt.isel.api_pm.service.EndpointService
 import pt.isel.api_pm.service.JwtService
 import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
@@ -24,4 +26,6 @@ class AppDependencies(
     val metricsRepository = MetricsRepositoryMemory()
     val metricsService = MetricsService(metricsRepository)
     val monitoringService = MonitoringService(ktorClient)
+    val endpointRepo = EndpointRepositoryMemory()
+    val endpointService = EndpointService(endpointRepo)
 }

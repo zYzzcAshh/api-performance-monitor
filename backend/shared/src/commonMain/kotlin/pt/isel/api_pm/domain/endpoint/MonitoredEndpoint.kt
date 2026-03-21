@@ -1,7 +1,9 @@
 package pt.isel.api_pm.domain.endpoint
 
+import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 
+@Serializable
 data class MonitoredEndpoint (
     val id: Int,
     val userId: Int,

@@ -17,6 +17,7 @@ import pt.isel.api_pm.configure.configureAuthentication
 import pt.isel.api_pm.configure.configureContentNegotiation
 import pt.isel.api_pm.configure.configureStatusPages
 import pt.isel.api_pm.routes.authRoutes
+import pt.isel.api_pm.routes.endpointRoutes
 import pt.isel.api_pm.routes.metricsRoutes
 import pt.isel.api_pm.routes.userRoutes
 import pt.isel.api_pm.worker.MonitoringWorker
@@ -45,7 +46,8 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
 
     val worker = MonitoringWorker(
         dependencies.monitoringService,
-        dependencies.metricsService
+        dependencies.metricsService,
+        dependencies.endpointService
     )
 
     worker.start(CoroutineScope(Dispatchers.Default))
@@ -53,11 +55,11 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
     routing {
         userRoutes(dependencies.userService)
         authRoutes(dependencies.authService)
-
         metricsRoutes(
             dependencies.metricsService,
             dependencies.monitoringService
         )
+        endpointRoutes(dependencies.endpointService)
 
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
