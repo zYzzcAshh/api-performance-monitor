@@ -11,12 +11,15 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import pt.isel.api_pm.configure.configureAuthentication
 import pt.isel.api_pm.configure.configureContentNegotiation
 import pt.isel.api_pm.configure.configureStatusPages
 import pt.isel.api_pm.routes.authRoutes
 import pt.isel.api_pm.routes.metricsRoutes
 import pt.isel.api_pm.routes.userRoutes
+import pt.isel.api_pm.worker.MonitoringWorker
 
 val ktorClient = HttpClient(CIO)
 
@@ -39,6 +42,13 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
     configureAuthentication()
 
     val dependencies = AppDependencies(useMemory = true)
+
+    val worker = MonitoringWorker(
+        dependencies.monitoringService,
+        dependencies.metricsService
+    )
+
+    worker.start(CoroutineScope(Dispatchers.Default))
 
     routing {
         userRoutes(dependencies.userService)
