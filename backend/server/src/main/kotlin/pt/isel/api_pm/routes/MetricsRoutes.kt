@@ -18,13 +18,11 @@ fun Route.metricsRoutes(
             call.respond(metricsService.getAll())
         }
 
-        // ver por endpoint
         get("/{endpoint}") {
             val endpoint = call.parameters["endpoint"]!!
             call.respond(metricsService.getByEndpoint(endpoint))
         }
 
-        // executar check manual
         post("/check") {
             val request = call.receive<CheckRequest>()
 
