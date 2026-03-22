@@ -33,5 +33,5 @@ dependencies {
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.jbcrypt)
     testImplementation(libs.ktor.serverTestHost)
-    testImplementation(libs.kotlin.testJunit)
+    testImplementation(kotlin("test"))
 }
