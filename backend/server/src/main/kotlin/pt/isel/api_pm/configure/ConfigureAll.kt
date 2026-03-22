@@ -6,4 +6,5 @@ fun Application.configureAll() {
     configureContentNegotiation()
     configureStatusPages()
     configureAuthentication()
+    configureIgnoreTrailingSlash()
 }

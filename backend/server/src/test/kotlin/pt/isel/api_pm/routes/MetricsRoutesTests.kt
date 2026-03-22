@@ -14,7 +14,7 @@ class MetricsRoutesTests {
     fun `should return metrics summary`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         createEndpoint(client, token)
 

@@ -23,7 +23,7 @@ class EndpointRoutesTests {
     fun `should create endpoint with token`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         val response = createEndpoint(client, token)
 
@@ -34,7 +34,7 @@ class EndpointRoutesTests {
     fun `should list endpoints for user`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         createEndpoint(client, token)
 
@@ -50,7 +50,7 @@ class EndpointRoutesTests {
     fun `should reject invalid url via API`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         val response = createEndpoint(client, token, url = "not-a-url")
 
@@ -61,7 +61,7 @@ class EndpointRoutesTests {
     fun `should reject invalid interval via API`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         val response = createEndpoint(client, token, intervalSeconds = 5)
 
@@ -72,7 +72,7 @@ class EndpointRoutesTests {
     fun `should reject duplicate endpoint via API`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         createEndpoint(client, token)
         createEndpoint(client, token)
@@ -86,7 +86,7 @@ class EndpointRoutesTests {
     fun `should delete endpoint`() = testApplication {
         application { module() }
 
-        val token = getToken(client, "user1")
+        val token = registerAndGetToken(client, "user1")
 
         createEndpoint(client, token)
 

@@ -5,7 +5,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-suspend fun getToken(client: HttpClient, username: String = "user"): String {
+suspend fun registerAndGetToken(client: HttpClient, username: String = "user"): String {
     client.post("/api/auth/register") {
         contentType(ContentType.Application.Json)
         setBody("""{"username":"$username","password":"Password1"}""")

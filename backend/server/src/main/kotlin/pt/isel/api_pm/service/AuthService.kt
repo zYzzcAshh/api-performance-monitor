@@ -7,20 +7,13 @@ import pt.isel.api_pm.exceptions.RegistrationFailedException
 import pt.isel.api_pm.exceptions.UserNotFoundException
 import pt.isel.api_pm.repo.UserRepository
 import pt.isel.api_pm.utils.PasswordHasher
+import pt.isel.api_pm.utils.isValidPassword
 
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordHasher: PasswordHasher,
     private val jwtService: JwtService,
 ) {
-    private fun isValidPassword(password: String): Boolean {
-        val hasMinLength = password.length >= 6
-        val hasUpperCase = password.any { it.isUpperCase() }
-        val hasDigit = password.any { it.isDigit() }
-
-        return hasMinLength && hasUpperCase && hasDigit
-    }
-
     suspend fun register(
         username: String,
         password: String,
@@ -28,11 +21,9 @@ class AuthService(
         val existing = userRepository.getUserByUsername(username)
         if (existing != null) throw RegistrationFailedException(username)
 
-        val hashedPassword = passwordHasher.hash(password)
+        if (!isValidPassword(password)) throw InvalidPasswordException()
 
-        if (!isValidPassword(password)) {
-            throw InvalidPasswordException()
-        }
+        val hashedPassword = passwordHasher.hash(password)
 
         userRepository.registerUser(username, hashedPassword)
     }

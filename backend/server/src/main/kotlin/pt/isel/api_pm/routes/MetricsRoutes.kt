@@ -42,10 +42,10 @@ fun Route.metricsRoutes(
             }
 
             get("/{endpointId}/summary") {
-                val endpointId = call.parameters["endpointId"]!!.toInt()
-
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val userId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
+
+                val endpointId = call.parameters["endpointId"]!!.toInt()
 
                 val summary = metricsService.getSummary(userId, endpointId)
 
