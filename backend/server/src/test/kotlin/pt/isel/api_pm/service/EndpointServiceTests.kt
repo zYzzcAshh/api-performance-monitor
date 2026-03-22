@@ -76,4 +76,10 @@ class EndpointServiceTests {
             }
         }
     }
+
+    @Test
+    fun `should return empty list for new user`() = runBlocking {
+        val endpoints = service.getByUser(999)
+        assertTrue(endpoints.isEmpty())
+    }
 }

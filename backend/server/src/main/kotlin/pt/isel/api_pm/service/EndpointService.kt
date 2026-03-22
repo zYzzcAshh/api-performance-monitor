@@ -1,6 +1,8 @@
 package pt.isel.api_pm.service
 
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
+import pt.isel.api_pm.exceptions.InvalidIntervalException
+import pt.isel.api_pm.exceptions.InvalidUrlException
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointService(
@@ -22,12 +24,12 @@ class EndpointService(
             throw DuplicateEndpointException(url)
         }
 
-        if (!isValidUrl(normalizedUrl)) {
-            throw IllegalArgumentException("Invalid URL")
+        if (!isValidUrl(url)) {
+            throw InvalidUrlException(url)
         }
 
         if (intervalSeconds < 50) {
-            throw IllegalArgumentException("Interval must be >= 50 seconds")
+            throw InvalidIntervalException(intervalSeconds)
         }
 
         if (repo.existsByUrlAndUser(userId, normalizedUrl)) {

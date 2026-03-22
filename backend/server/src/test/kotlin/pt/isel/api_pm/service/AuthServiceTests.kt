@@ -81,4 +81,13 @@ class AuthServiceTests {
             }
         }
     }
+
+    @Test
+    fun `should reject login with non existing user`() {
+        runBlocking {
+            assertFailsWith<UserNotFoundException> {
+                service.login("ghost", "Password1")
+            }
+        }
+    }
 }

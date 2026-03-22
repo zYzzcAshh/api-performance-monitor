@@ -38,4 +38,50 @@ class AuthRoutesTests {
         assertEquals(HttpStatusCode.OK, response.status)
         assertTrue(response.bodyAsText().contains("token"))
     }
+
+    @Test
+    fun `should reject login with wrong password`() = testApplication {
+        application { module() }
+
+        client.post("/api/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"username":"user","password":"Password1"}""")
+        }
+
+        val response = client.post("/api/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"username":"user","password":"wrong"}""")
+        }
+
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
+    fun `should reject invalid password on register`() = testApplication {
+        application { module() }
+
+        val response = client.post("/api/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"username":"user","password":"abc"}""")
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `should reject duplicate register`() = testApplication {
+        application { module() }
+
+        client.post("/api/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"username":"user","password":"Password1"}""")
+        }
+
+        val response = client.post("/api/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"username":"user","password":"Password1"}""")
+        }
+
+        assertEquals(HttpStatusCode.Conflict, response.status)
+    }
 }

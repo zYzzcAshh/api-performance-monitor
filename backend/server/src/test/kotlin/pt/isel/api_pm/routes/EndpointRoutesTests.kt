@@ -68,4 +68,76 @@ class EndpointRoutesTests {
         assertEquals(HttpStatusCode.OK, response.status)
         assertTrue(response.bodyAsText().contains("api.github.com"))
     }
+
+    @Test
+    fun `should reject invalid url via API`() = testApplication {
+        application { module() }
+
+        val token = getToken(client)
+
+        val response = client.post("/api/endpoints/create") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody("""{"url":"not-a-url","name":"bad","intervalSeconds":60}""")
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `should reject invalid interval via API`() = testApplication {
+        application { module() }
+
+        val token = getToken(client)
+
+        val response = client.post("/api/endpoints/create") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody("""{"url":"https://google.com","name":"bad","intervalSeconds":5}""")
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `should reject duplicate endpoint via API`() = testApplication {
+        application { module() }
+
+        val token = getToken(client)
+
+        repeat(2) {
+            client.post("/api/endpoints/create") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
+            }
+        }
+
+        val response = client.post("/api/endpoints/create") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
+        }
+
+        assertEquals(HttpStatusCode.Conflict, response.status)
+    }
+
+    @Test
+    fun `should delete endpoint`() = testApplication {
+        application { module() }
+
+        val token = getToken(client)
+
+        client.post("/api/endpoints/create") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
+        }
+
+        val response = client.delete("/api/endpoints/0") {
+            header("Authorization", "Bearer $token")
+        }
+
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
 }
