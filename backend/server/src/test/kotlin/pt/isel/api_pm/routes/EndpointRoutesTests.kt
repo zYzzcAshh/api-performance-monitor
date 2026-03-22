@@ -6,24 +6,9 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import pt.isel.api_pm.app.module
 import kotlin.test.*
+import pt.isel.api_pm.testutils.getToken
 
 class EndpointRoutesTests {
-
-    private suspend fun getToken(client: io.ktor.client.HttpClient): String {
-        client.post("/api/auth/register") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"username":"user","password":"Password1"}""")
-        }
-
-        val response = client.post("/api/auth/login") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"username":"user","password":"Password1"}""")
-        }
-
-        val body = response.bodyAsText()
-        val token = body.substringAfter("token: ").trim()
-        return token
-    }
 
     @Test
     fun `should reject request without token`() = testApplication {
@@ -38,7 +23,7 @@ class EndpointRoutesTests {
     fun `should create endpoint with token`() = testApplication {
         application { module() }
 
-        val token = getToken(client)
+        val token = getToken(client, "user1")
 
         val response = client.post("/api/endpoints/create") {
             header("Authorization", "Bearer $token")
@@ -53,7 +38,7 @@ class EndpointRoutesTests {
     fun `should list endpoints for user`() = testApplication {
         application { module() }
 
-        val token = getToken(client)
+        val token = getToken(client, "user1")
 
         client.post("/api/endpoints/create") {
             header("Authorization", "Bearer $token")
@@ -73,7 +58,7 @@ class EndpointRoutesTests {
     fun `should reject invalid url via API`() = testApplication {
         application { module() }
 
-        val token = getToken(client)
+        val token = getToken(client, "user1")
 
         val response = client.post("/api/endpoints/create") {
             header("Authorization", "Bearer $token")
@@ -88,7 +73,7 @@ class EndpointRoutesTests {
     fun `should reject invalid interval via API`() = testApplication {
         application { module() }
 
-        val token = getToken(client)
+        val token = getToken(client, "user1")
 
         val response = client.post("/api/endpoints/create") {
             header("Authorization", "Bearer $token")
@@ -103,7 +88,7 @@ class EndpointRoutesTests {
     fun `should reject duplicate endpoint via API`() = testApplication {
         application { module() }
 
-        val token = getToken(client)
+        val token = getToken(client, "user1")
 
         repeat(2) {
             client.post("/api/endpoints/create") {
@@ -126,7 +111,7 @@ class EndpointRoutesTests {
     fun `should delete endpoint`() = testApplication {
         application { module() }
 
-        val token = getToken(client)
+        val token = getToken(client, "user1")
 
         client.post("/api/endpoints/create") {
             header("Authorization", "Bearer $token")

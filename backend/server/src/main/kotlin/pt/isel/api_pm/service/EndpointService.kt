@@ -52,4 +52,16 @@ class EndpointService(
             false
         }
     }
+
+    /* not deprecated version (to be tested)
+    private fun isValidUrl(url: String): Boolean {
+        return try {
+            val uri = java.net.URI(url)
+            val scheme = uri.scheme?.lowercase()
+            (scheme == "http" || scheme == "https") && !uri.host.isNullOrBlank()
+        } catch (e: Exception) {
+            false
+        }
+    }
+     */
 }

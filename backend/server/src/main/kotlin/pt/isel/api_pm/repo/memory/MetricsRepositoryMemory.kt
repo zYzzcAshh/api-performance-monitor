@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class MetricsRepositoryMemory : MetricsRepository {
     private val metrics = ConcurrentHashMap<Int, ConcurrentHashMap<Int, MutableList<RequestMetric>>>()
-    // First Int is the UserId, second Int is the MonitoredEndpointId
+    // first Int is the UserId, second Int is the MonitoredEndpointId
 
     override suspend fun save(
         userId: Int,

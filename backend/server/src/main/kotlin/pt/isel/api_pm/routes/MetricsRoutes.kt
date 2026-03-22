@@ -18,7 +18,7 @@ fun Route.metricsRoutes(
 ) {
     route("/api/metrics") {
         authenticate("auth-jwt") {
-            // To be removed in the future
+            // to be removed in the future
             get {
                 call.respond(metricsService.getAll())
             }
@@ -39,6 +39,17 @@ fun Route.metricsRoutes(
 
                 val endpointId = call.parameters["endpoint"]!!.toInt()
                 call.respond(metricsService.getByEndpoint(tokenUserId, endpointId))
+            }
+
+            get("/{endpointId}/summary") {
+                val endpointId = call.parameters["endpointId"]!!.toInt()
+
+                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+                val userId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
+
+                val summary = metricsService.getSummary(userId, endpointId)
+
+                call.respond(summary)
             }
         }
     }
