@@ -1,4 +1,4 @@
-# Week Goals (17 Mar – 24 Mar)
+# Week Goals (17 Mar - 24 Mar)
 
 ## 1. Backend Setup (Ktor)
 
@@ -7,22 +7,36 @@
 - Definir estrutura do projeto (routes, services, models)
 
 ###### Deliverable:
-Ktor server a correr com estrutura base do projeto
+Ktor server a correr com estrutura modular organizada:
+- `routes/` ⭢ definição de endpoints HTTP
+- `services/` ⭢ lógica de negócio
+- `repo/` ⭢ abstração de dados (memory)
+- `configure/` ⭢ configuração (auth, serialization, errors)
+- `app/` ⭢ bootstrap da aplicação
 
+---
 
 ## 2. API Base (In-Memory)
 
 - Implementar endpoints básicos:
-  - POST /auth/register
-  - POST /auth/login
+  - POST /api/auth/register
+  - POST /api/auth/login
 - Criar estrutura para gestão de endpoints monitorizados
 - Armazenar dados em memória (sem base de dados)
 - Implementar autenticação JWT
 - Associar endpoints a utilizadores (userId via JWT)
 
 ###### Deliverable:
-API funcional com autenticação básica, gestão de endpoints e isolamento por utilizador
+API funcional com:
+- Autenticação JWT (login devolve token)
+- Endpoints protegidos com `authenticate("auth-jwt")`
+- Gestão de endpoints por utilizador:
+  - POST /api/endpoints/create
+  - GET /api/endpoints
+  - DELETE /api/endpoints/{id}
+- Isolamento por utilizador garantido via `userId` no token
 
+---
 
 ## 3. Monitoring Prototype
 
@@ -34,8 +48,17 @@ API funcional com autenticação básica, gestão de endpoints e isolamento por 
 - Expor endpoint para executar checks manualmente
 
 ###### Deliverable:
-primeiro protótipo de monitorização funcional
+Protótipo funcional de monitorização:
+- Serviço `MonitoringService`
+- Modelo `RequestMetric`
+- Endpoint:
+  - POST /api/metrics/check
+- Métricas incluem:
+  - latency
+  - statusCode
+  - timestamp
 
+---
 
 ## 4. Worker (Simplified)
 
@@ -45,8 +68,14 @@ primeiro protótipo de monitorização funcional
 - Guardar métricas automaticamente
 
 ###### Deliverable:
-worker simples a executar checks automaticamente
+Worker funcional:
+- Classe `MonitoringWorker`
+- Execução periódica com coroutines (`delay`)
+- Integração com `EndpointService`
+- Persistência automática de métricas via `MetricsService`
+- Logs com resultados dos checks
 
+---
 
 ## 5. Technical Decisions & Documentation
 
@@ -57,8 +86,21 @@ worker simples a executar checks automaticamente
 - Atualizar data model e metrics format
 
 ###### Deliverable:
-documentação atualizada (docs/)
+Documentação atualizada com:
+- Decisão de stack:
+  - Ktor (backend)
+  - kotlinx.serialization
+  - JWT auth
+- Arquitetura em camadas:
+  - routes ⭢ services ⭢ repository
+- Data model:
+  - User
+  - MonitoredEndpoint
+  - RequestMetric
+- Estratégia atual:
+  - armazenamento in-memory (fase inicial)
 
+---
 
 ## 6. Simple Metrics Aggregation (optional)
 
@@ -66,8 +108,42 @@ documentação atualizada (docs/)
 - Calcular average latency
 
 ###### Deliverable:
-endpoint com métricas agregadas
+Endpoint implementado:
+- GET /api/metrics/{endpointId}/summary
 
+Inclui:
+- uptime (% de requests 2xx)
+- average latency
+- total requests
+
+---
+
+## 7. Validation & Testing (extra)
+
+- Validação de inputs:
+  - URL válida
+  - interval >= 50s
+  - password segura (uppercase + digit)
+  - evitar endpoints duplicados
+- Tratamento de erros com StatusPages
+
+- Testes implementados:
+  - Services:
+    - AuthServiceTests
+    - EndpointServiceTests
+    - MetricsServiceTests
+  - Routes:
+    - AuthRoutesTests
+    - EndpointRoutesTests
+    - MetricsRoutesTests
+  - Test utilities:
+    - getToken()
+    - createEndpoint()
+
+###### Deliverable:
+Cobertura de testes unitários e de integração com Ktor TestHost
+
+---
 
 ## Result
 
@@ -77,9 +153,12 @@ endpoint com métricas agregadas
   - Monitoring Prototype
   - Worker
   - Documentation
+  - Metrics Aggregation (optional)
+  - Validation & Error Handling
+  - Testing (services + routes)
 
 - partially done:
   - —
 
 - not done:
-  - Metrics Aggregation (optional)
+  - —
