@@ -4,6 +4,8 @@ import kotlinx.coroutines.runBlocking
 import kotlin.test.*
 import pt.isel.api_pm.repo.memory.EndpointRepositoryMemory
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
+import pt.isel.api_pm.exceptions.InvalidIntervalException
+import pt.isel.api_pm.exceptions.InvalidUrlException
 
 class EndpointServiceTests {
 
@@ -28,7 +30,7 @@ class EndpointServiceTests {
     @Test
     fun `should reject invalid url`() {
         runBlocking {
-            assertFailsWith<IllegalArgumentException> {
+            assertFailsWith<InvalidUrlException> {
                 service.add(0, "not-a-url", "test", 60)
             }
         }
@@ -37,7 +39,7 @@ class EndpointServiceTests {
     @Test
     fun `should reject invalid interval`() {
         runBlocking {
-            assertFailsWith<IllegalArgumentException> {
+            assertFailsWith<InvalidIntervalException> {
                 service.add(0, "https://google.com", "test", 5)
             }
         }

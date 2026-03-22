@@ -5,8 +5,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import pt.isel.api_pm.app.module
+import pt.isel.api_pm.testutils.*
 import kotlin.test.*
-import pt.isel.api_pm.testutils.getToken
 
 class EndpointRoutesTests {
 
@@ -25,11 +25,7 @@ class EndpointRoutesTests {
 
         val token = getToken(client, "user1")
 
-        val response = client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
-        }
+        val response = createEndpoint(client, token)
 
         assertEquals(HttpStatusCode.Created, response.status)
     }
@@ -40,11 +36,7 @@ class EndpointRoutesTests {
 
         val token = getToken(client, "user1")
 
-        client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
-        }
+        createEndpoint(client, token)
 
         val response = client.get("/api/endpoints") {
             header("Authorization", "Bearer $token")
@@ -60,11 +52,7 @@ class EndpointRoutesTests {
 
         val token = getToken(client, "user1")
 
-        val response = client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"not-a-url","name":"bad","intervalSeconds":60}""")
-        }
+        val response = createEndpoint(client, token, url = "not-a-url")
 
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
@@ -75,11 +63,7 @@ class EndpointRoutesTests {
 
         val token = getToken(client, "user1")
 
-        val response = client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://google.com","name":"bad","intervalSeconds":5}""")
-        }
+        val response = createEndpoint(client, token, intervalSeconds = 5)
 
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
@@ -90,19 +74,10 @@ class EndpointRoutesTests {
 
         val token = getToken(client, "user1")
 
-        repeat(2) {
-            client.post("/api/endpoints/create") {
-                header("Authorization", "Bearer $token")
-                contentType(ContentType.Application.Json)
-                setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
-            }
-        }
+        createEndpoint(client, token)
+        createEndpoint(client, token)
 
-        val response = client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
-        }
+        val response = createEndpoint(client, token)
 
         assertEquals(HttpStatusCode.Conflict, response.status)
     }
@@ -113,11 +88,7 @@ class EndpointRoutesTests {
 
         val token = getToken(client, "user1")
 
-        client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
-        }
+        createEndpoint(client, token)
 
         val response = client.delete("/api/endpoints/0") {
             header("Authorization", "Bearer $token")

@@ -1,16 +1,11 @@
 package pt.isel.api_pm.routes
 
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
-import io.ktor.server.testing.testApplication
-import pt.isel.api_pm.testutils.getToken
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.server.testing.*
 import pt.isel.api_pm.app.module
+import pt.isel.api_pm.testutils.*
 import kotlin.test.*
 
 class MetricsRoutesTests {
@@ -21,11 +16,7 @@ class MetricsRoutesTests {
 
         val token = getToken(client, "user1")
 
-        client.post("/api/endpoints/create") {
-            header("Authorization", "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://api.github.com","name":"gh","intervalSeconds":60}""")
-        }
+        createEndpoint(client, token)
 
         client.post("/api/metrics/check") {
             contentType(ContentType.Application.Json)
