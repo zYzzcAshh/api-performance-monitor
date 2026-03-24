@@ -12,10 +12,10 @@ class EndpointService(
 ) {
     suspend fun getAll() = repo.getAll()
 
-    suspend fun getByUser(userId: Int) = repo.getByUser(userId)
+    suspend fun getByUser(userId: UInt) = repo.getByUser(userId)
 
     suspend fun add(
-        userId: Int,
+        userId: UInt,
         url: EndpointUrl,
         name: String,
         interval: IntervalSeconds,
@@ -34,7 +34,7 @@ class EndpointService(
     }
 
     suspend fun delete(
-        userId: Int,
-        monitoredEndpointId: Int,
+        userId: UInt,
+        monitoredEndpointId: UInt,
     ) = repo.delete(userId, monitoredEndpointId)
 }

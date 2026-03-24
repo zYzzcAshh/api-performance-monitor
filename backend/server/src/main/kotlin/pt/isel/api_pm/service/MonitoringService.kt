@@ -24,7 +24,7 @@ class MonitoringService(
         val latency = System.currentTimeMillis() - start
 
         return RequestMetric(
-            endpoint = url.value,
+            endpoint = url,
             timestamp = Clock.System.now(),
             latency = latency,
             statusCode = statusCode,

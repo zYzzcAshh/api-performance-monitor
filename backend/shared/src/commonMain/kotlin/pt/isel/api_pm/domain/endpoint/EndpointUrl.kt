@@ -1,10 +1,11 @@
 package pt.isel.api_pm.domain.endpoint
 
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
+@Serializable
 @JvmInline
 value class EndpointUrl(val value: String) {
-
     init {
         val normalized = value.removeSuffix("/")
 

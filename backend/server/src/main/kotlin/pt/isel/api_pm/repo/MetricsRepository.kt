@@ -4,14 +4,14 @@ import pt.isel.api_pm.dto.metric.RequestMetric
 
 interface MetricsRepository {
     suspend fun save(
-        userId: Int,
-        monitoredEndpointId: Int,
+        userId: UInt,
+        monitoredEndpointId: UInt,
         metric: RequestMetric,
     )
 
     suspend fun getByEndpoint(
-        userId: Int,
-        monitoredEndpointId: Int,
+        userId: UInt,
+        monitoredEndpointId: UInt,
     ): List<RequestMetric>
 
     suspend fun getAll(): List<RequestMetric>

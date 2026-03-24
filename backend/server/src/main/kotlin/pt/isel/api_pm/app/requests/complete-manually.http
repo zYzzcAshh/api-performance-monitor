@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDM3NTUzMH0.PxcLdCe-tyvHmhZdiPOuNeEMnWGvU8s0NgpaC4J_dKI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDQwMTE3MX0.H__qHfQamzJ40jOMCAUjiPhEERA2VzX_BFyfSOf1RXk
 
 ###
 # Register a new user

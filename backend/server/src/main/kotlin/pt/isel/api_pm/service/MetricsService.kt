@@ -8,21 +8,21 @@ class MetricsService(
     private val repo: MetricsRepository,
 ) {
     suspend fun save(
-        userId: Int,
-        monitoredEndpointId: Int,
+        userId: UInt,
+        monitoredEndpointId: UInt,
         metric: RequestMetric,
     ) = repo.save(userId, monitoredEndpointId, metric)
 
     suspend fun getAll(): List<RequestMetric> = repo.getAll()
 
     suspend fun getByEndpoint(
-        userId: Int,
-        monitoredEndpointId: Int,
+        userId: UInt,
+        monitoredEndpointId: UInt,
     ): List<RequestMetric> = repo.getByEndpoint(userId, monitoredEndpointId)
 
     suspend fun getSummary(
-        userId: Int,
-        endpointId: Int,
+        userId: UInt,
+        endpointId: UInt,
     ): MetricsSummaryDTO {
         val metrics = getByEndpoint(userId, endpointId)
 

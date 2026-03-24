@@ -47,7 +47,7 @@ class AuthService(
             throw BadCredentialsException()
         }
 
-        return jwtService.generateToken(user.id.value)
+        return jwtService.generateToken(user.id)
     }
 
     init {

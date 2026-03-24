@@ -2,7 +2,6 @@ package pt.isel.api_pm.repo.postgres
 
 import pt.isel.api_pm.domain.user.PasswordHash
 import pt.isel.api_pm.domain.user.User
-import pt.isel.api_pm.domain.user.UserId
 import pt.isel.api_pm.domain.user.Username
 import pt.isel.api_pm.repo.UserRepository
 
@@ -11,7 +10,7 @@ class UserRepositoryPostgres : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserById(id: UserId): User? {
+    override suspend fun getUserById(id: UInt): User? {
         TODO("Not yet implemented")
     }
 

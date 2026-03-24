@@ -8,30 +8,19 @@ class EndpointRepositoryPostgres : EndpointRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getByUser(userId: Int): List<MonitoredEndpoint> {
+    override suspend fun getByUser(userId: UInt): List<MonitoredEndpoint> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(
-        userId: Int,
-        url: String,
-        name: String,
-        intervalSeconds: Long,
-    ) {
+    override suspend fun add(userId: UInt, url: String, name: String, intervalSeconds: Long) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun delete(
-        userId: Int,
-        monitoredEndpointId: Int,
-    ) {
+    override suspend fun delete(userId: UInt, monitoredEndpointId: UInt) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun existsByUrlAndUser(
-        userId: Int,
-        url: String,
-    ): Boolean {
+    override suspend fun existsByUrlAndUser(userId: UInt, url: String): Boolean {
         TODO("Not yet implemented")
     }
 }

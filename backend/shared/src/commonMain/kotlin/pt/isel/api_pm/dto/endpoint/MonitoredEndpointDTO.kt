@@ -5,8 +5,8 @@ import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 
 @Serializable
 data class MonitoredEndpointDTO(
-    val id: Int,
-    val userId: Int,
+    val id: UInt,
+    val userId: UInt,
     val url: String,
     val name: String,
     val intervalSeconds: Long,
@@ -21,3 +21,5 @@ fun MonitoredEndpoint.toDTO() = MonitoredEndpointDTO(
     intervalSeconds = interval.value,
     createdAt = createdAt.toString()
 )
+
+fun List<MonitoredEndpoint>.toDTO() = map { it.toDTO() }

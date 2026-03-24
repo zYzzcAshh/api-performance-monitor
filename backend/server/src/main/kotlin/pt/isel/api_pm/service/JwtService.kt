@@ -11,12 +11,12 @@ class JwtService {
     private val issuer = AuthConfig.ISSUER
     private val validity = 3600000 * 4 // 4 hours
 
-    fun generateToken(userId: Int): String {
+    fun generateToken(userId: UInt): String {
         val now = System.currentTimeMillis()
         return JWT
             .create()
             .withIssuer(issuer)
-            .withClaim(AuthConfig.USER_ID_CLAIM, userId)
+            .withClaim(AuthConfig.USER_ID_CLAIM, userId.toInt())
             .withExpiresAt(Date(now + validity))
             .sign(algorithm)
     }

@@ -11,6 +11,7 @@ import pt.isel.api_pm.config.AuthConfig
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
+import pt.isel.api_pm.dto.endpoint.toDTO
 import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.EndpointService
@@ -23,11 +24,12 @@ fun Route.endpointRoutes(service: EndpointService) {
 
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+                val userId = tokenUserId.toUInt()
 
                 val url = EndpointUrl(request.url)
                 val interval = IntervalSeconds(request.intervalSeconds)
 
-                service.add(tokenUserId, url, request.name, interval)
+                service.add(userId, url, request.name, interval)
 
                 call.respondText("Endpoint created successfully", status = HttpStatusCode.Created)
             }
@@ -35,16 +37,20 @@ fun Route.endpointRoutes(service: EndpointService) {
             get {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+                val userId = tokenUserId.toUInt()
 
-                call.respond(service.getByUser(tokenUserId))
+                val endpoints = service.getByUser(userId)
+
+                call.respond(endpoints.toDTO())
             }
 
             delete(Routes.Endpoints.DELETE) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+                val userId = tokenUserId.toUInt()
 
-                val id = call.parameters["id"]!!.toInt()
-                service.delete(tokenUserId, id)
+                val id = call.parameters["id"]!!.toUInt()
+                service.delete(userId, id)
                 call.respond("Deleted")
             }
         }

@@ -6,14 +6,14 @@ import kotlin.time.Instant
 
 @Serializable
 data class UserDTO(
-    val id: Int,
+    val id: UInt,
     val username: String,
     val createdAt: Instant,
 )
 
 fun User.toDTO(): UserDTO =
     UserDTO(
-        id = id.value,
+        id = id,
         username = username.value,
         createdAt = createdAt,
     )

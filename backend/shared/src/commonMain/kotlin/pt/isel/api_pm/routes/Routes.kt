@@ -1,7 +1,6 @@
 package pt.isel.api_pm.routes
 
 object Routes {
-
     object Auth {
         const val BASE = "/api/auth"
         const val REGISTER = "/register"
