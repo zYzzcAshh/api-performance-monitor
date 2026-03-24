@@ -13,9 +13,9 @@ Foi feita uma breve introdução ao conceito geral e aos objetivos pretendidos.
 - Aprovação inicial da ideia base para exploração e desenvolvimento.
 
 ## Próximos Passos / Responsáveis
-- @Francisco & @Martim ⭢ Procurar soluções semelhantes já existentes no mercado.
-- @Francisco & @Martim ⭢ Identificar falhas ou limitações dessas soluções.
-- @Francisco & @Martim ⭢ Analisar formas de diferenciar a nossa proposta relativamente às soluções existentes.
+- Procurar soluções semelhantes já existentes no mercado.
+- Identificar falhas ou limitações dessas soluções.
+- Analisar formas de diferenciar a nossa proposta relativamente às soluções existentes.
 
 ## Observações / Lembretes
 - Entrega da proposta de projeto até **09/03/2026 - 23:59**.

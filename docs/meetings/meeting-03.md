@@ -1,6 +1,6 @@
 # Relatório da Reunião 3
 
-**Data / Hora:** 17/03/2026
+**Data / Hora:** 17/03/2026 - 21:30 (online)
 
 ## Tema
 Validação da arquitetura e definição da estratégia de implementação inicial.
@@ -24,31 +24,31 @@ O orientador sugeriu uma abordagem mais incremental, começando por uma versão 
 ## Próximos Passos / Responsáveis
 
 ### Backend Setup (Ktor)
-- @Francisco & @Martim ⭢ Criar projeto backend com Ktor.
-- @Francisco & @Martim ⭢ Configurar servidor HTTP básico.
-- @Francisco & @Martim ⭢ Definir estrutura do projeto (routes, services, models).
+- Criar projeto backend com Ktor.
+- Configurar servidor HTTP básico.
+- Definir estrutura do projeto (routes, services, models).
 
 ### API Base (In-Memory)
-- @Francisco & @Martim ⭢ Implementar endpoints básicos de autenticação:
+- Implementar endpoints básicos de autenticação:
   - POST /auth/register
   - POST /auth/login
-- @Francisco & @Martim ⭢ Criar estrutura para gestão de endpoints monitorizados.
-- @Francisco & @Martim ⭢ Armazenar dados em memória.
+- Criar estrutura para gestão de endpoints monitorizados.
+- Armazenar dados em memória.
 
 ### Monitoring Prototype
-- @Francisco & @Martim ⭢ Implementar lógica de monitoring:
+- Implementar lógica de monitoring:
   - execução de HTTP requests
   - medição de latência
   - captura de status code
-- @Francisco & @Martim ⭢ Definir estrutura de métricas.
+- Definir estrutura de métricas.
 
 ### Worker (Simplified)
-- @Francisco & @Martim ⭢ Criar worker básico.
-- @Francisco & @Martim ⭢ Implementar execução periódica (scheduler simples).
-- @Francisco & @Martim ⭢ Enviar ou registar métricas.
+- Criar worker básico.
+- Implementar execução periódica (scheduler simples).
+- Enviar ou registar métricas.
 
 ### Technical Decisions & Documentation
-- @Francisco & @Martim ⭢ Atualizar documentação do projeto com:
+- Atualizar documentação do projeto com:
   - mudança para Ktor
   - abordagem in-memory (por agora)
 

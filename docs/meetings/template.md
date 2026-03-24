@@ -13,8 +13,8 @@ Síntese do que foi discutido durante a reunião.
 - Decisão 2
 
 ## Próximos Passos / Responsáveis
-- @pessoa1 → tarefa X (prazo, se aplicável)
-- @pessoa2 → tarefa Y
+- tarefa X (prazo, se aplicável)
+- tarefa Y
 
 ## Observações / Lembretes
 - Nota ou lembrete importante

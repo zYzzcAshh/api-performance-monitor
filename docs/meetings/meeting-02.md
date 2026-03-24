@@ -19,18 +19,18 @@ Durante esta reunião foram definidos os objetivos de desenvolvimento para a sem
 ## Próximos Passos / Responsáveis
 
 ### Arquitetura e setup inicial
-- @Francisco & @Martim ⭢ Definir arquitetura final do sistema.
-- @Francisco & @Martim ⭢ Criar repositório do projeto.
-- @Francisco & @Martim ⭢ Configurar ambiente de desenvolvimento.
+- Definir arquitetura final do sistema.
+- Criar repositório do projeto.
+- Configurar ambiente de desenvolvimento.
 
 ### Backend
-- @Francisco & @Martim ⭢ Iniciar projeto Spring Boot.
-- @Francisco & @Martim ⭢ Criar estrutura base da API.
-- @Francisco & @Martim ⭢ Definir modelo de dados inicial.
+- Iniciar projeto Spring Boot.
+- Criar estrutura base da API.
+- Definir modelo de dados inicial.
 
 ### Monitoring
-- @Francisco & @Martim ⭢ Desenhar arquitetura dos monitoring workers.
-- @Francisco & @Martim ⭢ Definir formato das métricas recolhidas.
+- Desenhar arquitetura dos monitoring workers.
+- Definir formato das métricas recolhidas.
 
 ## Observações / Lembretes
 - A próxima reunião com o orientador ficou prevista para **17/03/2026** pelas **17:30**, onde será apresentado o progresso realizado relativamente aos objetivos definidos nesta reunião.
