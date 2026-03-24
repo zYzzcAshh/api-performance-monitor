@@ -1,6 +1,9 @@
 package pt.isel.api_pm.repo.postgres
 
+import pt.isel.api_pm.domain.user.PasswordHash
 import pt.isel.api_pm.domain.user.User
+import pt.isel.api_pm.domain.user.UserId
+import pt.isel.api_pm.domain.user.Username
 import pt.isel.api_pm.repo.UserRepository
 
 class UserRepositoryPostgres : UserRepository {
@@ -8,11 +11,11 @@ class UserRepositoryPostgres : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserById(id: Int): User? {
+    override suspend fun getUserById(id: UserId): User? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserByUsername(username: String): User? {
+    override suspend fun getUserByUsername(username: Username): User? {
         TODO("Not yet implemented")
     }
 
@@ -20,10 +23,7 @@ class UserRepositoryPostgres : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun registerUser(
-        username: String,
-        password: String,
-    ) {
+    override suspend fun registerUser(username: Username, passwordHash: PasswordHash) {
         TODO("Not yet implemented")
     }
 }

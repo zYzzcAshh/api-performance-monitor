@@ -10,7 +10,6 @@ import pt.isel.api_pm.exceptions.BadCredentialsException
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.ForbiddenException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
-import pt.isel.api_pm.exceptions.InvalidPasswordException
 import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.InvalidUrlException
 import pt.isel.api_pm.exceptions.RegistrationFailedException
@@ -32,7 +31,6 @@ fun Application.configureStatusPages() {
         on<InvalidTokenException>(HttpStatusCode.Unauthorized)
         on<ForbiddenException>(HttpStatusCode.Forbidden)
         on<DuplicateEndpointException>(HttpStatusCode.Conflict)
-        on<InvalidPasswordException>(HttpStatusCode.BadRequest)
         on<InvalidUrlException>(HttpStatusCode.BadRequest)
         on<InvalidIntervalException>(HttpStatusCode.BadRequest)
         on<IllegalArgumentException>(HttpStatusCode.BadRequest)

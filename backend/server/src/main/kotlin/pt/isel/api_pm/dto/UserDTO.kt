@@ -11,4 +11,9 @@ data class UserDTO(
     val createdAt: Instant,
 )
 
-fun User.toDTO(): UserDTO = UserDTO(id, username, createdAt)
+fun User.toDTO(): UserDTO =
+    UserDTO(
+        id = id.value,
+        username = username.value,
+        createdAt = createdAt,
+    )

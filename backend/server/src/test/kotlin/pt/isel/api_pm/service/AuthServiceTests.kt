@@ -38,10 +38,10 @@ class AuthServiceTests {
     @Test
     fun `should reject invalid password`() {
         runBlocking {
-            assertFailsWith<InvalidPasswordException> {
+            val ex = assertFailsWith<IllegalArgumentException> {
                 service.register("user2", "abc")
             }
-        }
+            assertNotNull(ex.message)        }
     }
 
     @Test
@@ -68,19 +68,19 @@ class AuthServiceTests {
     @Test
     fun `should reject password without uppercase`() {
         runBlocking {
-            assertFailsWith<InvalidPasswordException> {
+            val ex = assertFailsWith<IllegalArgumentException> {
                 service.register("userX", "password1")
             }
-        }
+            assertNotNull(ex.message)        }
     }
 
     @Test
     fun `should reject password without digit`() {
         runBlocking {
-            assertFailsWith<InvalidPasswordException> {
+            val ex = assertFailsWith<IllegalArgumentException> {
                 service.register("userY", "Password")
             }
-        }
+            assertNotNull(ex.message)        }
     }
 
     @Test
