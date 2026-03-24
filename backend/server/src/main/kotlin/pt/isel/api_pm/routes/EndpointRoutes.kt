@@ -7,6 +7,8 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.MissingTokenException
@@ -17,10 +19,15 @@ fun Route.endpointRoutes(service: EndpointService) {
         authenticate("auth-jwt") {
             post("/create") {
                 val request = call.receive<CreateEndpointRequest>()
+
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
 
-                service.add(tokenUserId, request.url, request.name, request.intervalSeconds)
+                val url = EndpointUrl(request.url)
+                val interval = IntervalSeconds(request.intervalSeconds)
+
+                service.add(tokenUserId, url, request.name, interval)
+
                 call.respondText("Endpoint created successfully", status = HttpStatusCode.Created)
             }
 

@@ -1,6 +1,6 @@
 package pt.isel.api_pm.repo.postgres
 
-import pt.isel.api_pm.dto.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointRepositoryPostgres : EndpointRepository {

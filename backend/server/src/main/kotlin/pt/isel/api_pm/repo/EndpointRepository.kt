@@ -1,6 +1,6 @@
 package pt.isel.api_pm.repo
 
-import pt.isel.api_pm.dto.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 
 interface EndpointRepository {
     suspend fun getAll(): List<MonitoredEndpoint>
@@ -14,13 +14,7 @@ interface EndpointRepository {
         intervalSeconds: Long,
     )
 
-    suspend fun delete(
-        userId: Int,
-        monitoredEndpointId: Int,
-    )
+    suspend fun delete(userId: Int, monitoredEndpointId: Int)
 
-    suspend fun existsByUrlAndUser(
-        userId: Int,
-        url: String,
-    ): Boolean
+    suspend fun existsByUrlAndUser(userId: Int, url: String): Boolean
 }

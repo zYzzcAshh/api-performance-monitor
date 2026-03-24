@@ -28,18 +28,23 @@ class MonitoringWorker(
                 val jobs =
                     endpoints
                         .map { endpoint ->
-                            if (endpoint.intervalSeconds != intervalSeconds) return@map null
+                            if (endpoint.interval.value != intervalSeconds) return@map null
+
                             async {
                                 try {
                                     val metric = monitoringService.checkEndpoint(endpoint.url)
+
                                     metricsService.save(endpoint.userId, endpoint.id, metric)
 
                                     logger.info(
-                                        "Saved metric for userId=${endpoint.userId}, endpointId=${endpoint.id}, url=${endpoint.url}",
+                                        "Saved metric for userId=${endpoint.userId}, endpointId=${endpoint.id}, url=${endpoint.url.value}",
                                     )
-                                    logger.info("Checked ${endpoint.url} -> ${metric.statusCode} (${metric.latency}ms)")
+
+                                    logger.info(
+                                        "Checked ${endpoint.url.value} -> ${metric.statusCode} (${metric.latency}ms)"
+                                    )
                                 } catch (e: Exception) {
-                                    logger.error("Error checking ${endpoint.url}: ${e.message}")
+                                    logger.error("Error checking ${endpoint.url.value}: ${e.message}")
                                 }
                             }
                         }.filterNotNull()
