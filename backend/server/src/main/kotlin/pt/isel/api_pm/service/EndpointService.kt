@@ -1,12 +1,12 @@
 package pt.isel.api_pm.service
 
+import pt.isel.api_pm.app.module.INTERVAL_SECONDS_LIST
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
 import pt.isel.api_pm.exceptions.InvalidUrlException
 import pt.isel.api_pm.repo.EndpointRepository
-import pt.isel.api_pm.utils.normalizeUrl
 import pt.isel.api_pm.utils.isValidUrl
-import pt.isel.api_pm.worker.MonitoringWorker
+import pt.isel.api_pm.utils.normalizeUrl
 
 class EndpointService(
     private val repo: EndpointRepository,
@@ -26,7 +26,7 @@ class EndpointService(
         if (!isValidUrl(normalizedUrl)) throw InvalidUrlException(normalizedUrl)
 
         // To be changed
-        if (intervalSeconds < (MonitoringWorker.MINIMUM_INTERVAL_MILLIS / 1000)) throw InvalidIntervalException(intervalSeconds)
+        if (!INTERVAL_SECONDS_LIST.contains(intervalSeconds)) throw InvalidIntervalException(intervalSeconds)
 
         if (repo.existsByUrlAndUser(userId, normalizedUrl)) throw DuplicateEndpointException(url)
 

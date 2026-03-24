@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDEzNTIzN30.dzatCOQtyYEEHSW-jNssgqaONOq4ioY6T2q23M6da7k
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDM2ODc2N30.te3FZDexfDI8zLxiXxAMO1HvMZpeL7FBMI-IzSd2S_U
 
 ###
 # Register a new user
@@ -11,7 +11,7 @@ Accept: application/json
 
 {
   "username": "example1",
-  "password": "example1"
+  "password": "Example1"
 }
 
 ###
@@ -22,7 +22,7 @@ Accept: application/json
 
 {
   "username": "example1",
-  "password": "example1"
+  "password": "Example1"
 }
 
 ###

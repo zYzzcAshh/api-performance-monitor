@@ -13,9 +13,10 @@ class MonitoringService(
     suspend fun checkEndpoint(url: String): RequestMetric {
         val start = System.currentTimeMillis()
 
-        val response = client.get(url) {
-            headers.append("User-Agent", "Ktor-App")
-        }
+        val response =
+            client.get(url) {
+                headers.append("User-Agent", "Ktor-App")
+            }
 
         val statusCode = response.status.value
 

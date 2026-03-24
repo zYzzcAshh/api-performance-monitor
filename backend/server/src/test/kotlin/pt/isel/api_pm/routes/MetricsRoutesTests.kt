@@ -9,25 +9,26 @@ import pt.isel.api_pm.testutils.*
 import kotlin.test.*
 
 class MetricsRoutesTests {
-
     @Test
-    fun `should return metrics summary`() = testApplication {
-        application { module() }
+    fun `should return metrics summary`() =
+        testApplication {
+            application { module() }
 
-        val token = registerAndGetToken(client, "user1")
+            val token = registerAndGetToken(client, "user1")
 
-        createEndpoint(client, token)
+            createEndpoint(client, token)
 
-        client.post("/api/metrics/check") {
-            contentType(ContentType.Application.Json)
-            setBody("""{"url":"https://api.github.com"}""")
+            client.post("/api/metrics/check") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"url":"https://api.github.com"}""")
+            }
+
+            val response =
+                client.get("/api/metrics/0/summary") {
+                    header("Authorization", "Bearer $token")
+                }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertTrue(response.bodyAsText().contains("uptime"))
         }
-
-        val response = client.get("/api/metrics/0/summary") {
-            header("Authorization", "Bearer $token")
-        }
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertTrue(response.bodyAsText().contains("uptime"))
-    }
 }

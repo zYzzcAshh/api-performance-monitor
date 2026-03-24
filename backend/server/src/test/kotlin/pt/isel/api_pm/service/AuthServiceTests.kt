@@ -1,13 +1,12 @@
 package pt.isel.api_pm.service
 
 import kotlinx.coroutines.runBlocking
-import kotlin.test.*
+import pt.isel.api_pm.exceptions.*
 import pt.isel.api_pm.repo.memory.UserRepositoryMemory
 import pt.isel.api_pm.utils.PasswordHasher
-import pt.isel.api_pm.exceptions.*
+import kotlin.test.*
 
 class AuthServiceTests {
-
     private lateinit var service: AuthService
 
     @BeforeTest
@@ -20,9 +19,10 @@ class AuthServiceTests {
     }
 
     @Test
-    fun `should register user successfully`() = runBlocking {
-        service.register("user1", "Password1")
-    }
+    fun `should register user successfully`() =
+        runBlocking {
+            service.register("user1", "Password1")
+        }
 
     @Test
     fun `should reject duplicate username`() {
@@ -45,13 +45,14 @@ class AuthServiceTests {
     }
 
     @Test
-    fun `should login successfully`() = runBlocking {
-        service.register("user3", "Password1")
+    fun `should login successfully`() =
+        runBlocking {
+            service.register("user3", "Password1")
 
-        val token = service.login("user3", "Password1")
+            val token = service.login("user3", "Password1")
 
-        assertTrue(token.isNotEmpty())
-    }
+            assertTrue(token.isNotEmpty())
+        }
 
     @Test
     fun `should reject wrong password`() {

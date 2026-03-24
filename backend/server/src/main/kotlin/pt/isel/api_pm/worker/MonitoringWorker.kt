@@ -14,38 +14,39 @@ class MonitoringWorker(
     private val monitoringService: MonitoringService,
     private val metricsService: MetricsService,
     private val endpointService: EndpointService,
+    private val intervalSeconds: Long,
 ) {
-    companion object {
-        const val MINIMUM_INTERVAL_MILLIS: Long = 60000
-
-        private val logger = LoggerFactory.getLogger(MonitoringWorker::class.java)
-    }
+    private val logger = LoggerFactory.getLogger("MonitoringWorker-${intervalSeconds}s")
 
     fun start(scope: CoroutineScope) {
-        logger.info("Starting MonitoringWorker...")
+        logger.info("Starting worker for ${intervalSeconds}s...")
 
         scope.launch {
             while (true) {
                 val endpoints = endpointService.getAll()
 
                 val jobs =
-                    endpoints.map { endpoint ->
-                        async {
-                            try {
-                                val metric = monitoringService.checkEndpoint(endpoint.url)
-                                metricsService.save(endpoint.userId, endpoint.id, metric)
+                    endpoints
+                        .map { endpoint ->
+                            if (endpoint.intervalSeconds != intervalSeconds) return@map null
+                            async {
+                                try {
+                                    val metric = monitoringService.checkEndpoint(endpoint.url)
+                                    metricsService.save(endpoint.userId, endpoint.id, metric)
 
-                                logger.info("Saved metric for userId=${endpoint.userId}, endpointId=${endpoint.id}, url=${endpoint.url}")
-                                logger.info("Checked ${endpoint.url} -> ${metric.statusCode} (${metric.latency}ms)")
-                            } catch (e: Exception) {
-                                logger.error("Error checking ${endpoint.url}: ${e.message}")
+                                    logger.info(
+                                        "Saved metric for userId=${endpoint.userId}, endpointId=${endpoint.id}, url=${endpoint.url}",
+                                    )
+                                    logger.info("Checked ${endpoint.url} -> ${metric.statusCode} (${metric.latency}ms)")
+                                } catch (e: Exception) {
+                                    logger.error("Error checking ${endpoint.url}: ${e.message}")
+                                }
                             }
-                        }
-                    }
+                        }.filterNotNull()
 
                 jobs.awaitAll()
 
-                delay(MINIMUM_INTERVAL_MILLIS)
+                delay(intervalSeconds * 1000)
             }
         }
     }

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class MetricsSummaryDTO(
     val uptime: Double,
     val averageLatency: Double,
-    val totalRequests: Int
+    val totalRequests: Int,
 )

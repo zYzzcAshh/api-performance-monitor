@@ -1,7 +1,5 @@
 package pt.isel.api_pm.exceptions
 
-import pt.isel.api_pm.worker.MonitoringWorker
-
 class InvalidIntervalException(
-    interval: Long
-) : RuntimeException("Invalid interval: $interval. Must be >= ${MonitoringWorker.MINIMUM_INTERVAL_MILLIS} seconds")
+    interval: Long,
+) : Exception("Invalid interval: $interval. Must be (60, 120, 180, 300, 600, 900, 1200, 1800) seconds")

@@ -18,7 +18,6 @@ import javax.naming.AuthenticationException
 
 fun Application.configureStatusPages() {
     install(StatusPages) {
-
         exception<RegistrationFailedException> { call, cause ->
             call.respond(HttpStatusCode.Conflict, cause.message ?: "User already exists")
         }

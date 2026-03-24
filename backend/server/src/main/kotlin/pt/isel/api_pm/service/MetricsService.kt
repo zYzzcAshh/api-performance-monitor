@@ -22,16 +22,15 @@ class MetricsService(
 
     suspend fun getSummary(
         userId: Int,
-        endpointId: Int
+        endpointId: Int,
     ): MetricsSummaryDTO {
-
         val metrics = getByEndpoint(userId, endpointId)
 
         if (metrics.isEmpty()) {
             return MetricsSummaryDTO(
                 uptime = 0.0,
                 averageLatency = 0.0,
-                totalRequests = 0
+                totalRequests = 0,
             )
         }
 
@@ -46,7 +45,7 @@ class MetricsService(
         return MetricsSummaryDTO(
             uptime = uptime,
             averageLatency = avgLatency,
-            totalRequests = total
+            totalRequests = total,
         )
     }
 }
