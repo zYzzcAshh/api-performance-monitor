@@ -6,6 +6,7 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import pt.isel.api_pm.config.AuthConfig
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.dto.endpoint.CheckRequest
 import pt.isel.api_pm.exceptions.InvalidTokenException
@@ -18,7 +19,7 @@ fun Route.metricsRoutes(
     monitoringService: MonitoringService,
 ) {
     route("/api/metrics") {
-        authenticate("auth-jwt") {
+        authenticate(AuthConfig.JWT_NAME) {
             get {
                 call.respond(metricsService.getAll())
             }
@@ -35,7 +36,7 @@ fun Route.metricsRoutes(
 
             get(Routes.Metrics.BY_ENDPOINT) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
+                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
 
                 val endpointId = call.parameters["endpoint"]!!.toInt()
                 call.respond(metricsService.getByEndpoint(tokenUserId, endpointId))
@@ -43,7 +44,7 @@ fun Route.metricsRoutes(
 
             get(Routes.Metrics.SUMMARY) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val userId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
+                val userId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
 
                 val endpointId = call.parameters["endpointId"]!!.toInt()
 
