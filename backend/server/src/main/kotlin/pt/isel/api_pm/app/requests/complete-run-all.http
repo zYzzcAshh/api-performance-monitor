@@ -9,7 +9,7 @@ Accept: application/json
 
 {
   "username": "example1",
-  "password": "example1"
+  "password": "Example1"
 }
 
 ###
@@ -20,7 +20,7 @@ Accept: application/json
 
 {
   "username": "example1",
-  "password": "example1"
+  "password": "Example1"
 }
 
 > {%

@@ -22,20 +22,12 @@ val ktorClient = HttpClient(CIO)
 
 private val logger = LoggerFactory.getLogger(Application::class.java)
 
-private suspend fun defaultExternalRequest(): Pair<Int, String> {
-    val response =
-        ktorClient.get("https://api.github.com/") {
-            header("User-Agent", "Ktor-App")
-        }
-    return response.status.value to response.bodyAsText()
-}
-
 fun main() {
     embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
-fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defaultExternalRequest) {
+fun Application.module() {
     logger.info("Starting Application...")
 
     configureAll()
@@ -56,6 +48,9 @@ fun Application.module(externalRequest: suspend () -> Pair<Int, String> = ::defa
             dependencies.monitoringService,
         )
         endpointRoutes(dependencies.endpointService)
-        testRoutes(externalRequest)
+
+        if (environment.config.propertyOrNull("ktor.environment")?.getString() == "test") {
+            testRoutes()
+        }
     }
 }

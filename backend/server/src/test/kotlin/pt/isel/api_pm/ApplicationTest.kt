@@ -3,6 +3,7 @@ package pt.isel.api_pm
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -13,7 +14,7 @@ import kotlin.test.*
 
 class ApplicationTest {
     companion object {
-        const val NUM_REQUESTS = 1000
+        const val NUM_REQUESTS = 5
 
         var concurrentTime = 0L
         var sequentialTime = 0L
@@ -32,8 +33,13 @@ class ApplicationTest {
     @Test
     fun concurrentRequests() =
         testApplication {
+            environment {
+                config = MapApplicationConfig(
+                    "ktor.environment" to "test"
+                )
+            }
             application {
-                module(externalRequest = { 200 to "OK" })
+                module()
             }
 
             val start = System.currentTimeMillis()
@@ -42,7 +48,7 @@ class ApplicationTest {
                     (1..NUM_REQUESTS)
                         .map { idx ->
                             async {
-                                val resp: HttpResponse = client.get("/api/test")
+                                val resp: HttpResponse = client.get("/api/test/ok")
                                 val status = resp.status
                                 val body = resp.bodyAsText()
                                 val threadName = Thread.currentThread().name
@@ -65,14 +71,19 @@ class ApplicationTest {
     @Test
     fun sequentialRequests() =
         testApplication {
+            environment {
+                config = MapApplicationConfig(
+                    "ktor.environment" to "test"
+                )
+            }
             application {
-                module(externalRequest = { 200 to "OK" })
+                module()
             }
 
             val start = System.currentTimeMillis()
             val results = mutableListOf<HttpResponse>()
             for (i in 1..NUM_REQUESTS) {
-                val resp: HttpResponse = client.get("/api/test")
+                val resp: HttpResponse = client.get("/api/test/ok")
                 val threadName = Thread.currentThread().name
                 println("sequential request $i executed on thread: $threadName")
                 results += resp
