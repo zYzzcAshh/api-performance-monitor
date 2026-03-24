@@ -6,6 +6,7 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.dto.endpoint.CheckRequest
 import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.MissingTokenException
@@ -18,17 +19,16 @@ fun Route.metricsRoutes(
 ) {
     route("/api/metrics") {
         authenticate("auth-jwt") {
-            // to be removed in the future
             get {
                 call.respond(metricsService.getAll())
             }
 
-            // "Manually" check an endpoint, maybe to be removed in the future
             post("/check") {
                 val request = call.receive<CheckRequest>()
 
-                val metric = monitoringService.checkEndpoint(request.url)
-                // metricsService.save(metric) should only save on the MonitoringWorker this is just a "manual" check
+                val url = EndpointUrl(request.url)
+
+                val metric = monitoringService.checkEndpoint(url)
 
                 call.respond(metric)
             }
