@@ -15,7 +15,7 @@ import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.UserService
 
 fun Route.userRoutes(service: UserService) {
-    route("/api/users") {
+    route(Routes.Users.BASE) {
         get {
             call.respond(
                 service.getUsers().map { user ->
@@ -25,7 +25,7 @@ fun Route.userRoutes(service: UserService) {
         }
 
         authenticate("auth-jwt") {
-            get("/{id}") {
+            get(Routes.Users.BY_ID) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
 
                 val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()

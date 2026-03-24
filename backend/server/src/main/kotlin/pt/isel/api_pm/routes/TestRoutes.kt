@@ -22,30 +22,30 @@ private suspend fun defaultExternalRequest(): Pair<Int, String> {
 }
 
 fun Route.testRoutes() {
-    route("/api/test") {
-        get("/github") {
+    route(Routes.Test.BASE) {
+        get(Routes.Test.GITHUB) {
             val (status, body) = defaultExternalRequest()
             call.respondText(body, ContentType.Application.Json, HttpStatusCode.fromValue(status))
         }
 
-        get("/ok") {
+        get(Routes.Test.OK) {
             call.respond(HttpStatusCode.OK, "OK")
         }
 
-        get("/error") {
+        get(Routes.Test.ERROR) {
             call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
         }
 
-        get("/notfound") {
+        get(Routes.Test.NOT_FOUND) {
             call.respond(HttpStatusCode.NotFound, "Resource Not Found")
         }
 
-        get("/slow") {
+        get(Routes.Test.SLOW) {
             delay(3000)
             call.respond(HttpStatusCode.OK, "Slow response")
         }
 
-        get("/random") {
+        get(Routes.Test.RANDOM) {
             val statuses = listOf(HttpStatusCode.OK, HttpStatusCode.BadRequest, HttpStatusCode.ServiceUnavailable)
             val status = statuses.random()
             val delayMs = (500..2000).random().toLong()

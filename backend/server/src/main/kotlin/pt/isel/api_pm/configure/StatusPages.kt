@@ -1,19 +1,10 @@
 package pt.isel.api_pm.configure
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.plugins.statuspages.StatusPagesConfig
-import io.ktor.server.response.respond
-import pt.isel.api_pm.exceptions.BadCredentialsException
-import pt.isel.api_pm.exceptions.DuplicateEndpointException
-import pt.isel.api_pm.exceptions.ForbiddenException
-import pt.isel.api_pm.exceptions.InvalidIntervalException
-import pt.isel.api_pm.exceptions.InvalidTokenException
-import pt.isel.api_pm.exceptions.InvalidUrlException
-import pt.isel.api_pm.exceptions.RegistrationFailedException
-import pt.isel.api_pm.exceptions.UserNotFoundException
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import pt.isel.api_pm.exceptions.*
 import javax.naming.AuthenticationException
 
 private inline fun <reified T: Throwable> StatusPagesConfig.on(statusCode: HttpStatusCode) {
@@ -31,7 +22,6 @@ fun Application.configureStatusPages() {
         on<InvalidTokenException>(HttpStatusCode.Unauthorized)
         on<ForbiddenException>(HttpStatusCode.Forbidden)
         on<DuplicateEndpointException>(HttpStatusCode.Conflict)
-        on<InvalidUrlException>(HttpStatusCode.BadRequest)
         on<InvalidIntervalException>(HttpStatusCode.BadRequest)
         on<IllegalArgumentException>(HttpStatusCode.BadRequest)
 

@@ -15,9 +15,9 @@ import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.EndpointService
 
 fun Route.endpointRoutes(service: EndpointService) {
-    route("/api/endpoints") {
+    route(Routes.Endpoints.BASE) {
         authenticate("auth-jwt") {
-            post("/create") {
+            post(Routes.Endpoints.CREATE) {
                 val request = call.receive<CreateEndpointRequest>()
 
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
@@ -38,7 +38,7 @@ fun Route.endpointRoutes(service: EndpointService) {
                 call.respond(service.getByUser(tokenUserId))
             }
 
-            delete("/{id}") {
+            delete(Routes.Endpoints.DELETE) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
 

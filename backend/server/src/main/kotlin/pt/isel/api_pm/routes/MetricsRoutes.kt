@@ -23,7 +23,7 @@ fun Route.metricsRoutes(
                 call.respond(metricsService.getAll())
             }
 
-            post("/check") {
+            post(Routes.Metrics.CHECK) {
                 val request = call.receive<CheckRequest>()
 
                 val url = EndpointUrl(request.url)
@@ -33,7 +33,7 @@ fun Route.metricsRoutes(
                 call.respond(metric)
             }
 
-            get("/{endpoint}") {
+            get(Routes.Metrics.BY_ENDPOINT) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val tokenUserId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
 
@@ -41,7 +41,7 @@ fun Route.metricsRoutes(
                 call.respond(metricsService.getByEndpoint(tokenUserId, endpointId))
             }
 
-            get("/{endpointId}/summary") {
+            get(Routes.Metrics.SUMMARY) {
                 val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
                 val userId = principal.getClaim("userId", Int::class) ?: throw InvalidTokenException()
 

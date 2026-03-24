@@ -5,7 +5,6 @@ import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
-import pt.isel.api_pm.exceptions.InvalidUrlException
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointService(
@@ -23,7 +22,7 @@ class EndpointService(
     ) {
         val normalizedUrl = url.normalized()
 
-        if (!INTERVAL_SECONDS_LIST.contains(interval.value)) {
+        if (interval.value !in INTERVAL_SECONDS_LIST) {
             throw InvalidIntervalException(interval.value)
         }
 
