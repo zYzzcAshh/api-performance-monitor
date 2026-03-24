@@ -4,7 +4,7 @@ A modern observability platform for monitoring API performance, availability, an
 
 ---
 
-## 📖 Overview
+## Overview
 
 **API Performance Monitor** is a distributed monitoring platform designed to help developers and teams track the health of their APIs in real-time.
 
@@ -135,7 +135,7 @@ Content-Type: application/json
 
 ## Project Status
 
-🚧 Currently under development as part of the final-year project (PS 2025/2026).
+Currently under development as part of the final-year project (PS 2025/2026).
 
 ### Current Progress
 - ✅ Architecture defined
