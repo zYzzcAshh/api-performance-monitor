@@ -11,10 +11,7 @@ import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
 import pt.isel.api_pm.worker.MonitoringWorker
 
-// For now just 60 seconds
-val INTERVAL_SECONDS_LIST =
-    listOf(60L, 120L, 180L, 300L, 600L, 900L, 1200L, 1800L)
-        .subList(0, 1)
+val INTERVAL_SECONDS_LIST = listOf(60L, 120L, 180L, 300L, 600L, 900L, 1200L, 1800L)
 
 fun Application.monitoringModule(
     monitoringService: MonitoringService,

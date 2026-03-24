@@ -1,6 +1,6 @@
 package pt.isel.api_pm.repo
 
-import pt.isel.api_pm.domain.metric.RequestMetric
+import pt.isel.api_pm.dto.metric.RequestMetric
 
 interface MetricsRepository {
     suspend fun save(

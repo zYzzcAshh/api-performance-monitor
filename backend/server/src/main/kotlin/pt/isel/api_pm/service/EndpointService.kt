@@ -25,7 +25,6 @@ class EndpointService(
 
         if (!isValidUrl(normalizedUrl)) throw InvalidUrlException(normalizedUrl)
 
-        // To be changed
         if (!INTERVAL_SECONDS_LIST.contains(intervalSeconds)) throw InvalidIntervalException(intervalSeconds)
 
         if (repo.existsByUrlAndUser(userId, normalizedUrl)) throw DuplicateEndpointException(url)

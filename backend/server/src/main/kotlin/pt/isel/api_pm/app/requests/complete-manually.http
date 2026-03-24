@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDM2ODc2N30.te3FZDexfDI8zLxiXxAMO1HvMZpeL7FBMI-IzSd2S_U
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3NDM3NTUzMH0.PxcLdCe-tyvHmhZdiPOuNeEMnWGvU8s0NgpaC4J_dKI
 
 ###
 # Register a new user
@@ -48,7 +48,7 @@ Authorization: Bearer {{token}}
 {
   "url": "https://example2.com",
   "name": "Example2 Endpoint",
-  "intervalSeconds": 75
+  "intervalSeconds": 120
 }
 
 ###

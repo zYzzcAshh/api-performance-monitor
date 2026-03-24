@@ -1,6 +1,6 @@
 package pt.isel.api_pm.repo
 
-import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.dto.endpoint.MonitoredEndpoint
 
 interface EndpointRepository {
     suspend fun getAll(): List<MonitoredEndpoint>

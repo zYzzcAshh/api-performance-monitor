@@ -1,7 +1,7 @@
 package pt.isel.api_pm.repo.memory
 
 import org.slf4j.LoggerFactory
-import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.dto.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.repo.EndpointRepository
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Clock

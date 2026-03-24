@@ -1,7 +1,7 @@
 package pt.isel.api_pm.service
 
 import kotlinx.coroutines.runBlocking
-import pt.isel.api_pm.domain.metric.RequestMetric
+import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.memory.MetricsRepositoryMemory
 import kotlin.test.*
 import kotlin.time.Clock.System.now

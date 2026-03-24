@@ -1,6 +1,6 @@
 package pt.isel.api_pm.repo.memory
 
-import pt.isel.api_pm.domain.metric.RequestMetric
+import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 import java.util.concurrent.ConcurrentHashMap
 

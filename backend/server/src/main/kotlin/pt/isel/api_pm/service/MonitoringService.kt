@@ -2,7 +2,7 @@ package pt.isel.api_pm.service
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import pt.isel.api_pm.domain.metric.RequestMetric
+import pt.isel.api_pm.dto.metric.RequestMetric
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

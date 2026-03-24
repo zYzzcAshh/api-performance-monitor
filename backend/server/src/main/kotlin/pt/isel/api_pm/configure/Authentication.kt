@@ -21,11 +21,7 @@ fun Application.configureAuthentication() {
 
             validate { credential ->
                 val userId = credential.payload.getClaim("userId").asInt()
-                if (userId != null) {
-                    JWTPrincipal(credential.payload)
-                } else {
-                    null
-                }
+                userId ?.let {JWTPrincipal(credential.payload)}
             }
 
             challenge { _, _ ->
