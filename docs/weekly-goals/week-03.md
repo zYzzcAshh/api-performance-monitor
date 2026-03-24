@@ -48,7 +48,7 @@ Projeto com estrutura modular clara e consistente
   - IllegalArgumentException
   - IllegalStateException
 - Manter apenas exceptions de domínio relevantes
-- Centralizar mapping exception → HTTP status
+- Centralizar mapping exception > HTTP status
 
 ###### Deliverable:
 Sistema de erros mais simples e consistente
@@ -64,19 +64,7 @@ Sistema de erros mais simples e consistente
 API mais consistente e menos propensa a erros
 
 
-## 6. Configuration Externalization
-
-- Migrar configuração para ficheiro `.yaml`
-  - porta
-  - environment
-  - configs do servidor
-- Remover config hardcoded em Kotlin
-
-###### Deliverable:
-Aplicação configurável externamente (production-ready approach)
-
-
-## 7. Monitoring System Improvements
+## 6. Monitoring System Improvements
 
 - Consolidar sistema de múltiplos workers por intervalo
 - Garantir filtragem eficiente de endpoints por intervalo
@@ -86,7 +74,7 @@ Aplicação configurável externamente (production-ready approach)
 Sistema de monitoring mais escalável e eficiente
 
 
-## 8. Minimal Client (Frontend Prototype)
+## 7. Minimal Client (Frontend Prototype)
 
 - Criar cliente simples (Compose Multiplatform ou CLI)
 - Implementar funcionalidades mínimas:
@@ -99,7 +87,7 @@ Sistema de monitoring mais escalável e eficiente
 Cliente funcional para testar o sistema real
 
 
-## 9. UI & UX Considerations (early)
+## 8. UI & UX Considerations (early)
 
 - Definir princípios base de layout:
   - adaptável a web / mobile
@@ -109,7 +97,7 @@ Cliente funcional para testar o sistema real
 Base para frontend consistente e multiplatform
 
 
-## 10. Testing Improvements
+## 9. Testing Improvements
 
 - Adaptar testes às mudanças no domain
 - Garantir cobertura após refactor
@@ -121,6 +109,20 @@ Testes atualizados e sistema estável após refactor
 
 ## Result (to fill next week)
 
+## Result
+
 - done:
+  - Domain Refactor
+  - DTO vs Domain Separation
+  - Package Organization
+  - Exception Handling
+  - Constants & API Contract
+  - Monitoring System Improvements
+  - Testing Improvements
+
 - partially done:
+  - Minimal Client
+  - UI & UX Considerations
+
 - not done:
+  - Cliente funcional completo (end-to-end UI)
