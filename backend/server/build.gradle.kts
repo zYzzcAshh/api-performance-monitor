@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.java.jwt)
+    implementation("io.ktor:ktor-server-cors:3.4.1")
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.jbcrypt)

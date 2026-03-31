@@ -7,4 +7,5 @@ fun Application.configureAll() {
     configureStatusPages()
     configureAuthentication()
     configureIgnoreTrailingSlash()
+    configureCORS()
 }
