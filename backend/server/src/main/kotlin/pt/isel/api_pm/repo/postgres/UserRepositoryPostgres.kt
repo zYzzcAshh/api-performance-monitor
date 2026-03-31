@@ -22,7 +22,10 @@ class UserRepositoryPostgres : UserRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun registerUser(username: Username, passwordHash: PasswordHash) {
+    override suspend fun registerUser(
+        username: Username,
+        passwordHash: PasswordHash,
+    ) {
         TODO("Not yet implemented")
     }
 }

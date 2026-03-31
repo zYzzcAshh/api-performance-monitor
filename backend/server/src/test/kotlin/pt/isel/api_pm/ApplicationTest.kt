@@ -34,9 +34,10 @@ class ApplicationTest {
     fun concurrentRequests() =
         testApplication {
             environment {
-                config = MapApplicationConfig(
-                    "ktor.environment" to "test"
-                )
+                config =
+                    MapApplicationConfig(
+                        "ktor.environment" to "test",
+                    )
             }
             application {
                 module()
@@ -72,9 +73,10 @@ class ApplicationTest {
     fun sequentialRequests() =
         testApplication {
             environment {
-                config = MapApplicationConfig(
-                    "ktor.environment" to "test"
-                )
+                config =
+                    MapApplicationConfig(
+                        "ktor.environment" to "test",
+                    )
             }
             application {
                 module()

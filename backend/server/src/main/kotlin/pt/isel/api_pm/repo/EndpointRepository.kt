@@ -14,7 +14,13 @@ interface EndpointRepository {
         intervalSeconds: Long,
     )
 
-    suspend fun delete(userId: UInt, monitoredEndpointId: UInt)
+    suspend fun delete(
+        userId: UInt,
+        monitoredEndpointId: UInt,
+    )
 
-    suspend fun existsByUrlAndUser(userId: UInt, url: String): Boolean
+    suspend fun existsByUrlAndUser(
+        userId: UInt,
+        url: String,
+    ): Boolean
 }

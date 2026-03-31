@@ -12,11 +12,9 @@ class UserRepositoryMemory : UserRepository {
 
     override suspend fun getUsers(): List<User> = users.values.toList()
 
-    override suspend fun getUserById(id: UInt): User? =
-        users[id]
+    override suspend fun getUserById(id: UInt): User? = users[id]
 
-    override suspend fun getUserByUsername(username: Username): User? =
-        users.values.find { it.username == username }
+    override suspend fun getUserByUsername(username: Username): User? = users.values.find { it.username == username }
 
     override suspend fun addUser(user: User) {
         users[user.id] = user

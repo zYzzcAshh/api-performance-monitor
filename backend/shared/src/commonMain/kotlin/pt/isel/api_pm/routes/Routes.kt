@@ -1,6 +1,11 @@
 package pt.isel.api_pm.routes
 
 object Routes {
+    object Agent {
+        const val BASE = "/api/agent"
+        const val CREATE = "/register"
+    }
+
     object Auth {
         const val BASE = "/api/auth"
         const val REGISTER = "/register"

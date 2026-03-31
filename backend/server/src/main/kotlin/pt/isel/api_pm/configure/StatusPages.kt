@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import pt.isel.api_pm.exceptions.*
 import javax.naming.AuthenticationException
 
-private inline fun <reified T: Throwable> StatusPagesConfig.on(statusCode: HttpStatusCode) {
+private inline fun <reified T : Throwable> StatusPagesConfig.on(statusCode: HttpStatusCode) {
     exception<T> { call, cause ->
         call.respond(statusCode, checkNotNull(cause.message))
     }

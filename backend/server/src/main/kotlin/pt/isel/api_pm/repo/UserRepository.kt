@@ -1,8 +1,8 @@
 package pt.isel.api_pm.repo
 
-import pt.isel.api_pm.domain.user.Username
 import pt.isel.api_pm.domain.user.PasswordHash
 import pt.isel.api_pm.domain.user.User
+import pt.isel.api_pm.domain.user.Username
 
 interface UserRepository {
     suspend fun getUsers(): List<User>

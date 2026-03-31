@@ -1,7 +1,7 @@
 package pt.isel.api_pm.service
 
-import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.dto.MetricsSummaryDTO
+import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 
 class MetricsService(

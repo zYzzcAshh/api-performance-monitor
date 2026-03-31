@@ -8,8 +8,7 @@ class UserService(
 ) {
     suspend fun getUsers() = repository.getUsers()
 
-    suspend fun getUserById(id: UInt) =
-        repository.getUserById(id)
+    suspend fun getUserById(id: UInt) = repository.getUserById(id)
 
     suspend fun addUser(user: User) = repository.addUser(user)
 }

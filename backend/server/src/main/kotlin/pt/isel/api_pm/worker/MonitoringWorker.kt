@@ -41,7 +41,7 @@ class MonitoringWorker(
                                     )
 
                                     logger.info(
-                                        "Checked ${endpoint.url.value} -> ${metric.statusCode} (${metric.latency}ms)"
+                                        "Checked ${endpoint.url.value} -> ${metric.statusCode} (${metric.latency}ms)",
                                     )
                                 } catch (e: Exception) {
                                     logger.error("Error checking ${endpoint.url.value}: ${e.message}")

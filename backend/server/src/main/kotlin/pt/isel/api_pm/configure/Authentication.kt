@@ -13,7 +13,6 @@ import pt.isel.api_pm.exceptions.ForbiddenException
 fun Application.configureAuthentication() {
     install(Authentication) {
         jwt(AuthConfig.JWT_NAME) {
-
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(AuthConfig.SECRET))
@@ -22,9 +21,10 @@ fun Application.configureAuthentication() {
             )
 
             validate { credential ->
-                val userId = credential.payload
-                    .getClaim(AuthConfig.USER_ID_CLAIM)
-                    .asInt()
+                val userId =
+                    credential.payload
+                        .getClaim(AuthConfig.USER_ID_CLAIM)
+                        .asInt()
 
                 userId?.let { JWTPrincipal(credential.payload) }
             }
