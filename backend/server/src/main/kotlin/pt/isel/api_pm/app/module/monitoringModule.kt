@@ -6,12 +6,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import pt.isel.api_pm.domain.endpoint.INTERVAL_SECONDS_LIST
 import pt.isel.api_pm.service.EndpointService
 import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
 import pt.isel.api_pm.worker.MonitoringWorker
-
-val INTERVAL_SECONDS_LIST = listOf(60L, 120L, 180L, 300L, 600L, 900L, 1200L, 1800L)
 
 fun Application.monitoringModule(
     monitoringService: MonitoringService,

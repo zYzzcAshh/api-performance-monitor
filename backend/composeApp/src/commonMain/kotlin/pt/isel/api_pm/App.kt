@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,6 +21,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -90,6 +95,23 @@ private fun AuthScreen(
     var statusMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val passwordFocusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    fun submit() {
+        if (!isLoading && username.isNotBlank() && password.isNotBlank()) {
+            scope.launch {
+                isLoading = true
+                statusMessage = ""
+                val result = onSubmit(username, password)
+                statusMessage = result.fold(
+                    onSuccess = { it },
+                    onFailure = { "Error: ${it.message}" },
+                )
+                isLoading = false
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -110,6 +132,13 @@ private fun AuthScreen(
             label = { Text("Username") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { passwordFocusRequester.requestFocus() }
+            ),
         )
 
         Spacer(Modifier.height(16.dp))
@@ -120,24 +149,21 @@ private fun AuthScreen(
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+            modifier = Modifier.fillMaxWidth().focusRequester(passwordFocusRequester),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    submit()
+                }
+            ),
         )
 
         Spacer(Modifier.height(24.dp))
 
         Button(
             onClick = {
-                scope.launch {
-                    isLoading = true
-                    statusMessage = ""
-                    val result = onSubmit(username, password)
-                    statusMessage = result.fold(
-                        onSuccess = { it },
-                        onFailure = { "Error: ${it.message}" },
-                    )
-                    isLoading = false
-                }
+                submit()
             },
             enabled = !isLoading && username.isNotBlank() && password.isNotBlank(),
             modifier = Modifier.fillMaxWidth(),

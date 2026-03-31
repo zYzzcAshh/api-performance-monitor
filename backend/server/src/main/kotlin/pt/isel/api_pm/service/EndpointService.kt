@@ -1,7 +1,7 @@
 package pt.isel.api_pm.service
 
-import pt.isel.api_pm.app.module.INTERVAL_SECONDS_LIST
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.endpoint.INTERVAL_SECONDS_LIST
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
