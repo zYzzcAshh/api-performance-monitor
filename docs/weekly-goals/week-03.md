@@ -107,7 +107,7 @@ Base para frontend consistente e multiplatform
 Testes atualizados e sistema estável após refactor
 
 
-## Result (to fill next week)
+## Result (filled)
 
 ## Result
 
@@ -119,10 +119,12 @@ Testes atualizados e sistema estável após refactor
   - Constants & API Contract
   - Monitoring System Improvements
   - Testing Improvements
-
-- partially done:
+  - Cliente funcional completo (end-to-end UI)
   - Minimal Client
   - UI & UX Considerations
 
+- partially done:
+  - —
+
 - not done:
-  - Cliente funcional completo (end-to-end UI)
+  - —

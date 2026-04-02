@@ -1,6 +1,6 @@
 # Relatório da Reunião 3
 
-**Data / Hora:** 17/03/2026 - 21:30 (online)
+**Data / Hora:** 17/03/2026 - 21:30 (online | teams)
 
 ## Tema
 Validação da arquitetura e definição da estratégia de implementação inicial.
