@@ -16,19 +16,16 @@ class AuthService(
     private val jwtService: JwtService,
 ) {
     suspend fun register(
-        username: String,
-        password: String,
+        username: Username,
+        password: Password,
     ) {
-        val usernameVO = Username(username)
-        val passwordVO = Password(password)
-
-        val existing = userRepository.getUserByUsername(usernameVO)
+        val existing = userRepository.getUserByUsername(username)
         if (existing != null) throw RegistrationFailedException(username)
 
-        val hashedPassword = passwordHasher.hash(passwordVO.value)
+        val hashedPassword = passwordHasher.hash(password.value)
         val passwordHashVO = PasswordHash(hashedPassword)
 
-        userRepository.registerUser(usernameVO, passwordHashVO)
+        userRepository.registerUser(username, passwordHashVO)
     }
 
     suspend fun login(
@@ -50,7 +47,7 @@ class AuthService(
 
     init {
         runBlocking {
-            register("admin", "Admin1234")
+            register(Username("admin"), Password("Admin1234"))
         }
     }
 }
