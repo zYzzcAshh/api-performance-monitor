@@ -14,6 +14,13 @@
     +createdAt: Instant
   }
 
+  class RequestMetric <<data>> {
+  +endpoint: EndpointUrl
+  +timestamp: Instant
+  +latency: Long
+  +statusCode: Int
+  }
+
   class EndpointUrl <<value>> {
     -value: String
     +normalized(): String
@@ -31,7 +38,7 @@
     -value: String
   }
 
-  class Password <<class>> {
+  class Password <<value>> {
     -value: String
   }
 
@@ -41,6 +48,7 @@ MonitoredEndpoint --> IntervalSeconds : interval
 MonitoredEndpoint --> User : owner
 User --> Username : username
 User --> PasswordHash : passwordHash
+MonitoredEndpoint --> RequestMetric : metrics
 
 ' Notes / invariants
 note right of EndpointUrl
