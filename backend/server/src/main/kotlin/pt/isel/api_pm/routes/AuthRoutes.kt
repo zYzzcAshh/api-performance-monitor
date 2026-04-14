@@ -24,7 +24,9 @@ fun Route.authRoutes(service: AuthService) {
 
         post(Routes.Auth.LOGIN) {
             val request = call.receive<LoginRequest>()
-            val token = service.login(request.username, request.password)
+            val username = Username(request.username)
+            val password = Password(request.password)
+            val token = service.login(username, password)
             call.respond(HttpStatusCode.OK, "User logged in, token: $token")
         }
     }

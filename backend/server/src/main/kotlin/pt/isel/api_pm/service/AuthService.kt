@@ -29,16 +29,14 @@ class AuthService(
     }
 
     suspend fun login(
-        username: String,
-        password: String,
+        username: Username,
+        password: Password,
     ): String {
-        val usernameVO = Username(username)
-
         val user =
-            userRepository.getUserByUsername(usernameVO)
-                ?: throw UserNotFoundException(username)
+            userRepository.getUserByUsername(username)
+                ?: throw UserNotFoundException(username.value)
 
-        if (!passwordHasher.verify(password, user.passwordHash.value)) {
+        if (!passwordHasher.verify(password.value, user.passwordHash.value)) {
             throw BadCredentialsException()
         }
 
