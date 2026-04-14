@@ -1,23 +1,10 @@
 package pt.isel.api_pm
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,17 +16,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.client.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.launch
-import io.ktor.serialization.kotlinx.json.json
-import pt.isel.api_pm.dto.user.LoginRequest
-import pt.isel.api_pm.dto.user.RegisterRequest
+import pt.isel.api_pm.api.ApiClient
 
 private val httpClient = HttpClient{
     install(ContentNegotiation) {
@@ -49,35 +30,34 @@ private val httpClient = HttpClient{
 
 const val BASE_URL = "http://localhost:8080/api"
 
-suspend fun registerUser(username: String, password: String): Result<String> =
-    runCatching {
-        val response = httpClient.post("$BASE_URL/auth/register") {
-            contentType(ContentType.Application.Json)
-            setBody(RegisterRequest(username, password))
-        }
-        response.body()
-    }
-
-suspend fun loginUser(username: String, password: String): Result<String> =
-    runCatching {
-        val response = httpClient.post("$BASE_URL/auth/login") {
-            contentType(ContentType.Application.Json)
-            setBody(LoginRequest(username, password))
-        }
-        response.body()
-    }
-
-private enum class Screen { LOGIN, REGISTER }
+private enum class Screen { LOGIN, REGISTER, ENDPOINTS }
 
 @Composable
 @Preview
 fun App() {
+
+    val api = remember { ApiClient(httpClient) }
+    var token by remember { mutableStateOf<String?>(null) }
+
     MaterialTheme {
        var currentScreen by remember { mutableStateOf(Screen.LOGIN) }
 
         when (currentScreen) {
-            Screen.LOGIN -> LoginScreen(onNavigateToRegister = { currentScreen = Screen.REGISTER })
-            Screen.REGISTER -> RegisterScreen(onNavigateToLogin = { currentScreen = Screen.LOGIN })
+            Screen.LOGIN -> LoginScreen(
+                api = api,
+                onLoginSuccess = { receivedToken ->
+                    token = receivedToken
+                    currentScreen = Screen.ENDPOINTS
+                },
+                onNavigateToRegister = { currentScreen = Screen.REGISTER }
+            )
+
+            Screen.REGISTER -> RegisterScreen(
+                api = api,
+                onNavigateToLogin = { currentScreen = Screen.LOGIN }
+            )
+
+            Screen.ENDPOINTS -> EndpointsScreen(api, token!!)
         }
     }
 }
@@ -195,23 +175,78 @@ private fun AuthScreen(
 }
 
 @Composable
-fun LoginScreen(onNavigateToRegister: () -> Unit) {
+fun LoginScreen(
+    api: ApiClient,
+    onLoginSuccess: (String) -> Unit,
+    onNavigateToRegister: () -> Unit
+) {
     AuthScreen(
         title = "Login",
         buttonLabel = "Login",
         switchLabel = "Don't have an account? Register",
-        onSubmit = { u, p -> loginUser(u, p) },
+        onSubmit = { u, p ->
+            val result = api.login(u, p)
+            if (result.isSuccess) {
+                result.getOrNull()?.let { onLoginSuccess(it) }
+            }
+            result
+        },
         onSwitch = onNavigateToRegister,
     )
 }
 
 @Composable
-fun RegisterScreen(onNavigateToLogin: () -> Unit) {
+fun RegisterScreen(
+    api: ApiClient,
+    onNavigateToLogin: () -> Unit
+) {
     AuthScreen(
         title = "Register",
         buttonLabel = "Register",
         switchLabel = "Already have an account? Login",
-        onSubmit = { u, p -> registerUser(u, p) },
+        onSubmit = { u, p -> api.register(u, p) },
         onSwitch = onNavigateToLogin,
     )
+}
+
+@Composable
+fun EndpointsScreen(
+    api: ApiClient,
+    token: String
+) {
+    var endpoints by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            val result = api.getEndpoints(token)
+            if (result.isSuccess) {
+                endpoints = result.getOrNull()
+            } else {
+                error = result.exceptionOrNull()?.message
+            }
+            isLoading = false
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        when {
+            isLoading -> CircularProgressIndicator()
+
+            error != null -> Text("Error: $error")
+
+            endpoints != null -> {
+                Text("Endpoints:")
+                Spacer(Modifier.height(8.dp))
+                Text(endpoints!!)
+            }
+        }
+    }
 }

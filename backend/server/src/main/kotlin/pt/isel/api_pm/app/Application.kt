@@ -49,8 +49,6 @@ fun Application.module() {
         endpointRoutes(dependencies.endpointService)
         agentRoutes()
 
-        if (environment.config.propertyOrNull("ktor.environment")?.getString() == "test") {
             testRoutes()
-        }
     }
 }

@@ -38,11 +38,11 @@ object Routes {
     object Test {
         const val BASE = "/api/test"
 
-        const val GITHUB = "$BASE/github"
-        const val OK = "$BASE/ok"
-        const val ERROR = "$BASE/error"
-        const val NOT_FOUND = "$BASE/notfound"
-        const val SLOW = "$BASE/slow"
-        const val RANDOM = "$BASE/random"
+        const val OK = "/ok"
+        const val ERROR = "/error"
+        const val NOT_FOUND = "/notfound"
+        const val SLOW = "/slow"
+        const val RANDOM = "/random"
+        const val GITHUB = "/github"
     }
 }
