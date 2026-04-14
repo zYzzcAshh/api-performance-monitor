@@ -16,5 +16,5 @@ interface UserRepository {
     suspend fun registerUser(
         username: Username,
         passwordHash: PasswordHash,
-    )
+    ): User
 }
