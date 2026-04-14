@@ -17,42 +17,42 @@ import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.EndpointService
 
 fun Route.endpointRoutes(service: EndpointService) {
-    route(Routes.Endpoints.BASE) {
-        authenticate(AuthConfig.JWT_NAME) {
-            post(Routes.Endpoints.CREATE) {
-                val request = call.receive<CreateEndpointRequest>()
+    authenticate(AuthConfig.JWT_NAME) {
 
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-                val userId = tokenUserId.toUInt()
+        post(Routes.Endpoints.CREATE) {
+            val request = call.receive<CreateEndpointRequest>()
 
-                val url = EndpointUrl(request.url)
-                val interval = IntervalSeconds(request.intervalSeconds)
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val userId = tokenUserId.toUInt()
 
-                service.add(userId, url, request.name, interval)
+            val url = EndpointUrl(request.url)
+            val interval = IntervalSeconds(request.intervalSeconds)
 
-                call.respondText("Endpoint created successfully", status = HttpStatusCode.Created)
-            }
+            service.add(userId, url, request.name, interval)
 
-            get {
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-                val userId = tokenUserId.toUInt()
+            call.respond(HttpStatusCode.Created)
+        }
 
-                val endpoints = service.getByUser(userId)
+        get(Routes.Endpoints.BASE) {
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val userId = tokenUserId.toUInt()
 
-                call.respond(endpoints.toDTO())
-            }
+            val endpoints = service.getByUser(userId)
 
-            delete(Routes.Endpoints.DELETE) {
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-                val userId = tokenUserId.toUInt()
+            call.respond(endpoints.toDTO())
+        }
 
-                val id = call.parameters["id"]!!.toUInt()
-                service.delete(userId, id)
-                call.respond("Deleted")
-            }
+        delete(Routes.Endpoints.DELETE) {
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val userId = tokenUserId.toUInt()
+
+            val id = call.parameters["id"]!!.toUInt()
+            service.delete(userId, id)
+
+            call.respond(HttpStatusCode.OK)
         }
     }
 }

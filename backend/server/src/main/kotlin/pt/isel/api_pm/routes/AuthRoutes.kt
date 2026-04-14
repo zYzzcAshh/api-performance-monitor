@@ -13,21 +13,26 @@ import pt.isel.api_pm.dto.user.RegisterRequest
 import pt.isel.api_pm.service.AuthService
 
 fun Route.authRoutes(service: AuthService) {
-    route(Routes.Auth.BASE) {
-        post(Routes.Auth.REGISTER) {
-            val request = call.receive<RegisterRequest>()
-            val username = Username(request.username)
-            val password = Password(request.password)
-            val user = service.register(username, password)
-            call.respond(HttpStatusCode.Created, "User registered successfully")
-        }
 
-        post(Routes.Auth.LOGIN) {
-            val request = call.receive<LoginRequest>()
-            val username = Username(request.username)
-            val password = Password(request.password)
-            val token = service.login(username, password)
-            call.respond(HttpStatusCode.OK, "User logged in, token: $token")
-        }
+    post(Routes.Auth.REGISTER) {
+        val request = call.receive<RegisterRequest>()
+
+        val username = Username(request.username)
+        val password = Password(request.password)
+
+        service.register(username, password)
+
+        call.respond(HttpStatusCode.Created)
+    }
+
+    post(Routes.Auth.LOGIN) {
+        val request = call.receive<LoginRequest>()
+
+        val username = Username(request.username)
+        val password = Password(request.password)
+
+        val token = service.login(username, password)
+
+        call.respond(token)
     }
 }

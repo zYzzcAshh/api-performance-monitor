@@ -16,27 +16,27 @@ import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.UserService
 
 fun Route.userRoutes(service: UserService) {
-    route(Routes.Users.BASE) {
-        get {
-            call.respond(
-                service.getUsers().map { user ->
-                    user.toDTO()
-                },
-            )
-        }
 
-        authenticate(AuthConfig.JWT_NAME) {
-            get(Routes.Users.BY_ID) {
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+    get(Routes.Users.BASE) {
+        call.respond(
+            service.getUsers().map { user ->
+                user.toDTO()
+            },
+        )
+    }
 
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+    authenticate(AuthConfig.JWT_NAME) {
+        get(Routes.Users.BY_ID) {
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
 
-                val paramId = call.parameters["id"]?.toIntOrNull() ?: throw IllegalArgumentException("Invalid user ID")
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
 
-                if (tokenUserId != paramId) throw ForbiddenException()
+            val paramId = call.parameters["id"]?.toUIntOrNull()
+                ?: throw IllegalArgumentException("Invalid user ID")
 
-                call.respondText("Successfully accessed user with ID: $paramId using token for user ID: $tokenUserId")
-            }
+            if (tokenUserId.toUInt() != paramId) throw ForbiddenException()
+
+            call.respondText("Successfully accessed user with ID: $paramId")
         }
     }
 }

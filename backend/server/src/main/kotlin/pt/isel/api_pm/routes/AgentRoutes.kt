@@ -14,17 +14,15 @@ import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.MissingTokenException
 
 fun Route.agentRoutes() {
-    route(Routes.Agent.BASE) {
-        authenticate(AuthConfig.JWT_NAME) {
-            post(Routes.Agent.CREATE) {
-                val request = call.receive<AgentCreateEndpointRequest>()
+    authenticate(AuthConfig.JWT_NAME) {
+        post(Routes.Agent.CREATE) {
+            val request = call.receive<AgentCreateEndpointRequest>()
 
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-                val userId = tokenUserId.toUInt()
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val userId = tokenUserId.toUInt()
 
-                call.respondText("Agent endpoint created successfully")
-            }
+            call.respondText("Agent endpoint created successfully")
         }
     }
 }

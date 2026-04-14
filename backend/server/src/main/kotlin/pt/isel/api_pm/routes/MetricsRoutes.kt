@@ -18,42 +18,41 @@ fun Route.metricsRoutes(
     metricsService: MetricsService,
     monitoringService: MonitoringService,
 ) {
-    route(Routes.Metrics.BASE) {
-        authenticate(AuthConfig.JWT_NAME) {
-            get {
-                call.respond(metricsService.getAll())
-            }
+    authenticate(AuthConfig.JWT_NAME) {
 
-            post(Routes.Metrics.CHECK) {
-                val request = call.receive<CheckRequest>()
+        get(Routes.Metrics.BASE) {
+            call.respond(metricsService.getAll())
+        }
 
-                val url = EndpointUrl(request.url)
+        post(Routes.Metrics.CHECK) {
+            val request = call.receive<CheckRequest>()
 
-                val metric = monitoringService.checkEndpoint(url)
+            val url = EndpointUrl(request.url)
 
-                call.respond(metric)
-            }
+            val metric = monitoringService.checkEndpoint(url)
 
-            get(Routes.Metrics.BY_ENDPOINT) {
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-                val userId = tokenUserId.toUInt()
+            call.respond(metric)
+        }
 
-                val endpointId = call.parameters["endpoint"]!!.toUInt()
-                call.respond(metricsService.getByEndpoint(userId, endpointId))
-            }
+        get(Routes.Metrics.BY_ENDPOINT) {
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val userId = tokenUserId.toUInt()
 
-            get(Routes.Metrics.SUMMARY) {
-                val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-                val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-                val userId = tokenUserId.toUInt()
+            val endpointId = call.parameters["endpoint"]!!.toUInt()
+            call.respond(metricsService.getByEndpoint(userId, endpointId))
+        }
 
-                val endpointId = call.parameters["endpointId"]!!.toUInt()
+        get(Routes.Metrics.SUMMARY) {
+            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
+            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val userId = tokenUserId.toUInt()
 
-                val summary = metricsService.getSummary(userId, endpointId)
+            val endpointId = call.parameters["endpointId"]!!.toUInt()
 
-                call.respond(summary)
-            }
+            val summary = metricsService.getSummary(userId, endpointId)
+
+            call.respond(summary)
         }
     }
 }
