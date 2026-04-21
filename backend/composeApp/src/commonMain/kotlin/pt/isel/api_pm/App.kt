@@ -16,6 +16,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
@@ -30,7 +33,11 @@ private val httpClient = HttpClient{
 
 const val BASE_URL = "http://localhost:8080/api"
 
-private enum class Screen { LOGIN, REGISTER, ENDPOINTS }
+sealed class Screen(val route: String) {
+    object Login : Screen("login")
+    object Register : Screen("register")
+    object Endpoints : Screen("endpoints")
+}
 
 @Composable
 @Preview
@@ -39,25 +46,42 @@ fun App() {
     val api = remember { ApiClient(httpClient) }
     var token by remember { mutableStateOf<String?>(null) }
 
+    val navController = rememberNavController()
+
     MaterialTheme {
-       var currentScreen by remember { mutableStateOf(Screen.LOGIN) }
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Login.route
+        ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    api = api,
+                    onLoginSuccess = { receivedToken ->
+                        token = receivedToken
+                        navController.navigate(Screen.Endpoints.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToRegister = {
+                        navController.navigate(Screen.Register.route)
+                    }
+                )
+            }
 
-        when (currentScreen) {
-            Screen.LOGIN -> LoginScreen(
-                api = api,
-                onLoginSuccess = { receivedToken ->
-                    token = receivedToken
-                    currentScreen = Screen.ENDPOINTS
-                },
-                onNavigateToRegister = { currentScreen = Screen.REGISTER }
-            )
+            composable(Screen.Register.route) {
+                RegisterScreen(
+                    api = api,
+                    onNavigateToLogin = {
+                        navController.popBackStack()
+                    }
+                )
+            }
 
-            Screen.REGISTER -> RegisterScreen(
-                api = api,
-                onNavigateToLogin = { currentScreen = Screen.LOGIN }
-            )
-
-            Screen.ENDPOINTS -> EndpointsScreen(api, token!!)
+            composable(Screen.Endpoints.route) {
+                token?.let {
+                    EndpointsScreen(api, it)
+                }
+            }
         }
     }
 }

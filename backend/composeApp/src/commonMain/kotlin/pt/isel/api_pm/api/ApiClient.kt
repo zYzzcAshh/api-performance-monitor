@@ -6,6 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import pt.isel.api_pm.BASE_URL
 import pt.isel.api_pm.dto.user.LoginRequest
+import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
 
 class ApiClient(private val client: HttpClient) {
@@ -21,11 +22,12 @@ class ApiClient(private val client: HttpClient) {
 
     suspend fun login(username: String, password: String): Result<String> =
         runCatching {
-            val response = client.post("$BASE_URL/auth/login") {
+            val response: LoginResponse = client.post("$BASE_URL/auth/login") {
                 contentType(ContentType.Application.Json)
                 setBody(LoginRequest(username, password))
-            }
-            response.body()
+            }.body()
+
+            response.token
         }
 
     suspend fun getEndpoints(token: String): Result<String> =

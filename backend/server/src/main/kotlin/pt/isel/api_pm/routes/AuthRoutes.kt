@@ -8,9 +8,9 @@ import io.ktor.server.routing.post
 import pt.isel.api_pm.domain.user.Password
 import pt.isel.api_pm.domain.user.Username
 import pt.isel.api_pm.dto.user.LoginRequest
+import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
 import pt.isel.api_pm.dto.user.RegisterResponse
-import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.service.AuthService
 
 fun Route.authRoutes(service: AuthService) {
