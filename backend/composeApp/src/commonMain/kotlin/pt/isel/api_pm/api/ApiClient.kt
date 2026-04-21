@@ -46,12 +46,12 @@ class ApiClient(private val client: HttpClient = httpClient) {
             }.body()
         }
 
-    suspend fun createEndpointMonitor(token: String): Result<String> =
+    suspend fun createEndpointMonitor(token: String, name: String, url: String, intervalSeconds: Int): Result<String> =
         runCatching {
             client.post("$BASE_URL/endpoints/create") {
                 header("Authorization", "Bearer $token")
                 contentType(ContentType.Application.Json)
-                setBody(CreateEndpointRequest(url = "https://example.com", name = "Example Endpoint", intervalSeconds = 180))
+                setBody(CreateEndpointRequest(url = url, name = name, intervalSeconds = intervalSeconds.toLong()))
             }.body()
         }
 

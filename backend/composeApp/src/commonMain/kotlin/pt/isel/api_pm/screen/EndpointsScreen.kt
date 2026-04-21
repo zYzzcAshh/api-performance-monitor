@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +33,10 @@ fun EndpointsScreen(
     var error by remember { mutableStateOf<String?>(null) }
     var creatingEndpoint by remember { mutableStateOf(false) }
     var creationMessage by remember { mutableStateOf<String?>(null) }
+
+    var endpointName by remember { mutableStateOf("") }
+    var endpointUrl by remember { mutableStateOf("") }
+    var intervalSeconds by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
@@ -59,12 +64,25 @@ fun EndpointsScreen(
 
     fun postRq() {
         scope.launch {
+            if (endpointName.isBlank() || endpointUrl.isBlank() || intervalSeconds.isBlank()) {
+                creationMessage = "Error: All fields are required"
+                return@launch
+            }
+            
+            val interval = intervalSeconds.toIntOrNull()
+            if (interval == null || interval <= 0) {
+                creationMessage = "Error: Interval must be a positive number"
+                return@launch
+            }
+
             creatingEndpoint = true
             creationMessage = null
-            val result = api.createEndpointMonitor(token)
+            val result = api.createEndpointMonitor(token, endpointName, endpointUrl, interval)
             if (result.isSuccess) {
                 creationMessage = "Endpoint created successfully: ${result.getOrNull()}"
-                // Refresh endpoints after creation
+                endpointName = ""
+                endpointUrl = ""
+                intervalSeconds = ""
                 val refreshResult = api.getEndpointMetrics(token)
                 if (refreshResult.isSuccess) {
                     endpoints = refreshResult.getOrNull()
@@ -95,8 +113,35 @@ fun EndpointsScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        OutlinedTextField(
+            value = endpointName,
+            onValueChange = { endpointName = it },
+            label = { Text("Endpoint Name") },
+            placeholder = { Text("e.g., My API") }
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = endpointUrl,
+            onValueChange = { endpointUrl = it },
+            label = { Text("Endpoint URL") },
+            placeholder = { Text("e.g., https://api.example.com") }
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = intervalSeconds,
+            onValueChange = { intervalSeconds = it },
+            label = { Text("Interval (seconds)") },
+            placeholder = { Text("e.g., 180") }
+        )
+
+        Spacer(Modifier.height(16.dp))
+
         Button(onClick = {postRq()}, enabled = !creatingEndpoint) {
-            Text(text = "Create Endpoint Monitoring (Example)")
+            Text(text = "Create Endpoint Monitoring")
         }
 
         if (creatingEndpoint) {
@@ -107,6 +152,8 @@ fun EndpointsScreen(
             Spacer(Modifier.height(8.dp))
             Text(creationMessage!!)
         }
+
+        Spacer(Modifier.height(16.dp))
 
         Button(onClick = {getResults()}) {
             Text(text = "Refresh Endpoints Metrics for id 0")
