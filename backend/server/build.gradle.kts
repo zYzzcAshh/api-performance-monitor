@@ -32,7 +32,7 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:3.4.1")
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
-    implementation(libs.jbcrypt)
+    implementation("com.password4j:password4j:1.8.4")
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(kotlin("test"))
 }

@@ -11,6 +11,8 @@ import pt.isel.api_pm.screen.EndpointsScreen
 import pt.isel.api_pm.screen.LoginScreen
 import pt.isel.api_pm.screen.RegisterScreen
 import pt.isel.api_pm.screen.Screen
+import pt.isel.api_pm.viewmodel.AuthViewModel
+import pt.isel.api_pm.viewmodel.EndpointsViewModel
 
 const val BASE_URL = "http://localhost:8080/api"
 
@@ -18,33 +20,31 @@ const val BASE_URL = "http://localhost:8080/api"
 @Preview
 fun App() {
     val api = remember { ApiClient() }
-    var token by remember { mutableStateOf<String?>(null) }
+    val authViewModel = remember { AuthViewModel(api) }
 
     val navController = rememberNavController()
+    val authState by authViewModel.state.collectAsState()
 
     MaterialTheme {
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Login.route
-        ) {
+        NavHost(navController, startDestination = Screen.Login.route) {
+
             composable(Screen.Login.route) {
                 LoginScreen(
-                    api = api,
-                    onLoginSuccess = { receivedToken ->
-                        token = receivedToken
+                    viewModel = authViewModel,
+                    onNavigateToRegister = {
+                        navController.navigate(Screen.Register.route)
+                    },
+                    onLoginSuccess = {
                         navController.navigate(Screen.Endpoints.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
-                    },
-                    onNavigateToRegister = {
-                        navController.navigate(Screen.Register.route)
                     }
                 )
             }
 
             composable(Screen.Register.route) {
                 RegisterScreen(
-                    api = api,
+                    viewModel = authViewModel,
                     onNavigateToLogin = {
                         navController.popBackStack()
                     }
@@ -52,8 +52,11 @@ fun App() {
             }
 
             composable(Screen.Endpoints.route) {
-                token?.let {
-                    EndpointsScreen(api, it)
+                authState.token?.let { token ->
+                    val endpointsVM = remember {
+                        EndpointsViewModel(api, token)
+                    }
+                    EndpointsScreen(endpointsVM)
                 }
             }
         }

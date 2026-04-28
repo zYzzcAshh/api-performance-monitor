@@ -1,25 +1,35 @@
 package pt.isel.api_pm.screen
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import pt.isel.api_pm.api.ApiClient
+import pt.isel.api_pm.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    api: ApiClient,
-    onLoginSuccess: (String) -> Unit,
-    onNavigateToRegister: () -> Unit
+    viewModel: AuthViewModel,
+    onNavigateToRegister: () -> Unit,
+    onLoginSuccess: () -> Unit
 ) {
+    val state by viewModel.state.collectAsState()
+
     AuthScreen(
         title = "Login",
         buttonLabel = "Login",
         switchLabel = "Don't have an account? Register",
+        isLoading = state.isLoading,
+        message = state.message,
         onSubmit = { u, p ->
-            val result = api.login(u, p)
-            if (result.isSuccess) {
-                result.getOrNull()?.let { onLoginSuccess(it) }
-            }
-            result
+            viewModel.login(u, p)
         },
-        onSwitch = onNavigateToRegister,
+        onSwitch = onNavigateToRegister
     )
+
+    LaunchedEffect(state.token) {
+        if (state.token != null) {
+            onLoginSuccess()
+        }
+    }
 }

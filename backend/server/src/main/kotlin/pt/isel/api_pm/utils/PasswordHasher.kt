@@ -1,12 +1,14 @@
 package pt.isel.api_pm.utils
 
-import org.mindrot.jbcrypt.BCrypt
+import com.password4j.Password
+import com.password4j.SecureString
 
 class PasswordHasher {
-    fun hash(password: String): String = BCrypt.hashpw(password, BCrypt.gensalt())
+    fun hash(password: String): String =
+        Password.hash(SecureString(password.toCharArray()))
+            .withBcrypt().result
 
-    fun verify(
-        password: String,
-        hashed: String,
-    ): Boolean = BCrypt.checkpw(password, hashed)
+    fun verify(password: String, hashed: String): Boolean =
+        Password.check(SecureString(password.toCharArray()), hashed)
+            .withBcrypt()
 }

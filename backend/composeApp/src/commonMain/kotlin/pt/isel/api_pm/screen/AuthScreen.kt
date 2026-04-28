@@ -40,29 +40,20 @@ fun AuthScreen(
     title: String,
     buttonLabel: String,
     switchLabel: String,
-    onSubmit: suspend (String, String) -> Result<String>,
+    isLoading: Boolean,
+    message: String?,
+    onSubmit: (String, String) -> Unit,
     onSwitch: () -> Unit,
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var statusMessage by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
+
     val passwordFocusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
     fun submit() {
         if (!isLoading && username.isNotBlank() && password.isNotBlank()) {
-            scope.launch {
-                isLoading = true
-                statusMessage = ""
-                val result = onSubmit(username, password)
-                statusMessage = result.fold(
-                    onSuccess = { it },
-                    onFailure = { "Error: ${it.message}" },
-                )
-                isLoading = false
-            }
+            onSubmit(username, password)
         }
     }
 
@@ -102,8 +93,13 @@ fun AuthScreen(
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-            modifier = Modifier.fillMaxWidth().focusRequester(passwordFocusRequester),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(passwordFocusRequester),
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()
@@ -115,25 +111,26 @@ fun AuthScreen(
         Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                submit()
-            },
+            onClick = { submit() },
             enabled = !isLoading && username.isNotBlank() && password.isNotBlank(),
             modifier = Modifier.fillMaxWidth(),
         ) {
-            if (isLoading) CircularProgressIndicator(
-                modifier = Modifier.size(18.dp),
-                strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.onPrimary,
-            )
-            else Text(buttonLabel)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            } else {
+                Text(buttonLabel)
+            }
         }
 
-        if (statusMessage.isNotEmpty()) {
+        if (!message.isNullOrEmpty()) {
             Spacer(Modifier.height(12.dp))
             Text(
-                text = statusMessage,
-                color = if (statusMessage.startsWith("Error"))
+                text = message,
+                color = if (message.startsWith("Error"))
                     MaterialTheme.colorScheme.error
                 else
                     MaterialTheme.colorScheme.primary,
@@ -143,6 +140,8 @@ fun AuthScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        TextButton(onClick = onSwitch) { Text(switchLabel) }
+        TextButton(onClick = onSwitch) {
+            Text(switchLabel)
+        }
     }
 }
