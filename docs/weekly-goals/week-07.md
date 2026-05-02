@@ -144,13 +144,21 @@ sistema de password hashing compatível com KMP
 lista de possíveis arguentes para discussão com orientador
 
 
-## Result (to fill next week)
+## Result
 
 - done:
-  - 
+  - Client Navigation & UI (Completion) – navegação implementada com Compose Navigation + diagramas (PlantUML)
+  - Password Security (Refactor) – substituição de jBCrypt por Password4j (compatível com KMP)
+  - Evaluation Preparation – identificação de possíveis arguentes e alinhamento com tema
 
 - partially done:
-  - 
+  - Progress Presentation (Refinement)
+  - Backend Configuration
+  - GitHub Organization
 
 - not done:
-  - 
+  - Multiplatform Testing
+  - Local Monitoring Agent (Design)
+  - API Documentation (OpenAPI)
+  - Codebase Cleanup & Shared Module
+  - Multiplatform Consistency (KMP)

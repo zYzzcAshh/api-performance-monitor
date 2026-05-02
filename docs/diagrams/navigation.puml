@@ -1,0 +1,20 @@
+@startuml
+title Navigation Diagram
+
+[*] --> Login
+
+Login --> Register : "Criar conta"
+Register --> Login : "Registo concluído"
+
+Login --> EndpointsList : "Login com sucesso"
+
+EndpointsList --> EndpointDashboard : "Selecionar endpoint"
+EndpointsList --> CreateMonitoring : "Criar monitorização"
+
+CreateMonitoring --> EndpointsList : "Criado"
+
+EndpointDashboard --> EndpointsList : "Voltar"
+
+EndpointsList --> Login : "Logout"
+
+@enduml
