@@ -1,13 +1,9 @@
 package pt.isel.api_pm.routes
 
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
-import io.ktor.server.routing.route
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import pt.isel.api_pm.config.AuthConfig
 import pt.isel.api_pm.dto.toDTO
 import pt.isel.api_pm.exceptions.ForbiddenException
