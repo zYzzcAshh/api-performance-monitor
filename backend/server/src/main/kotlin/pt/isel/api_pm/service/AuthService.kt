@@ -1,6 +1,5 @@
 package pt.isel.api_pm.service
 
-import kotlinx.coroutines.runBlocking
 import pt.isel.api_pm.domain.user.Password
 import pt.isel.api_pm.domain.user.PasswordHash
 import pt.isel.api_pm.domain.user.User

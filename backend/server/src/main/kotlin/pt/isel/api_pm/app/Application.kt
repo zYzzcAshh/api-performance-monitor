@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import pt.isel.api_pm.app.module.monitoringModule
 import pt.isel.api_pm.config.SERVER_PORT
 import pt.isel.api_pm.configure.configureAll
+import pt.isel.api_pm.configure.configureOpenApi
 import pt.isel.api_pm.routes.agentRoutes
 import pt.isel.api_pm.routes.authRoutes
 import pt.isel.api_pm.routes.endpointRoutes
@@ -30,6 +31,7 @@ fun Application.module() {
     logger.info("Starting Application...")
 
     configureAll()
+    configureOpenApi()
 
     val dependencies = AppDependencies()
 
