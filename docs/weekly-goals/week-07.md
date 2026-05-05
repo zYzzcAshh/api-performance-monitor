@@ -150,15 +150,16 @@ lista de possíveis arguentes para discussão com orientador
   - Client Navigation & UI (Completion) – navegação implementada com Compose Navigation + diagramas (PlantUML)
   - Password Security (Refactor) – substituição de jBCrypt por Password4j (compatível com KMP)
   - Evaluation Preparation – identificação de possíveis arguentes e alinhamento com tema
+  - API Documentation (OpenAPI) – especificação criada e integrada com Ktor + Swagger UI disponível para teste da API
+  - Notifications (Initial Implementation) – sistema inicial de notificações implementado para eventos relevantes do sistema
 
 - partially done:
-  - Progress Presentation (Refinement)
-  - Backend Configuration
-  - GitHub Organization
+  - Progress Presentation (Refinement) – slides atualizados mas ainda sujeitos a melhorias finais
+  - Backend Configuration – configuração parcialmente uniformizada (necessita revisão final)
+  - GitHub Organization – issues e milestones criadas, mas organização ainda pode ser melhorada
 
 - not done:
   - Multiplatform Testing
   - Local Monitoring Agent (Design)
-  - API Documentation (OpenAPI)
   - Codebase Cleanup & Shared Module
   - Multiplatform Consistency (KMP)
