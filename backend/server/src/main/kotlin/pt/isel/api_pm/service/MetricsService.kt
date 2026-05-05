@@ -59,43 +59,13 @@ class MetricsService(
     ): List<RequestMetric> {
         val now = Clock.System.now()
 
-        return when (alertRule) {
+        val from = now.minus(alertRule.durationSeconds.seconds)
 
-            is AlertRule.StatusCodeRule -> {
-
-                val from = now.minus(alertRule.durationSeconds.seconds)
-
-                repo.getByInterval(
-                    userId = userId,
-                    monitoredEndpointId = endpointId,
-                    from = from,
-                    to = now
-                )
-            }
-
-            is AlertRule.LatencyRule -> {
-
-                val from = now.minus(alertRule.durationSeconds.seconds)
-
-                repo.getByInterval(
-                    userId = userId,
-                    monitoredEndpointId = endpointId,
-                    from = from,
-                    to = now
-                )
-            }
-
-            is AlertRule.DownTimeRule -> {
-
-                val from = now.minus(alertRule.durationSeconds.seconds)
-
-                repo.getByInterval(
-                    userId = userId,
-                    monitoredEndpointId = endpointId,
-                    from = from,
-                    to = now
-                )
-            }
-        }
+        return repo.getByInterval(
+            userId = userId,
+            monitoredEndpointId = endpointId,
+            from = from,
+            to = now
+        )
     }
 }

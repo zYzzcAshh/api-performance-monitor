@@ -24,7 +24,8 @@ private val httpClient = HttpClient{
 
 class ApiClient(private val client: HttpClient = httpClient) {
     val notificationConfig = NotificationConfig.DiscordWebhook(
-        webhookUrl = "https://discord.com/api/webhooks/1501258756464316447/QwewEWmGGk830Pfy_NJz7XUsMMS8miqMowaUrtfC7SRpSWDyQ1c-Z8IUDmb6IkYhwd6V")
+        webhookUrl = "https://discord.com/api/webhooks/1501258756464316447/QwewEWmGGk830Pfy_NJz7XUsMMS8miqMowaUrtfC7SRpSWDyQ1c-Z8IUDmb6IkYhwd6V"
+    )
     val alertRule = ExampleAlerts.a5
 
     suspend fun register(username: String, password: String): Result<String> =

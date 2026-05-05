@@ -70,13 +70,13 @@ class AlertEvaluator {
 
                 val failed = metrics.count { it.statusCode >= 500 }
 
-                when (rule.aggregation) {
+                when (val agg = rule.aggregation) {
 
                     is AggregationType.ALL -> failed == metrics.size
 
                     is AggregationType.AVG -> failed.toDouble() / metrics.size >= 0.5
 
-                    is AggregationType.COUNT -> failed >= (rule.aggregation as AggregationType.COUNT).count
+                    is AggregationType.COUNT -> failed >= agg.count
                 }
             }
         }

@@ -50,6 +50,9 @@ class MonitoringWorker(
                                             "Endpoint ${endpoint.url.value} is in cooldown. Skipping alert evaluation.",
                                         )
                                     } else {
+                                        logger.info(
+                                            "Evaluating alert for ${endpoint.url.value} with rule ${endpoint.alertRule}",
+                                        )
                                         val history = metricsService.getMetricsHistoryByAlert(endpoint.userId, endpoint.id, endpoint.alertRule!!)
                                         val alert = alertEvaluator.shouldTrigger(history, endpoint.alertRule!!)
                                         if (alert) {

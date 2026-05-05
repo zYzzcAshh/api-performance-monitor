@@ -5,14 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class AlertRule {
+    abstract val durationSeconds: Long
+    abstract val aggregation: AggregationType
 
     @Serializable
     @SerialName("status_code")
     data class StatusCodeRule(
         val operator: ComparisonOperator,
         val value: Int,
-        val durationSeconds: Long,
-        val aggregation: AggregationType
+        override val durationSeconds: Long,
+        override val aggregation: AggregationType
     ) : AlertRule()
 
     @Serializable
@@ -20,14 +22,14 @@ sealed class AlertRule {
     data class LatencyRule(
         val operator: ComparisonOperator,
         val value: Long,
-        val durationSeconds: Long,
-        val aggregation: AggregationType
+        override val durationSeconds: Long,
+        override val aggregation: AggregationType
     ) : AlertRule()
 
     @Serializable
     @SerialName("down_time")
     data class DownTimeRule(
-        val durationSeconds: Long,
-        val aggregation: AggregationType = AggregationType.ALL
+        override val durationSeconds: Long,
+        override val aggregation: AggregationType = AggregationType.ALL
     ) : AlertRule()
 }
