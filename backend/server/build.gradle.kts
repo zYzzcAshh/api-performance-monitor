@@ -33,6 +33,8 @@ dependencies {
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
     implementation("com.password4j:password4j:1.8.4")
+    implementation("io.ktor:ktor-server-swagger:3.4.1")
+    implementation("io.ktor:ktor-server-openapi:3.4.1")
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(kotlin("test"))
 }
