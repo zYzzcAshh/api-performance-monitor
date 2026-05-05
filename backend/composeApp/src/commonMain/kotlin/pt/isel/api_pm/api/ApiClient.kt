@@ -6,6 +6,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import pt.isel.api_pm.alert.AggregationType
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.alert.ComparisonOperator
@@ -56,10 +57,13 @@ class ApiClient(private val client: HttpClient = httpClient) {
 
     suspend fun createEndpointMonitor(token: String, name: String, url: String, intervalSeconds: Int): Result<String> =
         runCatching {
+            val request = CreateEndpointRequest(url = url, name = name, intervalSeconds = intervalSeconds.toLong(), notification = notificationConfig, alertRule = alertRule)
+            println(Json.encodeToString(request))
+
             client.post("$BASE_URL/endpoints/create") {
                 header("Authorization", "Bearer $token")
                 contentType(ContentType.Application.Json)
-                setBody(CreateEndpointRequest(url = url, name = name, intervalSeconds = intervalSeconds.toLong(), notification = notificationConfig, alertRule = alertRule))
+                setBody(request)
             }.body()
         }
 

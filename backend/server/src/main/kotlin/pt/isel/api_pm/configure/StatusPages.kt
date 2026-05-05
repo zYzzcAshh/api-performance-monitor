@@ -26,6 +26,7 @@ fun Application.configureStatusPages() {
         on<IllegalArgumentException>(HttpStatusCode.BadRequest)
 
         exception<Throwable> { call, cause ->
+            //cause.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred: ${cause.message}")
         }
     }

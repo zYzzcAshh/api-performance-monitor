@@ -6,26 +6,33 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import pt.isel.api_pm.notification.NotificationConfig
+import pt.isel.api_pm.utils.SmtpEmailSender
 
 class NotificationService(
     private val httpClient: HttpClient,
+    private val smtpEmailSender: SmtpEmailSender,
 ) {
     suspend fun notifyAll(notificationConfig: NotificationConfig) {
         when (notificationConfig) {
             is NotificationConfig.None -> Unit
             is NotificationConfig.Log -> println("Notification: Alert triggered!")
-            is NotificationConfig.DiscordWebhook -> sendDiscordWebhook(notificationConfig.webhookUrl, httpClient)
+            is NotificationConfig.DiscordWebhook -> sendDiscordWebhook(notificationConfig.webhookUrl)
+            is NotificationConfig.Email -> sendEmail(notificationConfig.to, notificationConfig.subject)
         }
     }
 
-    private suspend fun sendDiscordWebhook(url: String, client: HttpClient) {
+    private suspend fun sendDiscordWebhook(url: String) {
         try {
-            client.post(url) {
+            httpClient.post(url) {
                 contentType(ContentType.Application.Json)
                 setBody("""{"content":"Alert triggered for monitored endpoint!"}""")
             }
         } catch (e: Exception) {
             println("Failed to send Discord webhook: ${e.message}")
         }
+    }
+
+    private fun sendEmail(to: String, subject: String) {
+        smtpEmailSender.send(to, subject, "Alert triggered for monitored endpoint!")
     }
 }

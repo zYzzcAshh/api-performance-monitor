@@ -19,4 +19,11 @@ sealed class NotificationConfig {
     data class DiscordWebhook(
         val webhookUrl: String,
     ) : NotificationConfig()
+
+    @Serializable
+    @SerialName("email")
+    data class Email(
+        val to: String,
+        val subject: String
+    ) : NotificationConfig()
 }
