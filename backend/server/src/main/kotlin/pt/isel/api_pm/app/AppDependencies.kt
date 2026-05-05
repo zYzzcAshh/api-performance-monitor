@@ -1,5 +1,6 @@
 package pt.isel.api_pm.app
 
+import pt.isel.api_pm.alert.AlertEvaluator
 import pt.isel.api_pm.repo.UserRepository
 import pt.isel.api_pm.repo.memory.EndpointRepositoryMemory
 import pt.isel.api_pm.repo.memory.MetricsRepositoryMemory
@@ -12,6 +13,7 @@ import pt.isel.api_pm.service.EndpointService
 import pt.isel.api_pm.service.JwtService
 import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
+import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.service.UserService
 import pt.isel.api_pm.utils.PasswordHasher
 
@@ -31,4 +33,7 @@ class AppDependencies(
     val metricsService = MetricsService(metricsRepository)
     val monitoringService = MonitoringService(ktorClient)
     val endpointService = EndpointService(endpointRepo)
+    val notificationService = NotificationService(ktorClient)
+
+    val alertEvaluator = AlertEvaluator()
 }

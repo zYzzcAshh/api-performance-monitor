@@ -1,10 +1,12 @@
 package pt.isel.api_pm.service
 
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.endpoint.INTERVAL_SECONDS_LIST
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
+import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointService(
@@ -19,6 +21,8 @@ class EndpointService(
         url: EndpointUrl,
         name: String,
         interval: IntervalSeconds,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
     ) {
         val normalizedUrl = url.normalized()
 
@@ -30,7 +34,7 @@ class EndpointService(
             throw DuplicateEndpointException(normalizedUrl)
         }
 
-        repo.add(userId, normalizedUrl, name, interval.value)
+        repo.add(userId, normalizedUrl, name, interval.value, notification, alertRule)
     }
 
     suspend fun delete(

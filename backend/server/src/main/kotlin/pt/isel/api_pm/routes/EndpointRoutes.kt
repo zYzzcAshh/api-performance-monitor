@@ -29,7 +29,7 @@ fun Route.endpointRoutes(service: EndpointService) {
             val url = EndpointUrl(request.url)
             val interval = IntervalSeconds(request.intervalSeconds)
 
-            service.add(userId, url, request.name, interval)
+            service.add(userId, url, request.name, interval, request.notification, request.alertRule)
 
             call.respond(HttpStatusCode.Created)
         }

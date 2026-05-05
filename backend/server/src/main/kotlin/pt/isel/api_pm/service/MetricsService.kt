@@ -1,8 +1,11 @@
 package pt.isel.api_pm.service
 
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.dto.MetricsSummaryDTO
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
 
 class MetricsService(
     private val repo: MetricsRepository,
@@ -47,5 +50,52 @@ class MetricsService(
             averageLatency = avgLatency,
             totalRequests = total,
         )
+    }
+
+    suspend fun getMetricsHistoryByAlert(
+        userId: UInt,
+        endpointId: UInt,
+        alertRule: AlertRule
+    ): List<RequestMetric> {
+        val now = Clock.System.now()
+
+        return when (alertRule) {
+
+            is AlertRule.StatusCodeRule -> {
+
+                val from = now.minus(alertRule.durationSeconds.seconds)
+
+                repo.getByInterval(
+                    userId = userId,
+                    monitoredEndpointId = endpointId,
+                    from = from,
+                    to = now
+                )
+            }
+
+            is AlertRule.LatencyRule -> {
+
+                val from = now.minus(alertRule.durationSeconds.seconds)
+
+                repo.getByInterval(
+                    userId = userId,
+                    monitoredEndpointId = endpointId,
+                    from = from,
+                    to = now
+                )
+            }
+
+            is AlertRule.DownTimeRule -> {
+
+                val from = now.minus(alertRule.durationSeconds.seconds)
+
+                repo.getByInterval(
+                    userId = userId,
+                    monitoredEndpointId = endpointId,
+                    from = from,
+                    to = now
+                )
+            }
+        }
     }
 }

@@ -1,10 +1,11 @@
 package pt.isel.api_pm.repo.memory
 
-import io.ktor.server.util.url
 import org.slf4j.LoggerFactory
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.EndpointRepository
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Clock
@@ -24,6 +25,8 @@ class EndpointRepositoryMemory : EndpointRepository {
         url: String,
         name: String,
         intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
     ) {
         val monitoredEndpointIdVal = endpoints[userId]?.keys?.maxOrNull()
         val monitoredEndpointId = if (monitoredEndpointIdVal == null) 0u else monitoredEndpointIdVal + 1u
@@ -36,6 +39,8 @@ class EndpointRepositoryMemory : EndpointRepository {
                 name = name,
                 interval = IntervalSeconds(intervalSeconds),
                 createdAt = Clock.System.now(),
+                notification = notification,
+                alertRule = alertRule,
             )
 
         endpoints

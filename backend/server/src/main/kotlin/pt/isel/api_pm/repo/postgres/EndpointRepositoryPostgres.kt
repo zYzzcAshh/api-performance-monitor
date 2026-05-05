@@ -1,6 +1,8 @@
 package pt.isel.api_pm.repo.postgres
 
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.EndpointRepository
 
 class EndpointRepositoryPostgres : EndpointRepository {
@@ -17,6 +19,8 @@ class EndpointRepositoryPostgres : EndpointRepository {
         url: String,
         name: String,
         intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
     ) {
         TODO("Not yet implemented")
     }
