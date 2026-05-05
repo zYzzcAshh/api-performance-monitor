@@ -56,8 +56,15 @@ class MonitoringWorker(
                                         val history = metricsService.getMetricsHistoryByAlert(endpoint.userId, endpoint.id, endpoint.alertRule!!)
                                         val alert = alertEvaluator.shouldTrigger(history, endpoint.alertRule!!)
                                         if (alert) {
-                                            notificationService.notifyAll(endpoint.notification)
+                                            logger.info(
+                                                "Alert triggered for ${endpoint.url.value} with rule ${endpoint.alertRule}",
+                                            )
+                                            notificationService.notifyAll(endpoint.notification, endpoint.name)
                                             markCooldown(endpoint.userId, endpoint.id)
+                                        } else {
+                                            logger.info(
+                                                "No alert triggered for ${endpoint.url.value} with rule ${endpoint.alertRule}",
+                                            )
                                         }
                                     }
                                 }

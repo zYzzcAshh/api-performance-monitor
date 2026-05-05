@@ -12,20 +12,20 @@ class NotificationService(
     private val httpClient: HttpClient,
     private val smtpEmailSender: SmtpEmailSender,
 ) {
-    suspend fun notifyAll(notificationConfig: NotificationConfig) {
+    suspend fun notifyAll(notificationConfig: NotificationConfig, endpointName: String) {
         when (notificationConfig) {
             is NotificationConfig.None -> Unit
             is NotificationConfig.Log -> println("Notification: Alert triggered!")
-            is NotificationConfig.DiscordWebhook -> sendDiscordWebhook(notificationConfig.webhookUrl)
+            is NotificationConfig.DiscordWebhook -> sendDiscordWebhook(notificationConfig.webhookUrl, endpointName)
             is NotificationConfig.Email -> sendEmail(notificationConfig.to, notificationConfig.subject)
         }
     }
 
-    private suspend fun sendDiscordWebhook(url: String) {
+    private suspend fun sendDiscordWebhook(url: String, endpointName: String) {
         try {
             httpClient.post(url) {
                 contentType(ContentType.Application.Json)
-                setBody("""{"content":"Alert triggered for monitored endpoint!"}""")
+                setBody("""{"content":"Alert triggered for monitored endpoint $endpointName!"}""")
             }
         } catch (e: Exception) {
             println("Failed to send Discord webhook: ${e.message}")
