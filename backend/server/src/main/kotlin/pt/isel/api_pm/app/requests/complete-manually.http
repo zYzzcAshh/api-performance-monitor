@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3ODAxOTY1OX0.BdloFWI9rJn7QZMrsmR48M9tItDE3_DJaK4Ca5LrQaQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3ODAyMjM4Mn0.FUyutgrNxc8fVykJ_Zp4OzRGHEgGCQ_ptmqotjseJxM
 
 ###
 # Register a new user
@@ -34,7 +34,7 @@ Authorization: Bearer {{token}}
 
 {
   "url": "https://example.com",
-  "name": "ExampleEndpoint",
+  "name": "ExampleTestAPI",
   "intervalSeconds": 60,
   "notification": {
     "type": "discord_webhook",
@@ -44,10 +44,10 @@ Authorization: Bearer {{token}}
     "type": "status_code",
     "operator": "GTE",
     "value": 1,
-    "durationSeconds": 300,
+    "durationSeconds": 120,
     "aggregation": {
         "type": "COUNT",
-        "count": 3
+        "count": 1
     }
   }
 }

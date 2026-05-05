@@ -59,7 +59,7 @@ class MetricsService(
     ): List<RequestMetric> {
         val now = Clock.System.now()
 
-        val from = now.minus(alertRule.durationSeconds.seconds)
+        val from = now.minus(alertRule.durationSeconds.value.seconds)
 
         return repo.getByInterval(
             userId = userId,
