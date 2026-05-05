@@ -11,6 +11,7 @@ import pt.isel.api_pm.alert.AggregationType
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.alert.ComparisonOperator
 import pt.isel.api_pm.app.BASE_URL
+import pt.isel.api_pm.domain.endpoint.DurationSeconds
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.user.LoginRequest
 import pt.isel.api_pm.dto.user.LoginResponse
@@ -80,42 +81,42 @@ object ExampleAlerts {
     val a1 = AlertRule.StatusCodeRule(
         operator = ComparisonOperator.GTE,
         value = 1,
-        durationSeconds = 60,
+        durationSeconds = DurationSeconds(60),
         aggregation = AggregationType.COUNT(1),
     ) // If atleast 1 request returned status code bigger than or equal to 1 in the last 60 seconds, trigger an alert
 
     val a2 = AlertRule.StatusCodeRule(
         operator = ComparisonOperator.GTE,
         value = 100,
-        durationSeconds = 60,
+        durationSeconds = DurationSeconds(60),
         aggregation = AggregationType.COUNT(1),
     ) // If atleast 1 request returned status code bigger than or equal to 100 in the last 60 seconds, trigger an alert
 
     val a3 = AlertRule.StatusCodeRule(
         operator = ComparisonOperator.GTE,
         value = 500,
-        durationSeconds = 60,
+        durationSeconds = DurationSeconds(60),
         aggregation = AggregationType.COUNT(1),
     ) // If atleast 1 request returned status code bigger than or equal to 500 in the last 60 seconds, trigger an alert
 
     val a4 = AlertRule.StatusCodeRule(
         operator = ComparisonOperator.GTE,
         value = 100,
-        durationSeconds = 60,
+        durationSeconds = DurationSeconds(60),
         aggregation = AggregationType.COUNT(5),
     ) // If atleast 5 requests returned status code bigger than or equal to 100 in the last 60 seconds, trigger an alert
 
     val a5 = AlertRule.StatusCodeRule(
         operator = ComparisonOperator.GTE,
         value = 100,
-        durationSeconds = 60,
+        durationSeconds = DurationSeconds(60),
         aggregation = AggregationType.ALL
     ) // If all requests returned status code bigger than or equal to 100 in the last 60 seconds, trigger an alert
 
     val a6 = AlertRule.StatusCodeRule(
         operator = ComparisonOperator.GTE,
         value = 150,
-        durationSeconds = 60,
+        durationSeconds = DurationSeconds(60),
         aggregation = AggregationType.AVG
     ) // If the average status code of all requests in the last 60 seconds is bigger than or equal to 150, trigger an alert
 }
