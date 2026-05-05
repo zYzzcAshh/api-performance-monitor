@@ -26,4 +26,10 @@ sealed class NotificationConfig {
         val to: String,
         val subject: String
     ) : NotificationConfig()
+
+    @Serializable
+    @SerialName("slack_webhook")
+    data class SlackWebhook(
+        val webhookUrl: String
+    ) : NotificationConfig()
 }
