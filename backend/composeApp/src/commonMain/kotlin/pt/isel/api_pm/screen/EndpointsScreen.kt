@@ -1,31 +1,26 @@
 package pt.isel.api_pm.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import pt.isel.api_pm.api.ApiClient
+import pt.isel.api_pm.components.AppButton
+import pt.isel.api_pm.components.AppTextField
+import pt.isel.api_pm.components.EndpointCard
+import pt.isel.api_pm.components.ScreenContainer
+import pt.isel.api_pm.theme.Primary
+import pt.isel.api_pm.theme.TextSecondary
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
 
 @Composable
-fun EndpointsScreen(viewModel: EndpointsViewModel) {
+fun EndpointsScreen(
+    viewModel: EndpointsViewModel
+) {
+
     val state by viewModel.state.collectAsState()
 
     var name by remember { mutableStateOf("") }
@@ -33,42 +28,149 @@ fun EndpointsScreen(viewModel: EndpointsViewModel) {
     var interval by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        viewModel.loadMetrics()
+        viewModel.loadMonitored()
     }
 
-    Column {
-        OutlinedTextField(name, { name = it }, label = { Text("Name") })
-        OutlinedTextField(url, { url = it }, label = { Text("URL") })
-        OutlinedTextField(interval, { interval = it }, label = { Text("Interval") })
+    ScreenContainer {
 
-        Button(onClick = {
-            viewModel.createEndpoint(name, url, interval)
-        }) {
-            Text("Create")
-        }
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
 
-        if (state.creating) CircularProgressIndicator()
+            item {
 
-        state.message?.let { Text(it) }
+                Column {
 
-        Button(onClick = {
-            viewModel.loadMetrics()
-        }) {
-            Text("Update Metrics")
-        }
+                    Text(
+                        text = "Dashboard",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Primary
+                    )
 
-        when {
-            state.isLoading -> CircularProgressIndicator()
-            state.error != null -> Text("Error: ${state.error}")
-            state.endpoints != null -> Text(state.endpoints!!)
-        }
+                    Spacer(Modifier.height(8.dp))
 
-        Button(onClick = { viewModel.loadMonitored() }) {
-            Text("Get Monitored")
-        }
+                    Text(
+                        text = "Monitor and manage your endpoints.",
+                        color = TextSecondary
+                    )
+                }
+            }
 
-        state.monitoredEndpoints?.let {
-            Text(it)
+            item {
+
+                Card {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+
+                        Text(
+                            text = "Create Endpoint",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        AppTextField(
+                            value = name,
+                            onValueChange = {
+                                name = it
+                            },
+                            label = "Endpoint Name",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        AppTextField(
+                            value = url,
+                            onValueChange = {
+                                url = it
+                            },
+                            label = "URL",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        AppTextField(
+                            value = interval,
+                            onValueChange = {
+                                interval = it
+                            },
+                            label = "Interval (seconds)",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        AppButton(
+                            text =
+                                if (state.creating)
+                                    "Creating..."
+                                else
+                                    "Create Endpoint",
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                viewModel.createEndpoint(
+                                    name,
+                                    url,
+                                    interval
+                                )
+                            }
+                        )
+
+                        state.message?.let {
+
+                            Text(
+                                text = it,
+                                color =
+                                    if (it.startsWith("Error"))
+                                        MaterialTheme.colorScheme.error
+                                    else
+                                        Primary
+                            )
+                        }
+                    }
+                }
+            }
+
+            item {
+
+                Text(
+                    text = "Monitored Endpoints",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            if (state.isLoading) {
+
+                item {
+                    CircularProgressIndicator()
+                }
+            }
+
+            if (state.monitoredEndpoints.isNotEmpty()) {
+
+                items(state.monitoredEndpoints) { endpoint ->
+
+                    EndpointCard(
+                        title = endpoint.name,
+                        url = endpoint.url,
+                        interval = "${endpoint.intervalSeconds} seconds"
+                    )
+                }
+            }
+
+            state.error?.let {
+
+                item {
+
+                    Text(
+                        text = "Error: $it",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         }
     }
 }

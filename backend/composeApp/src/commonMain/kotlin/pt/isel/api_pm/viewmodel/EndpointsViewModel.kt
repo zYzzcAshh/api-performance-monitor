@@ -6,10 +6,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import pt.isel.api_pm.api.ApiClient
+import pt.isel.api_pm.model.MonitoredEndpointUi
 
 data class EndpointsState(
     val endpoints: String? = null,
-    val monitoredEndpoints: String? = null,
+    val monitoredEndpoints: List<MonitoredEndpointUi> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val creating: Boolean = false,
@@ -46,13 +47,30 @@ class EndpointsViewModel(
     }
 
     fun loadMonitored() {
+
         scope.launch {
+
+            _state.value = _state.value.copy(
+                isLoading = true
+            )
+
             val result = api.getEndpoints(token)
-            if (result.isSuccess) {
-                _state.value = _state.value.copy(
-                    monitoredEndpoints = result.getOrNull()
-                )
-            }
+
+            _state.value =
+                if (result.isSuccess) {
+
+                    _state.value.copy(
+                        monitoredEndpoints = result.getOrNull() ?: emptyList(),
+                        isLoading = false
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        error = result.exceptionOrNull()?.message,
+                        isLoading = false
+                    )
+                }
         }
     }
 

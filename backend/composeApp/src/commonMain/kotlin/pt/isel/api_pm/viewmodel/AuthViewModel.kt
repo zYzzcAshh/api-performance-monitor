@@ -43,22 +43,44 @@ class AuthViewModel(
     }
 
     fun register(username: String, password: String) {
+
         scope.launch {
-            _state.value = _state.value.copy(isLoading = true, message = null)
 
-            val result = api.register(username, password)
+            _state.value = _state.value.copy(
+                isLoading = true,
+                message = null
+            )
 
-            _state.value = if (result.isSuccess) {
-                _state.value.copy(
+            val registerResult = api.register(username, password)
+
+            if (registerResult.isFailure) {
+
+                _state.value = _state.value.copy(
                     isLoading = false,
-                    message = "Registered successfully"
+                    message = "Error: ${registerResult.exceptionOrNull()?.message}"
                 )
-            } else {
-                _state.value.copy(
-                    isLoading = false,
-                    message = "Error: ${result.exceptionOrNull()?.message}"
-                )
+
+                return@launch
             }
+
+            val loginResult = api.login(username, password)
+
+            _state.value =
+                if (loginResult.isSuccess) {
+
+                    _state.value.copy(
+                        token = loginResult.getOrNull(),
+                        isLoading = false,
+                        message = "Registered successfully"
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        isLoading = false,
+                        message = "Registered, but login failed"
+                    )
+                }
         }
     }
 }

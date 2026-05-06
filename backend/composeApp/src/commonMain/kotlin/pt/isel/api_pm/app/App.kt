@@ -1,7 +1,9 @@
 package pt.isel.api_pm.app
 
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,6 +13,7 @@ import pt.isel.api_pm.screen.EndpointsScreen
 import pt.isel.api_pm.screen.LoginScreen
 import pt.isel.api_pm.screen.RegisterScreen
 import pt.isel.api_pm.screen.Screen
+import pt.isel.api_pm.theme.AppTheme
 import pt.isel.api_pm.viewmodel.AuthViewModel
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
 
@@ -25,7 +28,7 @@ fun App() {
     val navController = rememberNavController()
     val authState by authViewModel.state.collectAsState()
 
-    MaterialTheme {
+    AppTheme {
         NavHost(navController, startDestination = Screen.Login.route) {
 
             composable(Screen.Login.route) {
@@ -47,6 +50,11 @@ fun App() {
                     viewModel = authViewModel,
                     onNavigateToLogin = {
                         navController.popBackStack()
+                    },
+                    onRegisterSuccess = {
+                        navController.navigate(Screen.Endpoints.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
                     }
                 )
             }

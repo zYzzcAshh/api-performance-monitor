@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -12,15 +13,20 @@ import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.alert.ComparisonOperator
 import pt.isel.api_pm.app.BASE_URL
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
+import pt.isel.api_pm.model.MonitoredEndpointUi
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.user.LoginRequest
 import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
 import pt.isel.api_pm.notification.NotificationConfig
 
-private val httpClient = HttpClient{
+private val httpClient = HttpClient {
     install(ContentNegotiation) {
-        json()
+        json(
+            Json {
+                ignoreUnknownKeys = true
+            }
+        )
     }
 }
 
@@ -49,11 +55,18 @@ class ApiClient(private val client: HttpClient = httpClient) {
             response.token
         }
 
-    suspend fun getEndpoints(token: String): Result<String> =
+    suspend fun getEndpoints(
+        token: String
+    ): Result<List<MonitoredEndpointUi>> =
         runCatching {
-            client.get("$BASE_URL/endpoints") {
+
+            val response = client.get("$BASE_URL/endpoints") {
                 header("Authorization", "Bearer $token")
-            }.body()
+            }
+
+            println(response.bodyAsText())
+
+            emptyList()
         }
 
     suspend fun createEndpointMonitor(token: String, name: String, url: String, intervalSeconds: Int): Result<String> =
