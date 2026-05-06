@@ -64,9 +64,11 @@ class ApiClient(private val client: HttpClient = httpClient) {
                 header("Authorization", "Bearer $token")
             }
 
-            println(response.bodyAsText())
+            val body = response.bodyAsText()
 
-            emptyList()
+            println(body)
+
+            Json.decodeFromString<List<MonitoredEndpointUi>>(body)
         }
 
     suspend fun createEndpointMonitor(token: String, name: String, url: String, intervalSeconds: Int): Result<String> =
@@ -81,12 +83,28 @@ class ApiClient(private val client: HttpClient = httpClient) {
             }.body()
         }
 
-    suspend fun getEndpointMetrics(token: String): Result<String> =
+    suspend fun getEndpointMetrics(
+        token: String,
+        endpointId: UInt
+    ): Result<String> =
         runCatching {
-            client.get("$BASE_URL/metrics/0") {
+
+            client.get("$BASE_URL/metrics/$endpointId") {
                 header("Authorization", "Bearer $token")
                 contentType(ContentType.Application.Json)
             }.body()
+        }
+
+    suspend fun deleteEndpoint(
+        token: String,
+        endpointId: UInt
+    ): Result<Unit> =
+        runCatching {
+            client.delete("$BASE_URL/endpoints/$endpointId") {
+
+                header("Authorization", "Bearer $token")
+
+            }
         }
 }
 

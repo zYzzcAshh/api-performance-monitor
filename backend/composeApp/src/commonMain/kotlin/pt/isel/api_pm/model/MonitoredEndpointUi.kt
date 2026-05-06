@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 data class MonitoredEndpointUi(
     val id: UInt,
     val userId: UInt,
-    val name: String,
     val url: String,
+    val name: String,
     val intervalSeconds: Long,
-    val createdAt: String,
+    val createdAt: String
 )

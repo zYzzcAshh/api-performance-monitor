@@ -14,7 +14,9 @@ import pt.isel.api_pm.theme.TextSecondary
 fun EndpointCard(
     title: String,
     url: String,
-    interval: String
+    interval: String,
+    onViewMetrics: () -> Unit,
+    onDelete: () -> Unit,
 ) {
 
     Card(
@@ -49,6 +51,25 @@ fun EndpointCard(
                 text = "Interval: $interval",
                 style = MaterialTheme.typography.bodyMedium
             )
+
+            Spacer(Modifier.height(20.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                Button(
+                    onClick = onViewMetrics
+                ) {
+                    Text("Metrics")
+                }
+
+                OutlinedButton(
+                    onClick = onDelete
+                ) {
+                    Text("Delete")
+                }
+            }
         }
     }
 }

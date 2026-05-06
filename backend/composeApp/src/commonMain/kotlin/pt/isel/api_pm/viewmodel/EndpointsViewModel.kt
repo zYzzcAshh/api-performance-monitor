@@ -26,11 +26,14 @@ class EndpointsViewModel(
     private val _state = MutableStateFlow(EndpointsState())
     val state: StateFlow<EndpointsState> = _state
 
-    fun loadMetrics() {
+    fun loadMetrics(endpointId: UInt) {
         scope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
-            val result = api.getEndpointMetrics(token)
+            val result = api.getEndpointMetrics(
+                token,
+                endpointId
+            )
 
             _state.value = if (result.isSuccess) {
                 _state.value.copy(
@@ -87,7 +90,9 @@ class EndpointsViewModel(
             val result = api.createEndpointMonitor(token, name, url, intervalInt)
 
             _state.value = if (result.isSuccess) {
-                loadMetrics()
+
+                loadMonitored()
+
                 _state.value.copy(
                     message = "Created successfully",
                     creating = false
@@ -96,6 +101,36 @@ class EndpointsViewModel(
                 _state.value.copy(
                     message = "Error: ${result.exceptionOrNull()?.message}",
                     creating = false
+                )
+            }
+        }
+    }
+
+    fun deleteEndpoint(endpointId: UInt) {
+
+        scope.launch {
+
+            val result = api.deleteEndpoint(
+                token,
+                endpointId
+            )
+
+            if (result.isSuccess) {
+
+                _state.value = _state.value.copy(
+                    endpoints = null
+                )
+
+                loadMonitored()
+
+                _state.value = _state.value.copy(
+                    message = "Endpoint deleted"
+                )
+
+            } else {
+
+                _state.value = _state.value.copy(
+                    message = "Error deleting endpoint"
                 )
             }
         }
