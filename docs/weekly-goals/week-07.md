@@ -154,7 +154,7 @@ lista de possíveis arguentes para discussão com orientador
   - Notifications (Initial Implementation) – sistema inicial de notificações implementado para eventos relevantes do sistema
 
 - partially done:
-  - Progress Presentation (Refinement) – slides atualizados mas ainda sujeitos a melhorias finais
+  - Progress Presentation (Refinement) – slides atualizados mas ainda sujeitos a melhorias finais (adicionar diagrama navegação de ecrãs + tecnologias = texto e incluir kpm)
   - Backend Configuration – configuração parcialmente uniformizada (necessita revisão final)
   - GitHub Organization – issues e milestones criadas, mas organização ainda pode ser melhorada
 
