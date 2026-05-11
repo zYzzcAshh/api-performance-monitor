@@ -95,10 +95,27 @@ estrutura do projeto mais organizada e consistente
 ## Result (to fill next week)
 
 - done:
-  - 
+  - Libraries & Dependencies Review
+  - Codebase Consistency
+  - revisão e cleanup das dependências Gradle
+  - remoção de duplicações e dependências redundantes
+  - reorganização parcial dos módulos (`shared`, `composeApp`, `server`, `localAgent`)
+  - correção de incompatibilidades KMP (ex: CIO no commonMain)
+  - melhoria da consistência do catálogo `libs.versions.toml`
+  - integração inicial de métricas no cliente
+  - implementação inicial de ações nos endpoints:
+    - view metrics
+    - delete endpoint
+  - melhoria do fluxo de autenticação:
+    - auto login após registo
+  - melhoria incremental da UI desktop Compose
 
 - partially done:
-  - 
+  - Notifications System Refinement
+  - Navigation & UI Documentation
+  - OpenAPI Documentation
 
 - not done:
-  - 
+  - refinamento completo do sistema de notificações
+  - finalização dos diagramas de navegação/estado
+  - vídeo final de demonstração

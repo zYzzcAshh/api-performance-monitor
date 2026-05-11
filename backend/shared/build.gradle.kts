@@ -30,9 +30,8 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.serialization.core)
+            implementation(libs.kotlinx.serialization.json)
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-            implementation(libs.ktor.client.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
