@@ -92,7 +92,7 @@ stack tecnológica mais consistente e fiável
 estrutura do projeto mais organizada e consistente
 
 
-## Result (to fill next week)
+## Result
 
 - done:
   - Libraries & Dependencies Review
@@ -109,13 +109,17 @@ estrutura do projeto mais organizada e consistente
   - melhoria do fluxo de autenticação:
     - auto login após registo
   - melhoria incremental da UI desktop Compose
+  - documentação `openapi.yaml` retificada
+  - atualização parcial da apresentação de progresso:
+    - inclusão do diagrama temporal
+    - inclusão do diagrama de navegação
+    - melhoria da explicação da arquitetura
+    - atualização do slide de tecnologias utilizadas
 
 - partially done:
   - Notifications System Refinement
   - Navigation & UI Documentation
-  - OpenAPI Documentation
 
 - not done:
-  - refinamento completo do sistema de notificações
-  - finalização dos diagramas de navegação/estado
+  - Notifications System Refinement
   - vídeo final de demonstração

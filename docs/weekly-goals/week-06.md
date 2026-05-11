@@ -34,7 +34,7 @@ cliente com navegação funcional + diagramas documentados
   - cliente com navegação funcional + diagramas documentados
 
 - partially done:
-  - 
+  - -
 
 - not done:
-  - 
+  - -
