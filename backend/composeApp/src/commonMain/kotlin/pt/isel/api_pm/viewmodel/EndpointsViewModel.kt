@@ -5,12 +5,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import pt.isel.api_pm.alert.AggregationType
+import pt.isel.api_pm.alert.AlertRule
+import pt.isel.api_pm.alert.ComparisonOperator
 import pt.isel.api_pm.api.ApiClient
-import pt.isel.api_pm.model.MonitoredEndpointUi
+import pt.isel.api_pm.config.DemoConfig
+import pt.isel.api_pm.domain.endpoint.DurationSeconds
+import pt.isel.api_pm.model.EndpointUiModel
+import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
+import pt.isel.api_pm.notification.NotificationConfig
 
 data class EndpointsState(
     val endpoints: String? = null,
-    val monitoredEndpoints: List<MonitoredEndpointUi> = emptyList(),
+    val monitoredEndpoints: List<EndpointUiModel> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val creating: Boolean = false,
@@ -87,7 +94,27 @@ class EndpointsViewModel(
 
             _state.value = _state.value.copy(creating = true, message = null)
 
-            val result = api.createEndpointMonitor(token, name, url, intervalInt)
+            val request = CreateEndpointRequest(
+                url = url,
+                name = name,
+                intervalSeconds = intervalInt.toLong(),
+
+                notification = NotificationConfig.DiscordWebhook(
+                    webhookUrl = DemoConfig.DISCORD_WEBHOOK
+                ),
+
+                alertRule = AlertRule.StatusCodeRule(
+                    operator = ComparisonOperator.GTE,
+                    value = 500,
+                    durationSeconds = DurationSeconds(60),
+                    aggregation = AggregationType.COUNT(1)
+                )
+            )
+
+            val result = api.createEndpointMonitor(
+                token,
+                request
+            )
 
             _state.value = if (result.isSuccess) {
 

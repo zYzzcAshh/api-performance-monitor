@@ -83,4 +83,10 @@ class AuthViewModel(
                 }
         }
     }
+
+    fun logout() {
+
+        _state.value = AuthState()
+
+    }
 }

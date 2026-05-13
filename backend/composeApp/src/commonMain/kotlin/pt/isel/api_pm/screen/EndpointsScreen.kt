@@ -7,6 +7,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +23,8 @@ import pt.isel.api_pm.viewmodel.EndpointsViewModel
 
 @Composable
 fun EndpointsScreen(
-    viewModel: EndpointsViewModel
+    viewModel: EndpointsViewModel,
+    onLogout: () -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
@@ -44,21 +46,33 @@ fun EndpointsScreen(
 
             item {
 
-                Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
 
-                    Text(
-                        text = "Dashboard",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Primary
-                    )
+                    Column {
 
-                    Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Dashboard",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Primary
+                        )
 
-                    Text(
-                        text = "Monitor and manage your endpoints.",
-                        color = TextSecondary
-                    )
+                        Spacer(Modifier.height(8.dp))
+
+                        Text(
+                            text = "Monitor and manage your endpoints.",
+                            color = TextSecondary
+                        )
+                    }
+
+                    TextButton(
+                        onClick = onLogout
+                    ) {
+                        Text("Logout")
+                    }
                 }
             }
 

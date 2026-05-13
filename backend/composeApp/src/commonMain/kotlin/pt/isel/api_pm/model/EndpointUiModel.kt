@@ -3,7 +3,7 @@ package pt.isel.api_pm.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MonitoredEndpointUi(
+data class EndpointUiModel(
     val id: UInt,
     val userId: UInt,
     val url: String,

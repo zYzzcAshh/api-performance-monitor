@@ -22,6 +22,10 @@ fun Route.endpointRoutes(service: EndpointService) {
         post(Routes.Endpoints.CREATE) {
             val request = call.receive<CreateEndpointRequest>()
 
+            println("REQUEST = $request")
+            println("NOTIFICATION = ${request.notification}")
+            println("ALERT = ${request.alertRule}")
+
             val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
             val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
             val userId = tokenUserId.toUInt()

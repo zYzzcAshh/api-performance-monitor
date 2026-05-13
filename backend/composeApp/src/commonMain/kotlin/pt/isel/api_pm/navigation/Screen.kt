@@ -1,4 +1,4 @@
-package pt.isel.api_pm.screen
+package pt.isel.api_pm.navigation
 
 sealed class Screen(val route: String) {
 
