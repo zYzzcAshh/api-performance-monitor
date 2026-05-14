@@ -3,7 +3,7 @@
 Monitoring workers are responsible for executing periodic checks on registered API endpoints.
 
 <p align="center">
-  <img src="./diagrams/monitoring-flow.png" alt="Monitoring Flow" width="150">
+  <img src="diagramsonitoring-flow.png" alt="Monitoring Flow" width="150">
 </p>
 
 #### Each worker:

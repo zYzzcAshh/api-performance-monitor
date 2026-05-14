@@ -28,4 +28,4 @@ A local monitoring agent is planned for future implementation, allowing monitori
 At this stage, the system is implemented using an **in-memory data store** to simplify development and enable fast prototyping.
 A relational database (PostgreSQL) will be introduced in later stages of the project.
 
-![System Architecture](./diagrams/system-architecture.png)
+![System Architecture](diagramsystem-architecture.png)
