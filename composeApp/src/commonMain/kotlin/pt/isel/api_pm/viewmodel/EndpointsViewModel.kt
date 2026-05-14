@@ -11,7 +11,7 @@ import pt.isel.api_pm.alert.ComparisonOperator
 import pt.isel.api_pm.api.ApiClient
 import pt.isel.api_pm.config.DemoConfig
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
-import pt.isel.api_pm.model.EndpointUiModel
+import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.notification.NotificationConfig
 

@@ -15,6 +15,7 @@ dependencies {
 
     implementation("com.github.ajalt.clikt:clikt:5.0.1")
     implementation("com.github.ajalt.clikt:clikt-markdown:5.0.1")
+    implementation(libs.ktor.client.core)
 }
 
 tasks.test {

@@ -19,7 +19,7 @@ import pt.isel.api_pm.service.EndpointService
 fun Route.endpointRoutes(service: EndpointService) {
     authenticate(AuthConfig.JWT_NAME) {
 
-        post(Routes.Endpoints.CREATE) {
+        post(Routes.Endpoints.BASE) {
             val request = call.receive<CreateEndpointRequest>()
 
             println("REQUEST = $request")
@@ -53,7 +53,7 @@ fun Route.endpointRoutes(service: EndpointService) {
             val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
             val userId = tokenUserId.toUInt()
 
-            val id = call.parameters["id"]!!.toUInt()
+            val id = call.parameters["id"]?.toUIntOrNull() ?: throw IllegalArgumentException("Invalid endpoint ID")
             service.delete(userId, id)
 
             call.respond(HttpStatusCode.OK)

@@ -7,16 +7,14 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.user.LoginRequest
 import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
-import pt.isel.api_pm.model.EndpointUiModel
 
 private val httpClient = HttpClient {
-
     install(ContentNegotiation) {
-
         json(
             Json {
                 ignoreUnknownKeys = true

@@ -39,7 +39,7 @@ fun Route.metricsRoutes(
             val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
             val userId = tokenUserId.toUInt()
 
-            val endpointId = call.parameters["endpoint"]!!.toUInt()
+            val endpointId = call.parameters["endpoint"]?.toUIntOrNull() ?: throw IllegalArgumentException("Invalid endpoint ID")
             call.respond(metricsService.getByEndpoint(userId, endpointId))
         }
 
@@ -48,7 +48,7 @@ fun Route.metricsRoutes(
             val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
             val userId = tokenUserId.toUInt()
 
-            val endpointId = call.parameters["endpointId"]!!.toUInt()
+            val endpointId = call.parameters["endpointId"]?.toUIntOrNull() ?: throw IllegalArgumentException("Invalid endpoint ID")
 
             val summary = metricsService.getSummary(userId, endpointId)
 

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import pt.isel.api_pm.api.ApiClient
 import pt.isel.api_pm.viewmodel.AuthViewModel
 
 @Composable

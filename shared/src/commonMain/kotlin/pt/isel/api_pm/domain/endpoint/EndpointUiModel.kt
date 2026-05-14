@@ -1,4 +1,4 @@
-package pt.isel.api_pm.model
+package pt.isel.api_pm.domain.endpoint
 
 import kotlinx.serialization.Serializable
 

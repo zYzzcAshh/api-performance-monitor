@@ -3,26 +3,25 @@ package pt.isel.api_pm.routes
 object Routes {
 
     object Agent {
-        const val BASE = "/api/agent"
+        const val BASE = "/agent"
         const val CREATE = "$BASE/register"
     }
 
     object Auth {
-        const val BASE = "/api/auth"
+        const val BASE = "/auth"
 
         const val REGISTER = "$BASE/register"
         const val LOGIN = "$BASE/login"
     }
 
     object Endpoints {
-        const val BASE = "/api/endpoints"
+        const val BASE = "/endpoints"
 
-        const val CREATE = "$BASE/create"
         const val DELETE = "$BASE/{id}"
     }
 
     object Metrics {
-        const val BASE = "/api/metrics"
+        const val BASE = "/metrics"
 
         const val CHECK = "$BASE/check"
         const val BY_ENDPOINT = "$BASE/{endpoint}"
@@ -30,13 +29,13 @@ object Routes {
     }
 
     object Users {
-        const val BASE = "/api/users"
+        const val BASE = "/users"
 
         const val BY_ID = "$BASE/{id}"
     }
 
     object Test {
-        const val BASE = "/api/test"
+        const val BASE = "/test"
 
         const val OK = "/ok"
         const val ERROR = "/error"

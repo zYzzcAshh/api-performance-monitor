@@ -210,7 +210,20 @@ fun EndpointsScreen(
 
                             Spacer(Modifier.height(12.dp))
 
-                            Text(it)
+                            // Temporary
+                            val items = it.removePrefix("[")
+                                .removeSuffix("]")
+                                .split("},")
+                                .map{ entry ->
+                                    val fixed = if (!entry.trim().endsWith("}")) "$entry}" else entry
+                                    fixed
+                                }
+
+                            items.forEach { text ->
+                                Text(text)
+                            }
+
+                            //Text(it)
                         }
                     }
                 }
