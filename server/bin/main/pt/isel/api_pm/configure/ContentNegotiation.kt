@@ -7,11 +7,6 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 
 fun Application.configureContentNegotiation() {
     install(ContentNegotiation) {
-        json(
-            Json {
-                ignoreUnknownKeys = true
-                classDiscriminator = "type"
-            }
-        )
+        json()
     }
 }

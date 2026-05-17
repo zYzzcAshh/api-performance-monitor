@@ -9,14 +9,18 @@ import io.ktor.server.plugins.cors.routing.CORS
 fun Application.configureCORS() {
     install(CORS) {
         allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)
-        allowMethod(HttpMethod.Post)
-
-        allowHost("localhost:8080")
-        allowHost("localhost:8081")
-        allowCredentials = true
+        allowMethod(HttpMethod.Options)
 
         allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+
+        allowCredentials = true
+
+        allowHost("localhost:8080", schemes = listOf("http"))
+        allowHost("localhost:8081", schemes = listOf("http"))
+        allowHost("127.0.0.1:8081", schemes = listOf("http"))
     }
 }

@@ -1,0 +1,293 @@
+openapi: 3.0.0
+
+info:
+  title: API Performance Monitor
+  version: 1.0.0
+  description: API for monitoring HTTP endpoints and collecting performance metrics
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+
+  /auth/register:
+    post:
+      summary: Registar utilizador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        "201":
+          description: Utilizador criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+
+  /auth/login:
+    post:
+      summary: Login do utilizador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: Login com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /endpoints:
+    get:
+      summary: Listar endpoints do utilizador
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de endpoints
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Endpoint'
+
+    post:
+      summary: Criar endpoint monitorizado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEndpointRequest'
+      responses:
+        "201":
+          description: Endpoint criado
+
+  /endpoints/{id}:
+    delete:
+      summary: Remover endpoint
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Endpoint removido
+
+  /metrics:
+    get:
+      summary: Obter todas as métricas
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de métricas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Metric'
+
+  /metrics/check:
+    post:
+      summary: Executar verificação de endpoint
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckRequest'
+      responses:
+        "200":
+          description: Resultado da verificação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+
+  /metrics/{endpoint}:
+    get:
+      summary: Obter métricas de um endpoint
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: endpoint
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista de métricas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Metric'
+
+  /metrics/{endpointId}/summary:
+    get:
+      summary: Obter resumo de métricas
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: endpointId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resumo estatístico
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregatedMetric'
+
+  /agent:
+    post:
+      summary: Criar endpoint via agent
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentCreateEndpointRequest'
+      responses:
+        "200":
+          description: Endpoint criado pelo agent
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    RegisterResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+    CreateEndpointRequest:
+      type: object
+      properties:
+        url:
+          type: string
+        name:
+          type: string
+        intervalSeconds:
+          type: integer
+
+    AgentCreateEndpointRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        intervalSeconds:
+          type: integer
+
+    CheckRequest:
+      type: object
+      properties:
+        url:
+          type: string
+
+    Endpoint:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        url:
+          type: string
+        name:
+          type: string
+        intervalSeconds:
+          type: integer
+        createdAt:
+          type: string
+
+    Metric:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        latency:
+          type: integer
+        statusCode:
+          type: integer
+
+    AggregatedMetric:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        averageLatency:
+          type: number
+        totalRequests:
+          type: integer
+        errorRate:
+          type: number
+        throughput:
+          type: integer
+        uptime:
+          type: integer
+        percentile95:
+          type: integer
+        percentile99:
+          type: integer

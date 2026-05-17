@@ -1,43 +1,67 @@
 package org.api
 
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.core.NoOpCliktCommand
-import com.github.ajalt.clikt.core.PrintHelpMessage
-import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.parse
 import com.github.ajalt.clikt.core.subcommands
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
-import com.github.ajalt.clikt.parameters.types.int
+import kotlinx.coroutines.runBlocking
+import pt.isel.api_pm.api.ApiClient
 
-class Register : CliktCommand() {
+private val apiClient = ApiClient()
+
+class Register(val authStore: AuthStore) : CliktCommand() {
     val username: String by option("-u", "--username").prompt("Username")
     val password: String by option("-p", "--password").prompt("Password", hideInput = true)
 
-    override fun run() {
-        echo("Registering user '$username' password '$password'...")
+    override fun run() = runBlocking {
+        echo("Registering username '$username'...")
+
+        val response = apiClient.register(username, password)
+
+        if (response.isSuccess) {
+            echo("Successfully registered!")
+        } else {
+            echo("Failed to register!")
+        }
     }
 }
 
-class Login : CliktCommand() {
+class Login(val authStore: AuthStore) : CliktCommand() {
     val username: String by option("-u", "--username").prompt("Username")
     val password: String by option("-p", "--password").prompt("Password", hideInput = true)
 
+    override fun run() = runBlocking {
+        echo("Logging in username '$username'...")
+
+        val response = apiClient.login(username, password)
+
+        if (response.isSuccess) {
+            echo("Successfully logged in!")
+            authStore.setToken(response.getOrThrow())
+        } else {
+            echo("Failed to log in!")
+        }
+    }
+}
+
+class Info(val authStore: AuthStore) : CliktCommand() {
     override fun run() {
-        echo("Logging in as '$username' password '$password'...")
+        val token = authStore.getToken()
+        echo("User token being stored right now is $token")
     }
 }
 
 class Root : NoOpCliktCommand(name = "app")
 
 fun main() {
-    println("CLI started. Type a command (register, login, exit):")
+    println("CLI started. Type a command (register, login, info, exit):")
     println("Usage: register --username <u> --password <p>")
 
-    val root = Root().subcommands(Register(), Login())
+    val authStore = AuthStore()
+
+    val root = Root().subcommands(Register(authStore), Login(authStore), Info(authStore))
 
     while (true) {
         print("> ")
