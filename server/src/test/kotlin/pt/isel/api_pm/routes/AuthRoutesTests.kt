@@ -25,7 +25,7 @@ class AuthRoutesTests {
                     setBody(
                         """
                         {
-                            "username":"user1",
+                            "username":"auth_user_1",
                             "password":"Password1"
                         }
                         """.trimIndent()
@@ -53,7 +53,7 @@ class AuthRoutesTests {
                 setBody(
                     """
                     {
-                        "username":"user2",
+                        "username":"auth_user_2",
                         "password":"Password1"
                     }
                     """.trimIndent()
@@ -68,7 +68,7 @@ class AuthRoutesTests {
                     setBody(
                         """
                         {
-                            "username":"user2",
+                            "username":"auth_user_2",
                             "password":"Password1"
                         }
                         """.trimIndent()
@@ -81,7 +81,8 @@ class AuthRoutesTests {
             )
 
             assertTrue(
-                response.bodyAsText().contains("token")
+                response.bodyAsText()
+                    .contains("token")
             )
         }
 
@@ -100,7 +101,7 @@ class AuthRoutesTests {
                 setBody(
                     """
                     {
-                        "username":"user",
+                        "username":"auth_user_3",
                         "password":"Password1"
                     }
                     """.trimIndent()
@@ -115,7 +116,7 @@ class AuthRoutesTests {
                     setBody(
                         """
                         {
-                            "username":"user",
+                            "username":"auth_user_3",
                             "password":"WrongPassword1"
                         }
                         """.trimIndent()
@@ -144,7 +145,7 @@ class AuthRoutesTests {
                     setBody(
                         """
                         {
-                            "username":"user",
+                            "username":"auth_user_4",
                             "password":"abc"
                         }
                         """.trimIndent()
@@ -172,7 +173,7 @@ class AuthRoutesTests {
                 setBody(
                     """
                     {
-                        "username":"user",
+                        "username":"duplicate_user",
                         "password":"Password1"
                     }
                     """.trimIndent()
@@ -187,7 +188,7 @@ class AuthRoutesTests {
                     setBody(
                         """
                         {
-                            "username":"user",
+                            "username":"duplicate_user",
                             "password":"Password1"
                         }
                         """.trimIndent()
@@ -216,7 +217,7 @@ class AuthRoutesTests {
                     setBody(
                         """
                         {
-                            "username":"ghost",
+                            "username":"missing_user",
                             "password":"Password1"
                         }
                         """.trimIndent()
@@ -230,7 +231,7 @@ class AuthRoutesTests {
         }
 
     @Test
-    fun `should reject empty username`() =
+    fun `should reject empty username on register`() =
         testApplication {
 
             application {
@@ -247,6 +248,64 @@ class AuthRoutesTests {
                         {
                             "username":"",
                             "password":"Password1"
+                        }
+                        """.trimIndent()
+                    )
+                }
+
+            assertEquals(
+                HttpStatusCode.BadRequest,
+                response.status
+            )
+        }
+
+    @Test
+    fun `should reject empty username on login`() =
+        testApplication {
+
+            application {
+                module()
+            }
+
+            val response =
+                client.post("/auth/login") {
+
+                    contentType(ContentType.Application.Json)
+
+                    setBody(
+                        """
+                        {
+                            "username":"",
+                            "password":"Password1"
+                        }
+                        """.trimIndent()
+                    )
+                }
+
+            assertEquals(
+                HttpStatusCode.BadRequest,
+                response.status
+            )
+        }
+
+    @Test
+    fun `should reject empty password`() =
+        testApplication {
+
+            application {
+                module()
+            }
+
+            val response =
+                client.post("/auth/register") {
+
+                    contentType(ContentType.Application.Json)
+
+                    setBody(
+                        """
+                        {
+                            "username":"auth_user_5",
+                            "password":""
                         }
                         """.trimIndent()
                     )

@@ -179,4 +179,106 @@ class EndpointRoutesTests {
                 response.status
             )
         }
+
+    @Test
+    fun `should reject endpoint creation without token`() =
+        testApplication {
+
+            application { module() }
+
+            val response =
+                client.post("/endpoints") {
+
+                    contentType(ContentType.Application.Json)
+
+                    setBody(
+                        """
+                    {
+                        "url":"https://api.github.com",
+                        "name":"gh",
+                        "intervalSeconds":60
+                    }
+                    """.trimIndent()
+                    )
+                }
+
+            assertEquals(
+                HttpStatusCode.Forbidden,
+                response.status
+            )
+        }
+
+    @Test
+    fun `should return empty endpoint list`() =
+        testApplication {
+
+            application { module() }
+
+            val token =
+                registerAndGetToken(
+                    client,
+                    "empty_user"
+                )
+
+            val response =
+                client.get("/endpoints") {
+
+                    header(
+                        "Authorization",
+                        "Bearer $token"
+                    )
+                }
+
+            assertEquals(
+                HttpStatusCode.OK,
+                response.status
+            )
+
+            assertEquals(
+                "[]",
+                response.bodyAsText()
+            )
+        }
+
+    @Test
+    fun `should reject deleting endpoint without token`() =
+        testApplication {
+
+            application { module() }
+
+            val response =
+                client.delete("/endpoints/1")
+
+            assertEquals(
+                HttpStatusCode.Forbidden,
+                response.status
+            )
+        }
+
+    @Test
+    fun `should reject invalid endpoint id`() =
+        testApplication {
+
+            application { module() }
+
+            val token =
+                registerAndGetToken(
+                    client,
+                    "user_invalid_id"
+                )
+
+            val response =
+                client.delete("/endpoints/abc") {
+
+                    header(
+                        "Authorization",
+                        "Bearer $token"
+                    )
+                }
+
+            assertEquals(
+                HttpStatusCode.BadRequest,
+                response.status
+            )
+        }
 }
