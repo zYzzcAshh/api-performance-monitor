@@ -1,65 +1,67 @@
 # API Performance Monitor
 
-A modern observability platform for monitoring API performance, availability, and reliability with support for both public and private services.
+A modern observability platform for monitoring API performance, availability, and reliability, supporting both public and private services.
 
 ---
 
 ## Overview
 
-**API Performance Monitor** is a distributed monitoring platform designed to help developers and teams track the health of their APIs in real-time.
+**API Performance Monitor** is a distributed monitoring platform designed to help developers and teams monitor the health and availability of APIs in real time.
 
-It combines:
-- Cloud-based control plane (SaaS)
-- Distributed monitoring workers
-- Local agents for private / internal APIs
+The system combines:
+- A cloud-based backend service
+- Monitoring workers
+- Local monitoring agents
+- A Compose Multiplatform client application
 
-The platform continuously executes HTTP checks and collects key metrics such as:
-- Latency
-- Uptime
-- Error rate
-- Status codes
+The platform periodically executes HTTP checks against registered endpoints and collects operational metrics such as:
+- Response latency
+- HTTP status codes
+- Availability
+- Request success/failure state
 
-This allows users to detect failures early, analyze trends, and receive alerts when issues occur.
+This enables users to detect failures early, monitor endpoint behaviour over time, and receive alerts when abnormal conditions occur.
 
 ---
 
 ## Features
 
 - User authentication (register / login)
-- API endpoint monitoring (custom intervals)
-- Real-time metrics collection (latency, status, success rate)
-- Historical data & dashboards
-- Configurable alerting system
-- Local monitoring agent for private APIs
-- Asynchronous monitoring workers
+- Endpoint monitoring with configurable intervals
+- Metrics collection and monitoring
+- Alert rule configuration
+- Discord webhook notifications
+- Local monitoring agent for private/internal APIs
+- Compose Multiplatform client application
+- Asynchronous monitoring architecture
 
 ---
 
 ## Architecture
 
-The system is composed of five main components:
+The system is composed of the following components:
 
 - Client Application (Compose Multiplatform)
-- Backend Service (Ktor + Kotlin)
+- Backend Service (Ktor)
 - Monitoring Workers
 - Local Monitoring Agent
 - PostgreSQL Database
 
 ### Monitoring Flow
 
-1. Users register endpoints to monitor  
-2. Workers execute periodic HTTP requests  
-3. Metrics are collected (latency, status, errors)  
-4. Backend stores and evaluates results  
-5. Alerts are triggered if needed  
+1. Users register endpoints to monitor
+2. Workers execute periodic HTTP requests
+3. Metrics are collected and evaluated
+4. Results are stored by the backend
+5. Alerts are triggered when configured conditions are met
 
-Workers operate asynchronously and independently from the backend.
+Workers operate asynchronously and independently from the backend service.
 
 ---
 
 ## Metrics
 
-Each monitoring check generates a metric with the following structure:
+Each monitoring execution generates a metric containing information such as:
 
 ```json
 {
@@ -70,31 +72,34 @@ Each monitoring check generates a metric with the following structure:
 }
 ```
 
-Collected metrics include:
-- latency (in milliseconds)
+Collected data currently includes:
+- Request latency
 - HTTP status code
-- timestamp of the request
-- endpoint URL
+- Request timestamp
+- Endpoint URL
 
-Uptime is computed dynamically based on monitoring results.
+Additional aggregation and analytics features are planned for future development.
 
 ---
 
 ## Data Model
 
-###### Main entities:
+### Main Entities
+
 - Users
 - Endpoints
-- Monitoring Results
+- Monitoring Metrics
+- Alert Rules
+- Notifications
 
-Each endpoint is periodically checked and produces time-series monitoring data. 
+Each monitored endpoint generates time-series monitoring data over time.
 
 ---
 
 ## API
 
-### Auth
-POST /auth/register  
+### Authentication
+POST /auth/register
 POST /auth/login
 
 ### Endpoints
@@ -103,10 +108,17 @@ POST /endpoints
 DELETE /endpoints/{id}
 
 ### Metrics
-POST /metrics  
-GET /endpoints/{id}/metrics
+GET /metrics/{endpoint}
+GET /metrics/{endpointId}/summary
+POST /metrics/check
 
-###### Example Request
+### Users
+GET /users
+GET /users/{id}
+
+---
+
+## Example Request
 
 ```json
 POST /endpoints
@@ -114,8 +126,8 @@ Content-Type: application/json
 
 {
   "url": "https://api.example.com/users",
-  "method": "GET",
-  "interval": 60
+  "name": "Users API",
+  "intervalSeconds": 60
 }
 ```
 
@@ -123,13 +135,13 @@ Content-Type: application/json
 
 ## Tech Stack
 
-| Layer       | Technology              |
-|------------|------------------------|
-| Backend     | Kotlin + Ktor          |
-| Frontend    | Compose Multiplatform  |
-| Database    | PostgreSQL             |
-| Workers     | Kotlin (async jobs)    |
-| Agent       | Kotlin (local runtime) |
+| Layer | Technology |
+|---|---|
+| Backend | Kotlin + Ktor |
+| Frontend | Compose Multiplatform |
+| Database | PostgreSQL |
+| Workers | Kotlin Coroutines |
+| Agent | Kotlin |
 
 ---
 
@@ -138,27 +150,33 @@ Content-Type: application/json
 Currently under development as part of the final-year project (PS 2025/2026).
 
 ### Current Progress
-- ✅ Architecture defined
-- ✅ Data model designed
-- ✅ Monitoring flow specified
-- 🚧 Backend implementation in progress
-- ⏳ Frontend & dashboards
+
+- ✅ Core backend architecture
+- ✅ Authentication system
+- ✅ Endpoint management
+- ✅ Metrics collection
+- ✅ Monitoring workflows
+- ✅ Compose Multiplatform client
+- 🚧 Database persistence improvements
+- 🚧 Monitoring agents
+- 🚧 Advanced dashboards & analytics
 
 ---
 
-## Our Main Goals
+## Main Goals
 
-- Provide a simple and scalable API monitoring solution
-- Support both public and private APIs securely
+- Provide a scalable API monitoring platform
+- Support both public and private APIs
 - Enable observability through metrics and alerts
-- Build a production-ready distributed system
+- Explore distributed monitoring architectures
+- Build a production-oriented monitoring system
 
 ---
 
 ## Team
 
-- Francisco Aragão Dias  
-- Martim Ferreira  
+- Francisco Aragão Dias
+- Martim Ferreira
 
 Supervisor:
 - Pedro Pereira
@@ -167,13 +185,15 @@ Supervisor:
 
 ## Future Work
 
-- Alert integrations (Slack, Email, etc.)
-- Advanced dashboards & visualizations
-- Distributed scaling of workers
-- Metrics aggregation & retention policies
+- Advanced dashboards and visualizations
+- Metrics aggregation and retention policies
+- Distributed worker scaling
+- Additional notification integrations
+- TimescaleDB evaluation
+- Enhanced monitoring agents
 
 ---
 
 ## License
 
-© 2026 Francisco Aragão Dias | Martim Ferreira. All rights reserved.
+© 2026 Francisco Aragão Dias | Martim Ferreira

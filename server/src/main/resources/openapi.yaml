@@ -12,7 +12,7 @@ paths:
 
   /auth/register:
     post:
-      summary: Registar utilizador
+      summary: Register user
       requestBody:
         required: true
         content:
@@ -21,7 +21,7 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
         "201":
-          description: Utilizador criado
+          description: User successfully created
           content:
             application/json:
               schema:
@@ -29,7 +29,7 @@ paths:
 
   /auth/login:
     post:
-      summary: Login do utilizador
+      summary: Login user
       requestBody:
         required: true
         content:
@@ -38,44 +38,22 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         "200":
-          description: Login com sucesso
+          description: Login successful
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
 
-  /endpoints:
+  /users:
     get:
-      summary: Listar endpoints do utilizador
-      security:
-        - bearerAuth: []
+      summary: List users
       responses:
         "200":
-          description: Lista de endpoints
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Endpoint'
+          description: List of users
 
-    post:
-      summary: Criar endpoint monitorizado
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateEndpointRequest'
-      responses:
-        "201":
-          description: Endpoint criado
-
-  /endpoints/{id}:
-    delete:
-      summary: Remover endpoint
+  /users/{id}:
+    get:
+      summary: Get user by ID
       security:
         - bearerAuth: []
       parameters:
@@ -86,16 +64,60 @@ paths:
             type: integer
       responses:
         "200":
-          description: Endpoint removido
+          description: User retrieved successfully
 
-  /metrics:
+  /endpoints:
     get:
-      summary: Obter todas as métricas
+      summary: List monitored endpoints
       security:
         - bearerAuth: []
       responses:
         "200":
-          description: Lista de métricas
+          description: List of monitored endpoints
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Endpoint'
+
+    post:
+      summary: Create monitored endpoint
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEndpointRequest'
+      responses:
+        "201":
+          description: Endpoint successfully created
+
+  /endpoints/{id}:
+    delete:
+      summary: Delete monitored endpoint
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Endpoint successfully deleted
+
+  /metrics:
+    get:
+      summary: Get all metrics
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of metrics
           content:
             application/json:
               schema:
@@ -105,7 +127,7 @@ paths:
 
   /metrics/check:
     post:
-      summary: Executar verificação de endpoint
+      summary: Execute endpoint check
       security:
         - bearerAuth: []
       requestBody:
@@ -116,7 +138,7 @@ paths:
               $ref: '#/components/schemas/CheckRequest'
       responses:
         "200":
-          description: Resultado da verificação
+          description: Monitoring result
           content:
             application/json:
               schema:
@@ -124,7 +146,7 @@ paths:
 
   /metrics/{endpoint}:
     get:
-      summary: Obter métricas de um endpoint
+      summary: Get endpoint metrics
       security:
         - bearerAuth: []
       parameters:
@@ -135,7 +157,7 @@ paths:
             type: integer
       responses:
         "200":
-          description: Lista de métricas
+          description: Endpoint metrics
           content:
             application/json:
               schema:
@@ -145,7 +167,7 @@ paths:
 
   /metrics/{endpointId}/summary:
     get:
-      summary: Obter resumo de métricas
+      summary: Get aggregated metrics summary
       security:
         - bearerAuth: []
       parameters:
@@ -156,15 +178,15 @@ paths:
             type: integer
       responses:
         "200":
-          description: Resumo estatístico
+          description: Aggregated monitoring metrics
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AggregatedMetric'
 
-  /agent:
+  /agent/register:
     post:
-      summary: Criar endpoint via agent
+      summary: Register endpoint through local agent
       security:
         - bearerAuth: []
       requestBody:
@@ -175,7 +197,7 @@ paths:
               $ref: '#/components/schemas/AgentCreateEndpointRequest'
       responses:
         "200":
-          description: Endpoint criado pelo agent
+          description: Agent endpoint successfully created
 
 components:
 
@@ -189,6 +211,9 @@ components:
 
     RegisterRequest:
       type: object
+      required:
+        - username
+        - password
       properties:
         username:
           type: string
@@ -203,6 +228,9 @@ components:
 
     LoginRequest:
       type: object
+      required:
+        - username
+        - password
       properties:
         username:
           type: string
@@ -217,6 +245,10 @@ components:
 
     CreateEndpointRequest:
       type: object
+      required:
+        - url
+        - name
+        - intervalSeconds
       properties:
         url:
           type: string
@@ -224,9 +256,17 @@ components:
           type: string
         intervalSeconds:
           type: integer
+        notification:
+          type: object
+        alertRule:
+          type: object
+          nullable: true
 
     AgentCreateEndpointRequest:
       type: object
+      required:
+        - name
+        - intervalSeconds
       properties:
         name:
           type: string
@@ -235,6 +275,8 @@ components:
 
     CheckRequest:
       type: object
+      required:
+        - url
       properties:
         url:
           type: string
@@ -254,6 +296,7 @@ components:
           type: integer
         createdAt:
           type: string
+          format: date-time
 
     Metric:
       type: object
@@ -273,21 +316,37 @@ components:
       properties:
         endpoint:
           type: string
+
         startTime:
           type: string
+          format: date-time
+
         endTime:
           type: string
+          format: date-time
+
         averageLatency:
           type: number
+
         totalRequests:
           type: integer
+
         errorRate:
           type: number
+
         throughput:
           type: integer
+
         uptime:
           type: integer
+
         percentile95:
           type: integer
+
         percentile99:
           type: integer
+
+        statusCodeDistribution:
+          type: object
+          additionalProperties:
+            type: integer
