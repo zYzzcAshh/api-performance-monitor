@@ -139,10 +139,20 @@ sistema validado após refactors
 ## Result (to fill next week)
 
 - done:
-  - -
+  - Compose refactor and UI improvements
+  - Project structure cleanup
+  - Demo video preparation
+  - System testing and validation
+  - Validation and error handling improvements
 
 - partially done:
-  - -
+  - REST API refactor
+    - revisão parcial das rotas
+    - melhoria da consistência REST
+    - reorganização da navegação e estrutura da API
 
 - not done:
-  - -
+  - Security & configuration
+  - Database integration
+  - TimescaleDB evaluation
+  - Local monitoring agent improvements
