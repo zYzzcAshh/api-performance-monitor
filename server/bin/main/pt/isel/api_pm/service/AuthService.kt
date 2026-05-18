@@ -6,7 +6,6 @@ import pt.isel.api_pm.domain.user.User
 import pt.isel.api_pm.domain.user.Username
 import pt.isel.api_pm.exceptions.BadCredentialsException
 import pt.isel.api_pm.exceptions.RegistrationFailedException
-import pt.isel.api_pm.exceptions.UserNotFoundException
 import pt.isel.api_pm.repo.UserRepository
 import pt.isel.api_pm.utils.PasswordHasher
 
@@ -34,7 +33,7 @@ class AuthService(
     ): String {
         val user =
             userRepository.getUserByUsername(username)
-                ?: throw UserNotFoundException(username.value)
+                ?: throw BadCredentialsException()
 
         if (!passwordHasher.verify(password.value, user.passwordHash.value)) {
             throw BadCredentialsException()

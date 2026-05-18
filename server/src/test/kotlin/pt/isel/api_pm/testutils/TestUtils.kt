@@ -9,18 +9,42 @@ suspend fun registerAndGetToken(
     client: HttpClient,
     username: String = "user",
 ): String {
-    client.post("/api/auth/register") {
+
+    client.post("/auth/register") {
+
         contentType(ContentType.Application.Json)
-        setBody("""{"username":"$username","password":"Password1"}""")
+
+        setBody(
+            """
+            {
+                "username":"$username",
+                "password":"Password1"
+            }
+            """.trimIndent()
+        )
     }
 
     val response =
-        client.post("/api/auth/login") {
+        client.post("/auth/login") {
+
             contentType(ContentType.Application.Json)
-            setBody("""{"username":"$username","password":"Password1"}""")
+
+            setBody(
+                """
+                {
+                    "username":"$username",
+                    "password":"Password1"
+                }
+                """.trimIndent()
+            )
         }
 
-    return response.bodyAsText().substringAfter("token: ").trim()
+    val body =
+        response.bodyAsText()
+
+    return body
+        .substringAfter("\"token\":\"")
+        .substringBefore("\"")
 }
 
 suspend fun createEndpoint(
@@ -30,8 +54,23 @@ suspend fun createEndpoint(
     name: String = "gh",
     intervalSeconds: Long = 60,
 ): HttpResponse =
-    client.post("/api/endpoints/create") {
-        header("Authorization", "Bearer $token")
+
+    client.post("/endpoints") {
+
+        header(
+            "Authorization",
+            "Bearer $token"
+        )
+
         contentType(ContentType.Application.Json)
-        setBody("""{"url":"$url","name":"$name","intervalSeconds":$intervalSeconds}""")
+
+        setBody(
+            """
+            {
+                "url":"$url",
+                "name":"$name",
+                "intervalSeconds":$intervalSeconds
+            }
+            """.trimIndent()
+        )
     }
