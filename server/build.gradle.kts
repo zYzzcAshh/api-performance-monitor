@@ -36,6 +36,11 @@ dependencies {
     implementation("com.sun.mail:jakarta.mail:2.0.2")
     implementation("io.ktor:ktor-server-swagger:3.4.1")
     implementation("io.ktor:ktor-server-openapi:3.4.1")
+
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(kotlin("test"))
+
+    testImplementation("io.ktor:ktor-client-mock:3.4.1")
+    testImplementation("io.ktor:ktor-client-content-negotiation:3.4.1")
+    testImplementation("io.ktor:ktor-serialization-kotlinx-json:3.4.1")
 }
