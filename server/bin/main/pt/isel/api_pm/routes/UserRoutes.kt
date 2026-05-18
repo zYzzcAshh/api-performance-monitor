@@ -7,32 +7,46 @@ import io.ktor.server.routing.*
 import pt.isel.api_pm.config.AuthConfig
 import pt.isel.api_pm.dto.toDTO
 import pt.isel.api_pm.exceptions.ForbiddenException
-import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.UserService
+import pt.isel.api_pm.utils.requireUIntParameter
+import pt.isel.api_pm.utils.requireUserId
 
-fun Route.userRoutes(service: UserService) {
+fun Route.userRoutes(
+    service: UserService
+) {
 
     get(Routes.Users.BASE) {
+
         call.respond(
             service.getUsers().map { user ->
                 user.toDTO()
-            },
+            }
         )
     }
 
     authenticate(AuthConfig.JWT_NAME) {
+
         get(Routes.Users.BY_ID) {
-            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
 
-            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
 
-            val paramId = call.parameters["id"]?.toUIntOrNull()
-                ?: throw IllegalArgumentException("Invalid user ID")
+            val userId =
+                principal.requireUserId()
 
-            if (tokenUserId.toUInt() != paramId) throw ForbiddenException()
+            val paramId =
+                call.parameters["id"]
+                    .requireUIntParameter("user ID")
 
-            call.respondText("Successfully accessed user with ID: $paramId")
+            if (userId != paramId) {
+                throw ForbiddenException()
+            }
+
+            call.respondText(
+                "Successfully accessed user with ID: $paramId"
+            )
         }
     }
 }

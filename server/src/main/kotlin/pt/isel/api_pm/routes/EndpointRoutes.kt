@@ -12,51 +12,91 @@ import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.endpoint.toDTO
-import pt.isel.api_pm.exceptions.InvalidTokenException
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.EndpointService
+import pt.isel.api_pm.utils.requireUIntParameter
+import pt.isel.api_pm.utils.requireUserId
 
-fun Route.endpointRoutes(service: EndpointService) {
+fun Route.endpointRoutes(
+    service: EndpointService
+) {
+
     authenticate(AuthConfig.JWT_NAME) {
 
         post(Routes.Endpoints.BASE) {
-            val request = call.receive<CreateEndpointRequest>()
+
+            val request =
+                call.receive<CreateEndpointRequest>()
 
             println("REQUEST = $request")
             println("NOTIFICATION = ${request.notification}")
             println("ALERT = ${request.alertRule}")
 
-            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-            val userId = tokenUserId.toUInt()
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
 
-            val url = EndpointUrl(request.url)
-            val interval = IntervalSeconds(request.intervalSeconds)
+            val userId =
+                principal.requireUserId()
 
-            service.add(userId, url, request.name, interval, request.notification, request.alertRule)
+            val url =
+                EndpointUrl(request.url)
 
-            call.respond(HttpStatusCode.Created)
+            val interval =
+                IntervalSeconds(request.intervalSeconds)
+
+            service.add(
+                userId,
+                url,
+                request.name,
+                interval,
+                request.notification,
+                request.alertRule
+            )
+
+            call.respond(
+                HttpStatusCode.Created
+            )
         }
 
         get(Routes.Endpoints.BASE) {
-            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-            val userId = tokenUserId.toUInt()
 
-            val endpoints = service.getByUser(userId)
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
 
-            call.respond(endpoints.toDTO())
+            val userId =
+                principal.requireUserId()
+
+            val endpoints =
+                service.getByUser(userId)
+
+            call.respond(
+                endpoints.toDTO()
+            )
         }
 
         delete(Routes.Endpoints.DELETE) {
-            val principal = call.principal<JWTPrincipal>() ?: throw MissingTokenException()
-            val tokenUserId = principal.getClaim(AuthConfig.USER_ID_CLAIM, Int::class) ?: throw InvalidTokenException()
-            val userId = tokenUserId.toUInt()
 
-            val id = call.parameters["id"]?.toUIntOrNull() ?: throw IllegalArgumentException("Invalid endpoint ID")
-            service.delete(userId, id)
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
 
-            call.respond(HttpStatusCode.OK)
+            val userId =
+                principal.requireUserId()
+
+            val endpointId =
+                call.parameters["id"]
+                    .requireUIntParameter("endpoint ID")
+
+            service.delete(
+                userId,
+                endpointId
+            )
+
+            call.respond(
+                HttpStatusCode.OK
+            )
         }
     }
 }
