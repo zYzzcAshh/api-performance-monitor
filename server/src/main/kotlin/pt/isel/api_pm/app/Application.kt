@@ -51,8 +51,8 @@ fun Application.module() {
             dependencies.monitoringService,
         )
         endpointRoutes(dependencies.endpointService)
-        agentRoutes()
+        agentRoutes(dependencies.agentService)
 
-            testRoutes()
+        testRoutes()
     }
 }

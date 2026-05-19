@@ -3,8 +3,7 @@ package pt.isel.api_pm.dto.agent
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AgentCreateEndpointRequest(
+data class AgentRegisterResponse (
     val agentId: UInt,
-    val name: String,
-    val intervalSeconds: Long
+    val token: String
 )

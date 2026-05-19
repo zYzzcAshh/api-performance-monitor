@@ -1,11 +1,11 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktcG0iLCJ1c2VySWQiOjEsImV4cCI6MTc3ODAyMjM4Mn0.FUyutgrNxc8fVykJ_Zp4OzRGHEgGCQ_ptmqotjseJxM
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJcImFwaS1wbVwiIiwidXNlcklkIjoxLCJleHAiOjE3NzkyMzE1MTN9.7xyzBk-bO8TiajGpK9IYQAjyymXJB1NeYEwHh-hy0qI
 
 ###
 # Register a new user
-POST {{baseUrl}}/api/auth/register
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 Accept: application/json
 
@@ -16,7 +16,7 @@ Accept: application/json
 
 ###
 # Login with the registered user
-POST {{baseUrl}}/api/auth/login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 Accept: application/json
 
@@ -27,7 +27,7 @@ Accept: application/json
 
 ###
 # Create a new endpoint monitor
-POST {{baseUrl}}/api/endpoints/create
+POST {{baseUrl}}/endpoints
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{token}}

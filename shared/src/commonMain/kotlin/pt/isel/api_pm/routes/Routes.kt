@@ -4,7 +4,8 @@ object Routes {
 
     object Agent {
         const val BASE = "/agent"
-        const val CREATE = "$BASE/register"
+        const val REGISTER = "$BASE/register"
+        const val ENDPOINTS = "$BASE/endpoints"
     }
 
     object Auth {

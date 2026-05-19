@@ -6,7 +6,7 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import pt.isel.api_pm.config.AuthConfig
+import pt.isel.api_pm.utils.AuthConfig
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.dto.endpoint.CheckRequest
 import pt.isel.api_pm.exceptions.MissingTokenException

@@ -7,7 +7,7 @@ import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
-import pt.isel.api_pm.config.AuthConfig
+import pt.isel.api_pm.utils.AuthConfig
 import pt.isel.api_pm.exceptions.ForbiddenException
 
 fun Application.configureAuthentication() {

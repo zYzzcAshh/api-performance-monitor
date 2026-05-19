@@ -11,6 +11,7 @@ import kotlin.time.Clock
 class UserRepositoryMemory : UserRepository {
     private val users = ConcurrentHashMap<UInt, User>()
 
+
     init {
         val hasher = PasswordHasher()
 

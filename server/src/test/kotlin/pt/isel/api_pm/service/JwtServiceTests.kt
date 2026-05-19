@@ -2,7 +2,7 @@ package pt.isel.api_pm.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import pt.isel.api_pm.config.AuthConfig
+import pt.isel.api_pm.utils.AuthConfig
 import kotlin.test.*
 
 class JwtServiceTests {
