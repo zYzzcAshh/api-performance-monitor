@@ -34,7 +34,7 @@ class AppDependencies(
     private val db = if (useMemory) {
         null
     } else {
-        val config = createDatabase(useH2)
+        val config = DatabaseInitializer.createDatabase(useH2)
         val database = DatabaseInitializer.connect(config)
         DatabaseInitializer.init(database)
         database
@@ -57,27 +57,4 @@ class AppDependencies(
     val agentService = AgentService(agentRepo, jwtService, sessionManager)
 
     val alertEvaluator = AlertEvaluator()
-}
-
-private fun createDatabase(useH2: Boolean): DatabaseConfig {
-    // TODO: Needs some changes
-    return if (useH2) {
-        // TODO: Temporary before i find a better way
-        File("/testdb.mv.db").delete()
-        File("/testdb.trace.db").delete()
-
-        DatabaseConfig(
-            jdbcUrl = "jdbc:h2:./testdb;AUTO_SERVER=TRUE",
-            username = "sa",
-            password = "",
-            driver = "org.h2.Driver"
-        )
-    } else {
-        DatabaseConfig(
-            jdbcUrl = System.getenv("DB_URL") ?: "jdbc:postgresql://localhost:5432/app",
-            username = System.getenv("DB_USER") ?: "postgres",
-            password = System.getenv("DB_PASSWORD") ?: "password",
-            driver = "org.postgresql.Driver"
-        )
-    }
 }
