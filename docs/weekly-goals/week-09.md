@@ -136,20 +136,28 @@ vídeo demo funcional preparado para apresentação
 sistema validado após refactors
 
 
-## Result (to fill next week)
+## Result (filled 19th May)
 
 - done:
   - Compose refactor and UI improvements
   - Project structure cleanup
   - Demo video preparation
-  - System testing and validation
   - Validation and error handling improvements
+  - System testing and validation
+  - Route testing refactor
+  - Service layer testing implementation
+  - Authentication, endpoints, metrics and monitoring test coverage improvements
 
 - partially done:
   - REST API refactor
     - revisão parcial das rotas
     - melhoria da consistência REST
     - reorganização da navegação e estrutura da API
+
+  - Testing
+    - implementação de testes para routes e services
+    - cobertura atual focada em repositórios memory
+    - testes para persistência PostgreSQL ficam planeados para a fase de integração da base de dados
 
 - not done:
   - Security & configuration
