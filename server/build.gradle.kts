@@ -49,4 +49,5 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:3.4.1")
     testImplementation("io.ktor:ktor-client-content-negotiation:3.4.1")
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:3.4.1")
+    testImplementation("com.h2database:h2:2.3.232")
 }
