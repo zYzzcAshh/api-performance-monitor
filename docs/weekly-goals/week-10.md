@@ -130,13 +130,52 @@ melhor gestão e colaboração do projeto
 código mais consistente e organizado
 
 
-## Result (to fill next week)
+# Result (to fill until 26th May)
 
 - done:
-- -
+  - Database integration
+    - configuração inicial de PostgreSQL
+    - integração de Exposed ORM
+    - criação inicial das tabelas principais
+    - início da migração de armazenamento memory para persistência real
+
+  - GitHub & project management
+    - adição do arguente ao repositório
+    - preparação de onboarding/contextualização
+    - melhoria da organização do repositório
+
+  - Repository layer refactor
+    - implementação inicial dos repositories PostgreSQL
+    - manutenção de compatibilidade com repositories memory
+    - separação consistente entre interfaces e implementações
+
+  - Technical decisions documentation
+    - documentação iniciada
+    - várias decisões técnicas já justificada
+    - falta consolidar posteriormente para ter um documento final
 
 - partially done:
-- -
+  - Repository testing
+    - testes concluídos para services e routes
+    - início dos testes para repositories memory
+    - falta consolidar testes para repositories PostgreSQL
+
+  - Dependency cleanup
+    - algumas dependências reorganizadas
+    - redundâncias ainda por rever
+
+  - Frontend navigation & screens
+    - separação parcial de screens
+    - melhorias iniciais de navegação e organização Compose
+
+  - Monitoring & architecture improvements
+    - continuação do refactor interno do sistema de monitoring
+    - reorganização parcial da arquitetura
+
+  - General refactor & cleanup
+    - melhoria progressiva de naming e estrutura
+    - limpeza parcial de código e módulos
 
 - not done:
-- -
+  - Client testing
+  - Cross-platform validation

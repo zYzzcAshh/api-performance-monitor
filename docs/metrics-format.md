@@ -1,7 +1,8 @@
 # Monitoring Metrics Format
 
-Workers collect monitoring results for each executed API check.
-At this stage, the system uses a simplified metric structure aligned with the current domain model.
+Monitoring workers collect request metrics for each executed API check.
+
+The system currently stores raw monitoring metrics associated with monitored endpoints.
 
 Example metric payload:
 
@@ -16,28 +17,55 @@ Example metric payload:
 
 Collected metrics include:
 
-- latency (in milliseconds)
-- HTTP status code
-- timestamp of the request
 - endpoint URL
+- request timestamp
+- latency (milliseconds)
+- HTTP status code
 
-The uptime will be calculated dynamically from monitoring results to avoid storing redundant aggregated metrics in the database.
+The monitoring model intentionally stores raw request data rather than precomputed aggregates.
 
-##### Notes
-- The success of a request can be derived from the HTTP status code (e.g., 2xx = success).
-- Error information is not explicitly stored at this stage.
-- Metrics are stored in-memory for the current prototype.
+This allows aggregated statistics to be dynamically recalculated whenever necessary.
 
-##### Aggregated Metrics (computed)
+---
 
-Aggregated metrics are calculated dynamically from raw request metrics and are not persisted.
+# Aggregated Metrics
 
-These include:
-- average latency
+Aggregated metrics are computed dynamically from raw monitoring data and are not directly persisted.
+
+Current aggregated metrics include:
+
 - uptime
+- average latency
+- total requests
+
+Additional planned metrics include:
+
 - error rate
-- percentiles (p95, p99)
+- latency percentiles (p95, p99)
 - throughput
 - status code distribution
 
-The uptime is calculated dynamically based on successful vs total requests.
+---
+
+# Uptime Calculation
+
+Uptime is calculated dynamically based on successful versus total requests.
+
+Successful requests are currently defined as responses with HTTP status codes in the `2xx` range.
+
+Example:
+
+```text
+uptime = successful_requests / total_requests * 100
+```
+
+This avoids storing redundant aggregated state and ensures summaries remain consistent with the underlying monitoring history.
+
+---
+
+# Notes
+
+- Request success is derived from the HTTP status code.
+- Monitoring metrics are currently supported by both in-memory and PostgreSQL repository implementations.
+- The monitoring structure was designed to remain storage-independent through repository abstraction.
+- Future versions may include richer error metadata and distributed monitoring support.
