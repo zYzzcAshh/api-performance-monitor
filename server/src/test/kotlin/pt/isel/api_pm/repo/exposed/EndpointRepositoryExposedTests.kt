@@ -1,8 +1,12 @@
 package pt.isel.api_pm.repo.exposed
 
 import kotlinx.coroutines.test.runTest
-import pt.isel.api_pm.notification.NotificationConfig
 import kotlin.test.*
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import pt.isel.api_pm.database.tables.UserTable
+import pt.isel.api_pm.notification.NotificationConfig
+import kotlin.time.Clock
 
 class EndpointRepositoryExposedTests {
 
@@ -15,12 +19,27 @@ class EndpointRepositoryExposedTests {
         )
     }
 
+    private fun createTestUser(id: Int) {
+
+        transaction(TestDatabase.db) {
+
+            UserTable.insert {
+                it[UserTable.id] = id
+                it[username] = "user$id"
+                it[passwordhash] = "hash"
+                it[createdAt] = Clock.System.now()
+            }
+        }
+    }
+
     @Test
     fun `should add endpoint`() =
         runTest {
 
             val repository =
                 createRepository()
+
+            createTestUser(1)
 
             repository.add(
                 userId = 1u,
@@ -51,6 +70,9 @@ class EndpointRepositoryExposedTests {
 
             val repository =
                 createRepository()
+
+            createTestUser(1)
+            createTestUser(2)
 
             repository.add(
                 1u,
@@ -86,6 +108,8 @@ class EndpointRepositoryExposedTests {
             val repository =
                 createRepository()
 
+            createTestUser(1)
+
             repository.add(
                 1u,
                 "https://api.com",
@@ -117,6 +141,8 @@ class EndpointRepositoryExposedTests {
 
             val repository =
                 createRepository()
+
+            createTestUser(1)
 
             repository.add(
                 1u,
