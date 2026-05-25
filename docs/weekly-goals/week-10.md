@@ -136,30 +136,36 @@ código mais consistente e organizado
   - Database integration
     - configuração inicial de PostgreSQL
     - integração de Exposed ORM
-    - criação inicial das tabelas principais
-    - início da migração de armazenamento memory para persistência real
+    - criação das tabelas principais
+    - migração inicial de armazenamento memory para persistência real
+
+  - Repository layer refactor
+    - implementação dos repositories PostgreSQL
+    - manutenção de compatibilidade com repositories memory
+    - separação consistente entre interfaces e implementações
+    - alinhamento da camada de persistência com Exposed
+
+  - Repository testing
+    - testes concluídos para repositories memory
+    - testes concluídos para repositories PostgreSQL/Exposed
+    - validação da persistência e queries principais
+
+  - Service & route testing
+    - testes concluídos para services
+    - testes concluídos para routes/endpoints
+    - melhoria significativa da cobertura de testes do backend
+
+  - Technical decisions documentation
+    - documentação técnica iniciada
+    - justificação das principais tecnologias utilizadas
+    - alinhamento arquitetural e documentação de decisões
 
   - GitHub & project management
     - adição do arguente ao repositório
     - preparação de onboarding/contextualização
     - melhoria da organização do repositório
 
-  - Repository layer refactor
-    - implementação inicial dos repositories PostgreSQL
-    - manutenção de compatibilidade com repositories memory
-    - separação consistente entre interfaces e implementações
-
-  - Technical decisions documentation
-    - documentação iniciada
-    - várias decisões técnicas já justificada
-    - falta consolidar posteriormente para ter um documento final
-
 - partially done:
-  - Repository testing
-    - testes concluídos para services e routes
-    - início dos testes para repositories memory
-    - falta consolidar testes para repositories PostgreSQL
-
   - Dependency cleanup
     - algumas dependências reorganizadas
     - redundâncias ainda por rever
