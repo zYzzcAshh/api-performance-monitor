@@ -17,9 +17,11 @@ import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.service.UserService
 import pt.isel.api_pm.database.DatabaseConfig
 import pt.isel.api_pm.database.DatabaseInitializer
+import pt.isel.api_pm.repo.exposed.AgentRepositoryExposed
 import pt.isel.api_pm.repo.exposed.EndpointRepositoryExposed
 import pt.isel.api_pm.repo.exposed.MetricsRepositoryExposed
 import pt.isel.api_pm.utils.PasswordHasher
+import pt.isel.api_pm.utils.SmtpConfig
 import pt.isel.api_pm.utils.SmtpEmailSender
 import java.io.File
 
@@ -27,23 +29,46 @@ class AppDependencies(
     useMemory: Boolean = false,
     useH2: Boolean = true
 ) {
+
     private val passwordHasher = PasswordHasher()
     private val jwtService = JwtService()
-    private val smtpEmailSender = SmtpEmailSender("example", "example") // TODO: Change this to env variables too
+    private val smtpEmailSender =
+        SmtpEmailSender(
+            SmtpConfig.USER,
+            SmtpConfig.PASSWORD
+        )
 
     private val db = if (useMemory) {
         null
     } else {
+        
         val config = DatabaseInitializer.createDatabase(useH2)
         val database = DatabaseInitializer.connect(config)
         DatabaseInitializer.init(database)
         database
     }
 
-    private val userRepository = if (useMemory) UserRepositoryMemory() else UserRepositoryExposed(db!!)
-    private val metricsRepository = if (useMemory) MetricsRepositoryMemory() else MetricsRepositoryExposed(db!!)
-    private val endpointRepo = if (useMemory) EndpointRepositoryMemory() else EndpointRepositoryExposed(db!!)
-    private val agentRepo = if (useMemory) AgentRepositoryMemory() else AgentRepositoryMemory() // TODO: Falta em db
+    private val userRepository = if (useMemory)
+        UserRepositoryMemory()
+    else
+        UserRepositoryExposed(db!!)
+
+    private val metricsRepository = if (useMemory)
+        MetricsRepositoryMemory()
+    else
+        MetricsRepositoryExposed(db!!)
+
+    private val endpointRepo =
+        if (useMemory)
+            EndpointRepositoryMemory()
+        else
+            EndpointRepositoryExposed(db!!)
+
+    private val agentRepo =
+        if (useMemory)
+            AgentRepositoryMemory()
+        else
+            AgentRepositoryExposed(db!!)
 
     private val sessionManager = AgentSessionManager(agentRepo)
 

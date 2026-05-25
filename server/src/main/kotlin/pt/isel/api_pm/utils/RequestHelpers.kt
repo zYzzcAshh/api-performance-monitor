@@ -1,9 +1,7 @@
 package pt.isel.api_pm.utils
 
-import io.ktor.server.auth.jwt.JWTPrincipal
-import pt.isel.api_pm.utils.AuthConfig
+import io.ktor.server.auth.jwt.*
 import pt.isel.api_pm.exceptions.InvalidTokenException
-import pt.isel.api_pm.exceptions.MissingTokenException
 
 fun JWTPrincipal.requireUserId(): UInt {
 
@@ -25,9 +23,3 @@ fun String?.requireUIntParameter(
             "Invalid $name"
         )
 }
-
-fun String?.requireIntParameter(
-    name: String
-): Int =
-    this?.toIntOrNull()
-        ?: throw IllegalArgumentException("Invalid $name")
