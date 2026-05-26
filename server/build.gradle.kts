@@ -51,3 +51,16 @@ dependencies {
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:3.4.1")
     testImplementation("com.h2database:h2:2.3.232")
 }
+
+tasks.withType<Test> {
+    val envFile = rootProject.file(".env")
+    if (envFile.exists()) {
+        envFile.forEachLine { line ->
+            val trimmed = line.trim()
+            if (trimmed.isNotEmpty() && !trimmed.startsWith("#")) {
+                val (key, value) = trimmed.split("=", limit = 2)
+                environment(key.trim(), value.trim())
+            }
+        }
+    }
+}
