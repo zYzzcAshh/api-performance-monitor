@@ -4,15 +4,23 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import pt.isel.api_pm.app.module
-import pt.isel.api_pm.testutils.*
 import kotlin.test.*
+import kotlin.test.BeforeTest
+import pt.isel.api_pm.app.module
+import pt.isel.api_pm.repo.exposed.TestDatabase
+import pt.isel.api_pm.testutils.*
 
 class EndpointRoutesTests {
+
+    @BeforeTest
+    fun setup() {
+        TestDatabase.init()
+    }
 
     @Test
     fun `should reject request without token`() =
         testApplication {
+
             application { module() }
 
             val response =
@@ -27,12 +35,13 @@ class EndpointRoutesTests {
     @Test
     fun `should create endpoint with token`() =
         testApplication {
+
             application { module() }
 
             val token =
                 registerAndGetToken(
                     client,
-                    "user1"
+                    "create_user"
                 )
 
             val response =
@@ -50,18 +59,20 @@ class EndpointRoutesTests {
     @Test
     fun `should list endpoints for user`() =
         testApplication {
+
             application { module() }
 
             val token =
                 registerAndGetToken(
                     client,
-                    "user1"
+                    "list_user"
                 )
 
             createEndpoint(client, token)
 
             val response =
                 client.get("/endpoints") {
+
                     header(
                         "Authorization",
                         "Bearer $token"
@@ -82,12 +93,13 @@ class EndpointRoutesTests {
     @Test
     fun `should reject invalid url via API`() =
         testApplication {
+
             application { module() }
 
             val token =
                 registerAndGetToken(
                     client,
-                    "user1"
+                    "invalid_url_user"
                 )
 
             val response =
@@ -106,12 +118,13 @@ class EndpointRoutesTests {
     @Test
     fun `should reject invalid interval via API`() =
         testApplication {
+
             application { module() }
 
             val token =
                 registerAndGetToken(
                     client,
-                    "user1"
+                    "invalid_interval_user"
                 )
 
             val response =
@@ -130,22 +143,19 @@ class EndpointRoutesTests {
     @Test
     fun `should reject duplicate endpoint via API`() =
         testApplication {
+
             application { module() }
 
             val token =
                 registerAndGetToken(
                     client,
-                    "user1"
+                    "duplicate_user"
                 )
 
-            createEndpoint(client, token)
             createEndpoint(client, token)
 
             val response =
-                createEndpoint(
-                    client,
-                    token
-                )
+                createEndpoint(client, token)
 
             assertEquals(
                 HttpStatusCode.Conflict,
@@ -156,18 +166,20 @@ class EndpointRoutesTests {
     @Test
     fun `should delete endpoint`() =
         testApplication {
+
             application { module() }
 
             val token =
                 registerAndGetToken(
                     client,
-                    "user1"
+                    "delete_user"
                 )
 
             createEndpoint(client, token)
 
             val response =
                 client.delete("/endpoints/1") {
+
                     header(
                         "Authorization",
                         "Bearer $token"
@@ -193,12 +205,12 @@ class EndpointRoutesTests {
 
                     setBody(
                         """
-                    {
-                        "url":"https://api.github.com",
-                        "name":"gh",
-                        "intervalSeconds":60
-                    }
-                    """.trimIndent()
+                        {
+                            "url":"https://api.github.com",
+                            "name":"gh",
+                            "intervalSeconds":60
+                        }
+                        """.trimIndent()
                     )
                 }
 
@@ -264,7 +276,7 @@ class EndpointRoutesTests {
             val token =
                 registerAndGetToken(
                     client,
-                    "user_invalid_id"
+                    "invalid_id_user"
                 )
 
             val response =

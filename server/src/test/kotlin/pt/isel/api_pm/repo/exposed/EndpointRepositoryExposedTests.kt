@@ -4,6 +4,8 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.deleteAll
+import pt.isel.api_pm.database.tables.RequestMetricsTable
 import pt.isel.api_pm.database.tables.UserTable
 import pt.isel.api_pm.notification.NotificationConfig
 import kotlin.time.Clock
@@ -29,6 +31,17 @@ class EndpointRepositoryExposedTests {
                 it[passwordhash] = "hash"
                 it[createdAt] = Clock.System.now()
             }
+        }
+    }
+
+    @BeforeTest
+    fun cleanupDatabase() {
+
+        TestDatabase.init()
+
+        transaction(TestDatabase.db) {
+
+            RequestMetricsTable.deleteAll()
         }
     }
 
@@ -146,7 +159,7 @@ class EndpointRepositoryExposedTests {
 
             repository.add(
                 1u,
-                "https://api.github.com/",
+                "https://api.github.com",
                 "github",
                 60,
                 NotificationConfig.None,

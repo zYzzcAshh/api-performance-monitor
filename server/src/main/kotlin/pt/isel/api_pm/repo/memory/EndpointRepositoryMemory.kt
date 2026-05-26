@@ -28,14 +28,21 @@ class EndpointRepositoryMemory : EndpointRepository {
         notification: NotificationConfig,
         alertRule: AlertRule?
     ) {
-        val monitoredEndpointIdVal = endpoints[userId]?.keys?.maxOrNull()
-        val monitoredEndpointId = if (monitoredEndpointIdVal == null) 0u else monitoredEndpointIdVal + 1u
+
+        val normalizedUrl = url.removeSuffix("/")
+
+        val monitoredEndpointIdVal =
+            endpoints[userId]?.keys?.maxOrNull()
+
+        val monitoredEndpointId =
+            if (monitoredEndpointIdVal == null) 0u
+            else monitoredEndpointIdVal + 1u
 
         val monitoredEndpoint =
             MonitoredEndpoint(
                 id = monitoredEndpointId,
                 userId = userId,
-                url = EndpointUrl(url),
+                url = EndpointUrl(normalizedUrl),
                 name = name,
                 interval = IntervalSeconds(intervalSeconds),
                 createdAt = Clock.System.now(),
@@ -47,7 +54,9 @@ class EndpointRepositoryMemory : EndpointRepository {
             .getOrPut(userId) { ConcurrentHashMap() }[monitoredEndpoint.id] =
             monitoredEndpoint
 
-        logger.info("Added endpoint: userId=$userId, endpointId=$monitoredEndpointId, url=$url")
+        logger.info(
+            "Added endpoint: userId=$userId, endpointId=$monitoredEndpointId, url=$normalizedUrl"
+        )
     }
 
     override suspend fun delete(
