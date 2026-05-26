@@ -108,18 +108,33 @@ class AgentRepositoryExposed(
 
     private fun ResultRow.toAgent(): Agent {
 
+        val endpointName =
+            this[AgentTable.endpointName]
+
+        val endpointInterval =
+            this[AgentTable.endpointIntervalSeconds]
+
+        val endpointCreatedAt =
+            this[AgentTable.endpointCreatedAt]
+
         val endpoint =
-            if (this[AgentTable.endpointName] != null) {
+            if (
+                endpointName != null &&
+                endpointInterval != null &&
+                endpointCreatedAt != null
+            ) {
 
                 AgentEndpoint(
-                    name = this[AgentTable.endpointName]!!,
+                    name = endpointName,
                     intervalSeconds = IntervalSeconds(
-                        this[AgentTable.endpointIntervalSeconds]!!
+                        endpointInterval
                     ),
-                    createdAt = this[AgentTable.endpointCreatedAt]!!
+                    createdAt = endpointCreatedAt
                 )
 
-            } else null
+            } else {
+                null
+            }
 
         return Agent(
             id = this[AgentTable.id].toUInt(),

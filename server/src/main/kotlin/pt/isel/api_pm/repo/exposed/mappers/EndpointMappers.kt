@@ -32,20 +32,29 @@ private fun ResultRow.toNotification(): NotificationConfig {
 
     return when (type) {
 
-        "none" -> NotificationConfig.None
+        "none" ->
+            NotificationConfig.None
 
-        "log" -> NotificationConfig.Log
+        "log" ->
+            NotificationConfig.Log
 
-        "discord_webhook" ->
-            json.decodeFromString<NotificationConfig.DiscordWebhook>(data!!)
+        "discord_webhook" -> {
+            val jsonData = data ?: return NotificationConfig.None
+            json.decodeFromString<NotificationConfig.DiscordWebhook>(jsonData)
+        }
 
-        "email" ->
-            json.decodeFromString<NotificationConfig.Email>(data!!)
+        "email" -> {
+            val jsonData = data ?: return NotificationConfig.None
+            json.decodeFromString<NotificationConfig.Email>(jsonData)
+        }
 
-        "slack_webhook" ->
-            json.decodeFromString<NotificationConfig.SlackWebhook>(data!!)
+        "slack_webhook" -> {
+            val jsonData = data ?: return NotificationConfig.None
+            json.decodeFromString<NotificationConfig.SlackWebhook>(jsonData)
+        }
 
-        else -> NotificationConfig.None
+        else ->
+            NotificationConfig.None
     }
 }
 
