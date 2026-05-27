@@ -13,8 +13,6 @@ EndpointsList --> CreateMonitoring : "Criar monitorização"
 
 CreateMonitoring --> EndpointsList : "Criado"
 
-EndpointDashboard --> EndpointsList : "Voltar"
-
 EndpointsList --> Login : "Logout"
 
 @enduml
