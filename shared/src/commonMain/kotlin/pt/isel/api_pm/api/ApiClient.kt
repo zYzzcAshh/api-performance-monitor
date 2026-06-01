@@ -9,6 +9,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
+import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.dto.user.LoginRequest
 import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
@@ -108,7 +109,7 @@ class ApiClient(
     suspend fun getEndpointMetrics(
         token: String,
         endpointId: UInt
-    ): Result<String> =
+    ): Result<List<RequestMetric>> =
         runCatching {
 
             client.get("${ApiConfig.BASE_URL}/metrics/$endpointId") {
@@ -119,7 +120,7 @@ class ApiClient(
                 )
 
                 contentType(ContentType.Application.Json)
-            }.body()
+            }.body<List<RequestMetric>>()
         }
 
     suspend fun deleteEndpoint(

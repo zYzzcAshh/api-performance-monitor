@@ -13,10 +13,11 @@ import pt.isel.api_pm.config.DemoConfig
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
+import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
 
 data class EndpointsState(
-    val endpoints: String? = null,
+    val metrics: List<RequestMetric> = emptyList(),
     val monitoredEndpoints: List<EndpointUiModel> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
@@ -44,7 +45,7 @@ class EndpointsViewModel(
 
             _state.value = if (result.isSuccess) {
                 _state.value.copy(
-                    endpoints = result.getOrNull(),
+                    metrics = result.getOrNull() ?: emptyList(),
                     isLoading = false
                 )
             } else {
@@ -86,8 +87,6 @@ class EndpointsViewModel(
 
     fun createEndpoint(name: String, url: String, interval: String) {
 
-        println("CREATE ENDPOINT START")
-
         scope.launch {
             val intervalInt = interval.toIntOrNull()
             if (name.isBlank() || url.isBlank() || intervalInt == null || intervalInt <= 0) {
@@ -114,18 +113,11 @@ class EndpointsViewModel(
                 )
             )
 
-            println("CALLING API")
-            
             val result =
                 api.createEndpointMonitor(
                     token,
                     request
                 )
-
-            println("RESULT = $result")
-            println("EXCEPTION = ${result.exceptionOrNull()}")
-
-
 
             _state.value = if (result.isSuccess) {
 
@@ -156,7 +148,7 @@ class EndpointsViewModel(
             if (result.isSuccess) {
 
                 _state.value = _state.value.copy(
-                    endpoints = null
+                    metrics = emptyList()
                 )
 
                 loadMonitored()

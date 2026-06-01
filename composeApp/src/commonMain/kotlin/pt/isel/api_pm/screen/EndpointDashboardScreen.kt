@@ -1,14 +1,26 @@
 package pt.isel.api_pm.screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import pt.isel.api_pm.components.MetricDetails
 import pt.isel.api_pm.components.ScreenContainer
 import pt.isel.api_pm.theme.Primary
+import pt.isel.api_pm.theme.TextPrimary
+import pt.isel.api_pm.components.MetricRow
+import pt.isel.api_pm.utils.formatTimestamp
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -28,55 +40,78 @@ fun EndpointDashboardScreen(
         }
     }
 
+    val latestMetric =
+        state.metrics.lastOrNull()
+
     ScreenContainer {
 
-        Column(
+        LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            TextButton(
-                onClick = onBack
-            ) {
-                Text("← Back")
+            item {
+                TextButton(
+                    onClick = onBack
+                ) {
+                    Text("← Back")
+                }
             }
 
-            Text(
-                text = "Endpoint Dashboard",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = Primary
-            )
+            item {
+                Text(
+                    text = "Endpoint Dashboard",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Primary
+                )
+            }
 
-            Card {
+            latestMetric?.let { metric ->
 
-                Column(
-                    modifier = Modifier.padding(20.dp)
+                item {
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+
+                        Column(
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+
+                            Text(
+                                text = "Current Status",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(Modifier.height(12.dp))
+
+                            MetricDetails(metric)
+                        }
+                    }
+                }
+            }
+
+            item {
+                Text(
+                    text = "Metrics",
+                    color = TextPrimary,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            items(state.metrics.reversed()) { metric ->
+
+                Card(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
 
-                    Text(
-                        text = "Metrics",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
 
-                    Spacer(Modifier.height(12.dp))
-
-                    state.endpoints?.let {
-
-                        val items = it.removePrefix("[") // TODO parse metrics response properly
-                            .removeSuffix("]")
-                            .split("},")
-                            .map { entry ->
-                                if (!entry.trim().endsWith("}"))
-                                    "$entry}"
-                                else
-                                    entry
-                            }
-
-                        items.forEach { metric ->
-                            Text(metric)
-                            Spacer(Modifier.height(8.dp))
-                        }
+                        MetricDetails(metric)
                     }
                 }
             }
