@@ -1,6 +1,8 @@
 package pt.isel.api_pm.navigation
 
-sealed class Screen(val route: String) {
+sealed class Screen(
+    val route: String
+) {
 
     object Login : Screen("login")
 
@@ -8,5 +10,7 @@ sealed class Screen(val route: String) {
 
     object Endpoints : Screen("endpoints")
 
-    object EndpointDetails : Screen("endpoint_details")
+    object CreateMonitoring : Screen("create_monitoring")
+
+    object EndpointDashboard : Screen("endpoint_dashboard")
 }

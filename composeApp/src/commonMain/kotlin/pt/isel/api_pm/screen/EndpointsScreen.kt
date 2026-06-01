@@ -3,17 +3,18 @@ package pt.isel.api_pm.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pt.isel.api_pm.components.AppButton
-import pt.isel.api_pm.components.AppTextField
 import pt.isel.api_pm.components.EndpointCard
 import pt.isel.api_pm.components.ScreenContainer
 import pt.isel.api_pm.theme.Primary
@@ -24,14 +25,13 @@ import pt.isel.api_pm.viewmodel.EndpointsViewModel
 @Composable
 fun EndpointsScreen(
     viewModel: EndpointsViewModel,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onCreateMonitoring: () -> Unit,
+    onOpenEndpoint: (UInt) -> Unit
+
 ) {
 
     val state by viewModel.state.collectAsState()
-
-    var name by remember { mutableStateOf("") }
-    var url by remember { mutableStateOf("") }
-    var interval by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.loadMonitored()
@@ -78,81 +78,11 @@ fun EndpointsScreen(
 
             item {
 
-                Card {
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-
-                        Text(
-                            text = "Create Endpoint",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        AppTextField(
-                            value = name,
-                            onValueChange = {
-                                name = it
-                            },
-                            label = "Endpoint Name",
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        AppTextField(
-                            value = url,
-                            onValueChange = {
-                                url = it
-                            },
-                            label = "URL",
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        AppTextField(
-                            value = interval,
-                            onValueChange = {
-                                interval = it
-                            },
-                            label = "Interval (seconds)",
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        AppButton(
-                            text =
-                                if (state.creating)
-                                    "Creating..."
-                                else
-                                    "Create Endpoint",
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                viewModel.createEndpoint(
-                                    name,
-                                    url,
-                                    interval
-                                )
-
-                                name = ""
-                                url = ""
-                                interval = ""
-                            }
-                        )
-
-                        state.message?.let {
-
-                            Text(
-                                text = it,
-                                color =
-                                    if (it.startsWith("Error"))
-                                        MaterialTheme.colorScheme.error
-                                    else
-                                        Primary
-                            )
-                        }
-                    }
-                }
+                AppButton(
+                    text = "Create Monitoring",
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onCreateMonitoring
+                )
             }
 
             item {
@@ -182,50 +112,13 @@ fun EndpointsScreen(
                         interval = "${endpoint.intervalSeconds} seconds",
 
                         onViewMetrics = {
-                            viewModel.loadMetrics(endpoint.id)
+                            onOpenEndpoint(endpoint.id)
                         },
 
                         onDelete = {
                             viewModel.deleteEndpoint(endpoint.id)
                         }
                     )
-                }
-            }
-
-            state.endpoints?.let {
-
-                item {
-
-                    Card {
-
-                        Column(
-                            modifier = Modifier.padding(20.dp)
-                        ) {
-
-                            Text(
-                                text = "Metrics",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Spacer(Modifier.height(12.dp))
-
-                            // Temporary
-                            val items = it.removePrefix("[")
-                                .removeSuffix("]")
-                                .split("},")
-                                .map{ entry ->
-                                    val fixed = if (!entry.trim().endsWith("}")) "$entry}" else entry
-                                    fixed
-                                }
-
-                            items.forEach { text ->
-                                Text(text)
-                            }
-
-                            //Text(it)
-                        }
-                    }
                 }
             }
 

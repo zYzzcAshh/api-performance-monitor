@@ -85,6 +85,9 @@ class EndpointsViewModel(
     }
 
     fun createEndpoint(name: String, url: String, interval: String) {
+
+        println("CREATE ENDPOINT START")
+
         scope.launch {
             val intervalInt = interval.toIntOrNull()
             if (name.isBlank() || url.isBlank() || intervalInt == null || intervalInt <= 0) {
@@ -111,10 +114,18 @@ class EndpointsViewModel(
                 )
             )
 
-            val result = api.createEndpointMonitor(
-                token,
-                request
-            )
+            println("CALLING API")
+            
+            val result =
+                api.createEndpointMonitor(
+                    token,
+                    request
+                )
+
+            println("RESULT = $result")
+            println("EXCEPTION = ${result.exceptionOrNull()}")
+
+
 
             _state.value = if (result.isSuccess) {
 

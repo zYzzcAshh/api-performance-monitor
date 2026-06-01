@@ -92,7 +92,7 @@ class ApiClient(
     ): Result<String> =
         runCatching {
 
-            client.post("${ApiConfig.BASE_URL}/endpoints/create") {
+            client.post("${ApiConfig.BASE_URL}/endpoints") {
 
                 header(
                     "Authorization",
