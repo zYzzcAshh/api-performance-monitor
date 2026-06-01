@@ -1,0 +1,34 @@
+@startuml
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+rectangle "Frontend\nCompose Multiplatform" as Frontend
+
+rectangle "Backend API\nKtor + Kotlin" as Backend
+
+database "PostgreSQL" as DB
+
+rectangle "Monitoring Workers" as Workers
+
+rectangle "Local Monitoring Agent" as Agent
+
+cloud "Public APIs" as PublicApis
+
+cloud "Private APIs" as PrivateApis
+
+Frontend --> Backend : REST API\nJSON
+
+Backend --> DB : Exposed ORM\nSQL
+
+Backend --> Workers : Schedule\nMonitoring Tasks
+
+Workers --> PublicApis : HTTP Checks
+
+Backend --> Agent : Agent Config\nRegistration
+
+Agent --> PrivateApis : Local Checks
+
+Agent --> Backend : Metrics
+
+@enduml
