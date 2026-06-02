@@ -131,4 +131,120 @@ class EndpointsViewModelTest {
             vm.state.value.metrics.size
         )
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun createEndpoint_failure_sets_error_message() = runTest {
+
+        val api = FakeApi().apply {
+            createEndpointResult =
+                Result.failure(
+                    Exception("Invalid URL")
+                )
+        }
+
+        val vm =
+            EndpointsViewModel(
+                api = api,
+                token = "token",
+                scope = this
+            )
+
+        vm.createEndpoint(
+            "Google",
+            "invalid",
+            "60"
+        )
+
+        advanceUntilIdle()
+
+        assertEquals(
+            "Error: Invalid URL",
+            vm.state.value.message
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun deleteEndpoint_failure_sets_error_message() = runTest {
+
+        val api = FakeApi().apply {
+            deleteEndpointResult =
+                Result.failure(
+                    Exception("Delete failed")
+                )
+        }
+
+        val vm =
+            EndpointsViewModel(
+                api = api,
+                token = "token",
+                scope = this
+            )
+
+        vm.deleteEndpoint(1u)
+
+        advanceUntilIdle()
+
+        assertEquals(
+            "Error deleting endpoint",
+            vm.state.value.message
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun loadMonitored_failure_sets_error() = runTest {
+
+        val api = FakeApi().apply {
+            endpointsResult =
+                Result.failure(
+                    Exception("Unauthorized")
+                )
+        }
+
+        val vm =
+            EndpointsViewModel(
+                api = api,
+                token = "token",
+                scope = this
+            )
+
+        vm.loadMonitored()
+
+        advanceUntilIdle()
+
+        assertEquals(
+            "Unauthorized",
+            vm.state.value.error
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun loadMetrics_failure_sets_error() = runTest {
+
+        val api = FakeApi().apply {
+            metricsResult =
+                Result.failure(
+                    Exception("Metrics error")
+                )
+        }
+
+        val vm =
+            EndpointsViewModel(
+                api = api,
+                token = "token",
+                scope = this
+            )
+
+        vm.loadMetrics(1u)
+
+        advanceUntilIdle()
+
+        assertEquals(
+            "Metrics error",
+            vm.state.value.error
+        )
+    }
 }

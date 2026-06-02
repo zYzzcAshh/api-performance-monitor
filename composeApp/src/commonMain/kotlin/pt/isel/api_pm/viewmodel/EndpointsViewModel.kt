@@ -122,9 +122,6 @@ class EndpointsViewModel(
                     request
                 )
 
-            println("CREATE RESULT = $result")
-            println("CREATE ERROR = ${result.exceptionOrNull()}")
-
             _state.value = if (result.isSuccess) {
 
                 loadMonitored()

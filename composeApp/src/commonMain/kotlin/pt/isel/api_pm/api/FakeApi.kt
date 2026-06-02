@@ -13,6 +13,23 @@ class FakeApi : Api {
     var registerResult: Result<String> =
         Result.success("registered")
 
+    var endpointsResult: Result<List<EndpointUiModel>> =
+        Result.success(emptyList())
+
+    var createEndpointResult: Result<String> =
+        Result.success("created")
+
+    var metricsResult: Result<List<RequestMetric>> =
+        Result.success(emptyList())
+
+    var deleteEndpointResult: Result<Unit> =
+        Result.success(Unit)
+
+    var summaryResult: Result<AggregatedMetric> =
+        Result.failure(
+            NotImplementedError("Configure summaryResult in test")
+        )
+
     override suspend fun login(
         username: String,
         password: String
@@ -25,27 +42,25 @@ class FakeApi : Api {
 
     override suspend fun getEndpoints(
         token: String
-    ) = Result.success(emptyList<EndpointUiModel>())
+    ) = endpointsResult
 
     override suspend fun createEndpointMonitor(
         token: String,
         request: CreateEndpointRequest
-    ) = Result.success("created")
+    ) = createEndpointResult
 
     override suspend fun getEndpointMetrics(
         token: String,
         endpointId: UInt
-    ) = Result.success(emptyList<RequestMetric>())
+    ) = metricsResult
 
     override suspend fun deleteEndpoint(
         token: String,
         endpointId: UInt
-    ) = Result.success(Unit)
+    ) = deleteEndpointResult
 
     override suspend fun getMetricsSummary(
         token: String,
         endpointId: UInt
-    ): Result<AggregatedMetric> {
-        throw NotImplementedError()
-    }
+    ) = summaryResult
 }
