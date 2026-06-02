@@ -1,7 +1,8 @@
 package pt.isel.api_pm.service
 
 import pt.isel.api_pm.alert.AlertRule
-import pt.isel.api_pm.dto.MetricsSummaryDTO
+import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 import kotlin.time.Clock
@@ -26,29 +27,109 @@ class MetricsService(
     suspend fun getSummary(
         userId: UInt,
         endpointId: UInt,
-    ): MetricsSummaryDTO {
-        val metrics = getByEndpoint(userId, endpointId)
+    ): AggregatedMetric {
+
+        val metrics =
+            getByEndpoint(
+                userId,
+                endpointId
+            )
 
         if (metrics.isEmpty()) {
-            return MetricsSummaryDTO(
-                uptime = 0.0,
+
+            return AggregatedMetric(
+                endpoint = EndpointUrl("https://unknown.com"),
+                startTime = Clock.System.now(),
+                endTime = Clock.System.now(),
                 averageLatency = 0.0,
                 totalRequests = 0,
+                errorRate = 0.0,
+                throughput = 0,
+                uptime = 0,
+                percentile95 = 0,
+                percentile99 = 0,
+                statusCodeDistribution = emptyMap()
             )
         }
 
-        val total = metrics.size
+        val endpoint =
+            metrics.first().endpoint
 
-        val successCount = metrics.count { it.statusCode in 200..299 }
+        val startTime =
+            metrics.minBy { it.timestamp }
+                .timestamp
 
-        val uptime = (successCount.toDouble() / total) * 100
+        val endTime =
+            metrics.maxBy { it.timestamp }
+                .timestamp
 
-        val avgLatency = metrics.map { it.latency }.average()
+        val totalRequests =
+            metrics.size.toLong()
 
-        return MetricsSummaryDTO(
+        val successCount =
+            metrics.count {
+                it.statusCode in 200..299
+            }
+
+        val uptime =
+            ((successCount.toDouble() / totalRequests) * 100)
+                .toLong()
+
+        val averageLatency =
+            metrics.map { it.latency }
+                .average()
+
+        val errorCount =
+            metrics.count {
+                it.statusCode >= 400
+            }
+
+        val errorRate =
+            (errorCount.toDouble() / totalRequests) * 100
+
+        val latencies =
+            metrics.map { it.latency }
+                .sorted()
+
+        val percentile95 =
+            latencies[
+                ((latencies.size - 1) * 0.95).toInt()
+            ]
+
+        val percentile99 =
+            latencies[
+                ((latencies.size - 1) * 0.99).toInt()
+            ]
+
+        val statusCodeDistribution =
+            metrics.groupingBy {
+                it.statusCode
+            }
+                .eachCount()
+                .mapValues {
+                    it.value.toLong()
+                }
+
+        val durationSeconds =
+            (endTime - startTime)
+                .inWholeSeconds
+                .coerceAtLeast(1)
+
+        val throughput =
+            totalRequests / durationSeconds
+
+        return AggregatedMetric(
+            endpoint = endpoint,
+            startTime = startTime,
+            endTime = endTime,
+            averageLatency = averageLatency,
+            totalRequests = totalRequests,
+            errorRate = errorRate,
+            throughput = throughput,
             uptime = uptime,
-            averageLatency = avgLatency,
-            totalRequests = total,
+            percentile95 = percentile95,
+            percentile99 = percentile99,
+            statusCodeDistribution = statusCodeDistribution
         )
     }
 

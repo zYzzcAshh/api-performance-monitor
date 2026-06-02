@@ -21,6 +21,7 @@ import pt.isel.api_pm.theme.Primary
 import pt.isel.api_pm.theme.TextPrimary
 import pt.isel.api_pm.components.MetricRow
 import pt.isel.api_pm.utils.formatTimestamp
+import pt.isel.api_pm.utils.roundTo
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -36,12 +37,16 @@ fun EndpointDashboardScreen(
     LaunchedEffect(endpointId) {
         while(true) {
             viewModel.loadMetrics(endpointId)
+            viewModel.loadSummary(endpointId)
             delay(30000.milliseconds) // auto refresh (30sec is low or high?) >> perguntar
         }
     }
 
     val latestMetric =
         state.metrics.lastOrNull()
+
+    val summary =
+        state.summary
 
     ScreenContainer {
 
@@ -87,6 +92,61 @@ fun EndpointDashboardScreen(
                             Spacer(Modifier.height(12.dp))
 
                             MetricDetails(metric)
+                            summary?.let { summary ->
+
+                                MetricRow(
+                                    label = "Average Latency",
+                                    value = "${summary.averageLatency.roundTo(1)} ms"
+                                )
+
+                                MetricRow(
+                                    label = "Total Requests",
+                                    value = summary.totalRequests.toString()
+                                )
+
+                                MetricRow(
+                                    label = "Uptime",
+                                    value = "${summary.uptime}%"
+                                )
+
+                                MetricRow(
+                                    label = "Average Latency",
+                                    value = "${summary.errorRate.roundTo(2)} ms"
+                                )
+
+                                MetricRow(
+                                    label = "95th Percentile",
+                                    value = "${summary.percentile95} ms"
+                                )
+
+                                MetricRow(
+                                    label = "99th Percentile",
+                                    value = "${summary.percentile99} ms"
+                                )
+
+                                MetricRow(
+                                    label = "Throughput",
+                                    value = "${summary.throughput} req/s"
+                                )
+
+                                MetricRow(
+                                    label = "Monitoring Started",
+                                    value = formatTimestamp(summary.startTime.toString())
+                                )
+
+                                MetricRow(
+                                    label = "Last Metric",
+                                    value = formatTimestamp(summary.endTime.toString())
+                                )
+
+                                summary.statusCodeDistribution.forEach { (code, count) ->
+
+                                    MetricRow(
+                                        label = "HTTP $code",
+                                        value = count.toString()
+                                    )
+                                }
+                            }
                         }
                     }
                 }

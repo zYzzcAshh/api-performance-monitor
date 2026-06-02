@@ -13,10 +13,12 @@ import pt.isel.api_pm.config.DemoConfig
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
+import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
 
 data class EndpointsState(
+    val summary: AggregatedMetric? = null,
     val metrics: List<RequestMetric> = emptyList(),
     val monitoredEndpoints: List<EndpointUiModel> = emptyList(),
     val isLoading: Boolean = false,
@@ -163,6 +165,32 @@ class EndpointsViewModel(
                     message = "Error deleting endpoint"
                 )
             }
+        }
+    }
+
+    fun loadSummary(endpointId: UInt) {
+
+        scope.launch {
+
+            val result =
+                api.getMetricsSummary(
+                    token,
+                    endpointId
+                )
+
+            _state.value =
+                if (result.isSuccess) {
+
+                    _state.value.copy(
+                        summary = result.getOrNull()
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        error = result.exceptionOrNull()?.message
+                    )
+                }
         }
     }
 }
