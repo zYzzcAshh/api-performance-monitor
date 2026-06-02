@@ -13,7 +13,7 @@ data class AggregatedMetric (
     val totalRequests: Long,
     val errorRate: Double,
     val throughput: Long,
-    val uptime: Long,
+    val uptime: Double,
     val percentile95: Long,
     val percentile99: Long,
     val statusCodeDistribution: Map<Int, Long>

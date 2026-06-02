@@ -45,7 +45,7 @@ class MetricsService(
                 totalRequests = 0,
                 errorRate = 0.0,
                 throughput = 0,
-                uptime = 0,
+                uptime = 0.0,
                 percentile95 = 0,
                 percentile99 = 0,
                 statusCodeDistribution = emptyMap()
@@ -73,7 +73,6 @@ class MetricsService(
 
         val uptime =
             ((successCount.toDouble() / totalRequests) * 100)
-                .toLong()
 
         val averageLatency =
             metrics.map { it.latency }

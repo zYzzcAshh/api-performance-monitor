@@ -130,7 +130,8 @@ class MetricsServiceTests {
 
             assertEquals(
                 66.66666666666666,
-                summary.uptime
+                summary.uptime,
+                0.01
             )
 
             assertEquals(
@@ -156,7 +157,8 @@ class MetricsServiceTests {
 
             assertEquals(
                 0.0,
-                summary.uptime
+                summary.uptime,
+                0.01
             )
 
             assertEquals(
