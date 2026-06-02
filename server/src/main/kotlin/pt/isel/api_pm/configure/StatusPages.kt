@@ -32,6 +32,7 @@ fun Application.configureStatusPages() {
         on<ForbiddenException>(HttpStatusCode.Forbidden)
         on<DuplicateEndpointException>(HttpStatusCode.Conflict)
         on<InvalidIntervalException>(HttpStatusCode.BadRequest)
+        on<InvalidUrlException>(HttpStatusCode.BadRequest)
         on<IllegalArgumentException>(HttpStatusCode.BadRequest)
         on<DurationValueException>(HttpStatusCode.BadRequest)
         onUnwrapped<BadRequestException>(HttpStatusCode.BadRequest)

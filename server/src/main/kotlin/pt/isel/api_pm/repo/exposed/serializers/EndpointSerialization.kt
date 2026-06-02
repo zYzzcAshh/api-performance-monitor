@@ -1,6 +1,5 @@
 package pt.isel.api_pm.repo.exposed.serializers
 
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.notification.NotificationConfig

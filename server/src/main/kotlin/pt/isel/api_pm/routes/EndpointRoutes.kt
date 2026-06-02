@@ -28,10 +28,6 @@ fun Route.endpointRoutes(
             val request =
                 call.receive<CreateEndpointRequest>()
 
-            println("REQUEST = $request")
-            println("NOTIFICATION = ${request.notification}")
-            println("ALERT = ${request.alertRule}")
-
             val principal =
                 call.principal<JWTPrincipal>()
                     ?: throw MissingTokenException()
