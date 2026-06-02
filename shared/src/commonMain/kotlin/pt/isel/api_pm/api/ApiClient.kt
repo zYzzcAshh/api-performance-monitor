@@ -28,9 +28,9 @@ private val httpClient = HttpClient {
 
 class ApiClient(
     private val client: HttpClient = httpClient
-) {
+) : Api {
 
-    suspend fun register(
+    override suspend fun register(
         username: String,
         password: String
     ): Result<String> =
@@ -51,7 +51,7 @@ class ApiClient(
             response.body()
         }
 
-    suspend fun login(
+    override suspend fun login(
         username: String,
         password: String
     ): Result<String> =
@@ -73,7 +73,7 @@ class ApiClient(
             response.token
         }
 
-    suspend fun getEndpoints(
+    override suspend fun getEndpoints(
         token: String
     ): Result<List<EndpointUiModel>> =
         runCatching {
@@ -88,7 +88,7 @@ class ApiClient(
             }.body()
         }
 
-    suspend fun createEndpointMonitor(
+    override suspend fun createEndpointMonitor(
         token: String,
         request: CreateEndpointRequest
     ): Result<String> =
@@ -107,7 +107,7 @@ class ApiClient(
             }.body()
         }
 
-    suspend fun getEndpointMetrics(
+    override suspend fun getEndpointMetrics(
         token: String,
         endpointId: UInt
     ): Result<List<RequestMetric>> =
@@ -124,7 +124,7 @@ class ApiClient(
             }.body<List<RequestMetric>>()
         }
 
-    suspend fun deleteEndpoint(
+    override suspend fun deleteEndpoint(
         token: String,
         endpointId: UInt
     ): Result<Unit> =
@@ -139,7 +139,7 @@ class ApiClient(
             }
         }
 
-    suspend fun getMetricsSummary(
+    override suspend fun getMetricsSummary(
         token: String,
         endpointId: UInt
     ): Result<AggregatedMetric> =

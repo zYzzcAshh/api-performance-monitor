@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import pt.isel.api_pm.alert.AggregationType
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.alert.ComparisonOperator
-import pt.isel.api_pm.api.ApiClient
+import pt.isel.api_pm.api.Api
 import pt.isel.api_pm.config.DemoConfig
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
@@ -28,10 +28,11 @@ data class EndpointsState(
 )
 
 class EndpointsViewModel(
-    private val api: ApiClient,
-    private val token: String
+    private val api: Api,
+    private val token: String,
+    private val scope: CoroutineScope =
+        CoroutineScope(Dispatchers.Default)
 ) {
-    private val scope = CoroutineScope(Dispatchers.Default)
 
     private val _state = MutableStateFlow(EndpointsState())
     val state: StateFlow<EndpointsState> = _state

@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import pt.isel.api_pm.api.ApiClient
+import pt.isel.api_pm.api.Api
 
 data class AuthState(
     val token: String? = null,
@@ -14,9 +14,10 @@ data class AuthState(
 )
 
 class AuthViewModel(
-    private val api: ApiClient
+    private val api: Api,
+    private val scope: CoroutineScope =
+        CoroutineScope(Dispatchers.Default)
 ) {
-    private val scope = CoroutineScope(Dispatchers.Default)
 
     private val _state = MutableStateFlow(AuthState())
     val state: StateFlow<AuthState> = _state
