@@ -32,4 +32,17 @@ sealed class NotificationConfig {
     data class SlackWebhook(
         val webhookUrl: String
     ) : NotificationConfig()
+
+    @Serializable
+    @SerialName("telegram")
+    data class Telegram(
+        val botToken: String,
+        val chatId: String
+    ) : NotificationConfig()
+
+    @Serializable
+    @SerialName("webhook")
+    data class Webhook(
+        val url: String
+    ) : NotificationConfig()
 }

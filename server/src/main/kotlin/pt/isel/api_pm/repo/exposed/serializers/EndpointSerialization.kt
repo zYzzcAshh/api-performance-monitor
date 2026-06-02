@@ -26,6 +26,12 @@ fun NotificationConfig.toDb(): Pair<String, String?> {
 
         is NotificationConfig.SlackWebhook ->
             "slack_webhook" to json.encodeToString(this)
+
+        is NotificationConfig.Telegram ->
+            "telegram" to json.encodeToString(this)
+
+        is NotificationConfig.Webhook ->
+            "webhook" to json.encodeToString(this)
     }
 }
 

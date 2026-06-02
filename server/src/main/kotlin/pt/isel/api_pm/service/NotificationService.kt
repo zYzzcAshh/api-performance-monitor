@@ -41,6 +41,19 @@ class NotificationService(
                         httpClient,
                         notificationConfig.webhookUrl
                     )
+
+                is NotificationConfig.Telegram ->
+                    TelegramNotificationSender(
+                        httpClient,
+                        notificationConfig.botToken,
+                        notificationConfig.chatId
+                    )
+
+                is NotificationConfig.Webhook ->
+                    WebhookNotificationSender(
+                        httpClient,
+                        notificationConfig.url
+                    )
             }
 
         sender.send(

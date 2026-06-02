@@ -45,4 +45,17 @@ class NotificationMessageBuilderTest {
             )
         )
     }
+
+    @Test
+    fun `message is not blank`() {
+
+        val message =
+            NotificationMessageBuilder.build(
+                "github-api"
+            )
+
+        assertTrue(
+            message.isNotBlank()
+        )
+    }
 }

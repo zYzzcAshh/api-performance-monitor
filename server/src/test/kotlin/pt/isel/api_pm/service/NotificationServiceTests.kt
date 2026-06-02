@@ -77,4 +77,29 @@ class NotificationServiceTests {
                 "github-api"
             )
         }
+
+    @Test
+    fun `should send telegram notification`() =
+        runTest {
+
+            service.notifyAll(
+                NotificationConfig.Telegram(
+                    botToken = "fake-token",
+                    chatId = "123456"
+                ),
+                "github-api"
+            )
+        }
+
+    @Test
+    fun `should send generic webhook notification`() =
+        runTest {
+
+            service.notifyAll(
+                NotificationConfig.Webhook(
+                    url = "https://example.com/webhook"
+                ),
+                "github-api"
+            )
+        }
 }

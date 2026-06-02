@@ -53,6 +53,16 @@ private fun ResultRow.toNotification(): NotificationConfig {
             json.decodeFromString<NotificationConfig.SlackWebhook>(jsonData)
         }
 
+        "telegram" -> {
+            val jsonData = data ?: return NotificationConfig.None
+            json.decodeFromString<NotificationConfig.Telegram>(jsonData)
+        }
+
+        "webhook" -> {
+            val jsonData = data ?: return NotificationConfig.None
+            json.decodeFromString<NotificationConfig.Webhook>(jsonData)
+        }
+
         else ->
             NotificationConfig.None
     }
