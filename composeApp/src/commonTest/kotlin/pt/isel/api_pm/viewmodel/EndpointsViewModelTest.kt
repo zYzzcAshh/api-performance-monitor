@@ -5,6 +5,9 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Clock
+import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.api.FakeApi
 
 class EndpointsViewModelTest {
@@ -244,6 +247,78 @@ class EndpointsViewModelTest {
 
         assertEquals(
             "Metrics error",
+            vm.state.value.error
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun loadSummary_success_updates_summary() = runTest {
+
+        val summary =
+            AggregatedMetric(
+                endpoint = EndpointUrl("https://google.com"),
+                startTime = Clock.System.now(),
+                endTime = Clock.System.now(),
+                averageLatency = 100.0,
+                totalRequests = 50,
+                errorRate = 2.0,
+                throughput = 10,
+                uptime = 98.0,
+                percentile95 = 120,
+                percentile99 = 150,
+                statusCodeDistribution = mapOf(
+                    200 to 48,
+                    500 to 2
+                )
+            )
+
+        val api = FakeApi().apply {
+            summaryResult =
+                Result.success(summary)
+        }
+
+        val vm =
+            EndpointsViewModel(
+                api = api,
+                token = "token",
+                scope = this
+            )
+
+        vm.loadSummary(1u)
+
+        advanceUntilIdle()
+
+        assertEquals(
+            summary,
+            vm.state.value.summary
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun loadSummary_failure_sets_error() = runTest {
+
+        val api = FakeApi().apply {
+            summaryResult =
+                Result.failure(
+                    Exception("Summary error")
+                )
+        }
+
+        val vm =
+            EndpointsViewModel(
+                api = api,
+                token = "token",
+                scope = this
+            )
+
+        vm.loadSummary(1u)
+
+        advanceUntilIdle()
+
+        assertEquals(
+            "Summary error",
             vm.state.value.error
         )
     }
