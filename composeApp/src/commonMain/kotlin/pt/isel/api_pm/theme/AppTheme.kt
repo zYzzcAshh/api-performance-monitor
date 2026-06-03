@@ -4,15 +4,46 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
 private val DarkColors = darkColorScheme(
-    primary = Primary,
-    secondary = PrimaryVariant,
+    // brand
+    primary              = Primary,
+    onPrimary            = TextPrimary,
+    primaryContainer     = SurfaceHigh,
+    onPrimaryContainer   = PrimaryVariant,
 
-    background = Background,
-    surface = Surface,
+    secondary            = PrimaryVariant,
+    onSecondary          = TextPrimary,
+    secondaryContainer   = SurfaceHigh,
+    onSecondaryContainer = TextSecondary,
 
-    onPrimary = TextPrimary,
-    onBackground = TextPrimary,
-    onSurface = TextPrimary
+    // surfaces
+    background           = Background,
+    onBackground         = TextPrimary,
+    surface              = Surface,
+    onSurface            = TextPrimary,
+    surfaceVariant       = SurfaceHigh,
+    onSurfaceVariant     = TextSecondary,
+
+    // surfaceContainer* (used by card, sheets, etc)
+    surfaceContainerLowest = Background,
+    surfaceContainerLow    = Surface,
+    surfaceContainer       = SurfaceHigh,
+    surfaceContainerHigh   = SurfaceHigh,
+    surfaceContainerHighest= SurfaceHighest,
+
+    // errors
+    error                = Error,
+    onError              = TextPrimary,
+    errorContainer       = ErrorDim,
+    onErrorContainer     = Error,
+
+    // outlines
+    outline              = Outline,
+    outlineVariant       = OutlineVariant,
+
+    // inverse (used by snackbar, tooltips)
+    inverseSurface       = TextPrimary,
+    inverseOnSurface     = Background,
+    inversePrimary       = Primary,
 )
 
 @Composable
@@ -21,7 +52,7 @@ fun AppTheme(
 ) {
     MaterialTheme(
         colorScheme = DarkColors,
-        typography = AppTypography,
-        content = content
+        typography  = AppTypography,
+        content     = content
     )
 }

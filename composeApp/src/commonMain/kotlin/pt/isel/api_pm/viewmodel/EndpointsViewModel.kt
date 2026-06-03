@@ -5,17 +5,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import pt.isel.api_pm.alert.AggregationType
 import pt.isel.api_pm.alert.AlertRule
-import pt.isel.api_pm.alert.ComparisonOperator
 import pt.isel.api_pm.api.Api
-import pt.isel.api_pm.domain.endpoint.DurationSeconds
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
-import pt.isel.api_pm.validation.CreateEndpointValidator
 
 data class EndpointsState(
     val summary: AggregatedMetric? = null,
@@ -92,7 +88,8 @@ class EndpointsViewModel(
         name: String,
         url: String,
         interval: String,
-        notification: NotificationConfig
+        notification: NotificationConfig,
+        alertRule: AlertRule
     ) {
 
         scope.launch {
@@ -106,15 +103,8 @@ class EndpointsViewModel(
                 url = url,
                 name = name,
                 intervalSeconds = intervalInt.toLong(),
-
                 notification = notification,
-
-                alertRule = AlertRule.StatusCodeRule(
-                    operator = ComparisonOperator.GTE,
-                    value = 500,
-                    durationSeconds = DurationSeconds(60),
-                    aggregation = AggregationType.COUNT(1)
-                )
+                alertRule = alertRule
             )
 
             val result =

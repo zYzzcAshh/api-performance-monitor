@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(compose.materialIconsExtended)
             implementation("io.ktor:ktor-client-content-negotiation:3.4.1")
             implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.0.0-alpha5")
             implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation3:1.3.0-alpha02")

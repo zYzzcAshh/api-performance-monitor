@@ -17,21 +17,13 @@ import pt.isel.api_pm.viewmodel.EndpointsViewModel
 fun AppNavigation(
     api: ApiClient
 ) {
-
-    val authViewModel = remember {
-        AuthViewModel(api)
-    }
-
+    val authViewModel = remember { AuthViewModel(api) }
     val navController = rememberNavController()
-
     val authState by authViewModel.state.collectAsState()
 
-    val endpointsViewModel =
-        authState.token?.let { token ->
-            remember(token) {
-                EndpointsViewModel(api, token)
-            }
-        }
+    val endpointsViewModel = authState.token?.let { token ->
+        remember(token) { EndpointsViewModel(api, token) }
+    }
 
     NavHost(
         navController = navController,
@@ -39,86 +31,58 @@ fun AppNavigation(
     ) {
 
         composable(Screen.Login.route) {
-
             LoginScreen(
                 viewModel = authViewModel,
-
                 onNavigateToRegister = {
                     navController.navigate(Screen.Register.route)
                 },
-
                 onLoginSuccess = {
                     navController.navigate(Screen.Endpoints.route) {
-                        popUpTo(Screen.Login.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
             )
         }
 
         composable(Screen.Register.route) {
-
             RegisterScreen(
                 viewModel = authViewModel,
-
                 onNavigateToLogin = {
                     navController.popBackStack()
                 },
-
                 onRegisterSuccess = {
                     navController.navigate(Screen.Endpoints.route) {
-                        popUpTo(Screen.Login.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
             )
         }
 
         composable(Screen.Endpoints.route) {
-
             endpointsViewModel?.let { vm ->
-
                 EndpointsScreen(
                     viewModel = vm,
-
                     onLogout = {
-
                         authViewModel.logout()
-
                         navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Endpoints.route) {
-                                inclusive = true
-                            }
+                            popUpTo(Screen.Endpoints.route) { inclusive = true }
                         }
                     },
-
                     onCreateMonitoring = {
-                        navController.navigate(
-                            Screen.CreateMonitoring.route
-                        )
+                        navController.navigate(Screen.CreateMonitoring.route)
                     },
-
                     onOpenEndpoint = { endpointId ->
-                        navController.navigate(
-                            "${Screen.EndpointDashboard.route}/$endpointId"
-                        )
+                        navController.navigate("${Screen.EndpointDashboard.route}/$endpointId")
                     }
                 )
             }
         }
 
         composable(Screen.CreateMonitoring.route) {
-
             endpointsViewModel?.let { vm ->
-
                 CreateMonitoringScreen(
                     viewModel = vm,
-
-                    onBack = {
-                        navController.popBackStack()
-                    }
+                    onBack = { navController.popBackStack() }
                 )
             }
         }
@@ -126,7 +90,6 @@ fun AppNavigation(
         composable(
             route = "${Screen.EndpointDashboard.route}/{endpointId}"
         ) { backStackEntry ->
-
             val endpointId =
                 backStackEntry.arguments
                     ?.read {
@@ -136,14 +99,10 @@ fun AppNavigation(
                     ?: return@composable
 
             endpointsViewModel?.let { vm ->
-
                 EndpointDashboardScreen(
                     endpointId = endpointId,
                     viewModel = vm,
-
-                    onBack = {
-                        navController.popBackStack()
-                    }
+                    onBack = { navController.popBackStack() }
                 )
             }
         }
