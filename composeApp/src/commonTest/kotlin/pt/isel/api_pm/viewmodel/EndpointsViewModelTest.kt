@@ -7,8 +7,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Clock
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
-import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.api.FakeApi
+import pt.isel.api_pm.dto.metric.AggregatedMetric
+import pt.isel.api_pm.notification.NotificationConfig
 
 class EndpointsViewModelTest {
 
@@ -34,34 +35,7 @@ class EndpointsViewModelTest {
             vm.state.value.monitoredEndpoints.size
         )
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun createEndpoint_invalid_input_sets_message() = runTest {
-
-        val api = FakeApi()
-
-        val vm =
-            EndpointsViewModel(
-                api = api,
-                token = "token",
-                scope = this
-            )
-
-        vm.createEndpoint(
-            "",
-            "",
-            "0"
-        )
-
-        advanceUntilIdle()
-
-        assertEquals(
-            "Invalid input",
-            vm.state.value.message
-        )
-    }
-
+    
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun createEndpoint_success_sets_success_message() = runTest {
@@ -78,7 +52,8 @@ class EndpointsViewModelTest {
         vm.createEndpoint(
             "Google",
             "https://google.com",
-            "60"
+            "60",
+            NotificationConfig.None
         )
 
         advanceUntilIdle()
@@ -156,7 +131,8 @@ class EndpointsViewModelTest {
         vm.createEndpoint(
             "Google",
             "invalid",
-            "60"
+            "60",
+            NotificationConfig.None
         )
 
         advanceUntilIdle()

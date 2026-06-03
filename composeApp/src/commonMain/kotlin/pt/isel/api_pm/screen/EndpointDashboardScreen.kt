@@ -15,18 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
-import pt.isel.api_pm.components.DashboardMetricCard
-import pt.isel.api_pm.components.DashboardMonitoringWindow
-import pt.isel.api_pm.components.DashboardOverview
-import pt.isel.api_pm.components.DashboardPerformance
-import pt.isel.api_pm.components.DashboardStatusCodes
-import pt.isel.api_pm.components.MetricDetails
-import pt.isel.api_pm.components.ScreenContainer
+import pt.isel.api_pm.components.*
 import pt.isel.api_pm.theme.Primary
 import pt.isel.api_pm.theme.TextPrimary
-import pt.isel.api_pm.components.MetricRow
-import pt.isel.api_pm.utils.formatTimestamp
-import pt.isel.api_pm.utils.roundTo
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
