@@ -20,30 +20,15 @@ class DiscordNotificationSender(
     override suspend fun send(
         endpointName: String
     ) {
-
         try {
-
-            httpClient.post(webhookUrl) {
-
-                contentType(
-                    ContentType.Application.Json
-                )
-
-                val message =
-                    NotificationMessageBuilder.build(
-                        endpointName
-                    )
-
-                setBody(
-                    """{"content":"$message"}"""
-                )
+            val response = httpClient.post(webhookUrl) {
+                contentType(ContentType.Application.Json)
+                val message = NotificationMessageBuilder.build(endpointName)
+                setBody("""{"content":"$message"}""")
             }
-
+            logger.info("Discord webhook response: ${response.status}")
         } catch (e: Exception) {
-
-            logger.warn(
-                "Failed to send Discord webhook: ${e.message}"
-            )
+            logger.warn("Failed to send Discord webhook: ${e.message}", e)
         }
     }
 }

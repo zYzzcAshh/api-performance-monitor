@@ -7,18 +7,7 @@ object NotificationMessageBuilder {
     fun build(
         endpointName: String
     ): String {
-
-        return """
-🚨 API Performance Monitor
-
-Endpoint:
-$endpointName
-
-Status:
-Alert Triggered
-
-Timestamp:
-${Clock.System.now()}
-        """.trimIndent()
+        val timestamp = Clock.System.now()
+        return "Alert: Endpoint '$endpointName' is at $timestamp"
     }
 }

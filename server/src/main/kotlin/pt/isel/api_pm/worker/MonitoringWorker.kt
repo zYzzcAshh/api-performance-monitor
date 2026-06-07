@@ -110,7 +110,7 @@ class MonitoringWorker(
                                         if (alert) {
 
                                             logger.info(
-                                                "Alert triggered for ${endpoint.url.value} with rule $alertRule"
+                                                "Alert triggered for ${endpoint.url.value} with rule $alertRule, not=${endpoint.notification}"
                                             )
 
                                             notificationService.notifyAll(
