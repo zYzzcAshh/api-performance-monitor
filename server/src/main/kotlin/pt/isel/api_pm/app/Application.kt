@@ -40,6 +40,8 @@ fun Application.module() {
         dependencies.metricsService,
         dependencies.endpointService,
         dependencies.notificationService,
+        dependencies.agentService,
+        dependencies.agentSessionManager,
         dependencies.alertEvaluator,
     )
 
@@ -51,7 +53,7 @@ fun Application.module() {
             dependencies.monitoringService,
         )
         endpointRoutes(dependencies.endpointService)
-        agentRoutes(dependencies.agentService)
+        agentRoutes(dependencies.agentService, dependencies.agentSessionManager)
 
         testRoutes()
     }

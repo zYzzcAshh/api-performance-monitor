@@ -14,6 +14,15 @@ fun JWTPrincipal.requireUserId(): UInt {
     return tokenUserId.toUInt()
 }
 
+fun JWTPrincipal.requireAgentId(): UInt {
+    val tokenAgentId = this.getClaim(
+        "agentId",
+        Int::class
+    ) ?: throw InvalidTokenException()
+
+    return tokenAgentId.toUInt()
+}
+
 fun String?.requireUIntParameter(
     name: String
 ): UInt {

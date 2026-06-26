@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AgentCreateEndpointRequest(
-    val agentId: UInt,
     val name: String,
     val intervalSeconds: Long
 )

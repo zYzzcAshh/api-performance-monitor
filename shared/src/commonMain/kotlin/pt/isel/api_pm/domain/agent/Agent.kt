@@ -6,7 +6,6 @@ data class Agent (
     val id: UInt,
     val userId: UInt,
     val name: String,
-    val token: String,
     val createdAt: Instant,
     val endpoint: AgentEndpoint?
 )

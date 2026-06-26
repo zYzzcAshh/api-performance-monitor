@@ -40,4 +40,15 @@ interface Api {
         token: String,
         endpointId: UInt
     ): Result<AggregatedMetric>
+
+    suspend fun agentRegister(
+        token: String,
+        name: String
+    ): Result<String>
+
+    suspend fun createAgentEndpoint(
+        token: String,
+        name: String,
+        intervalSeconds: Long
+    ): Result<String>
 }

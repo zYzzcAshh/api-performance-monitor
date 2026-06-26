@@ -8,4 +8,5 @@ fun Application.configureAll() {
     configureAuthentication()
     configureIgnoreTrailingSlash()
     configureCORS()
+    configureWebsockets()
 }

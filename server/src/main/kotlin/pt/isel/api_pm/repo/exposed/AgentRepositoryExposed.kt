@@ -21,8 +21,7 @@ class AgentRepositoryExposed(
 
     override suspend fun register(
         userId: UInt,
-        name: String,
-        token: String
+        name: String
     ): Agent {
 
         val createdAt =
@@ -35,7 +34,6 @@ class AgentRepositoryExposed(
 
                     it[AgentTable.userId] = userId.toInt()
                     it[AgentTable.name] = name
-                    it[AgentTable.token] = token
                     it[AgentTable.createdAt] = createdAt
                 }[AgentTable.id]
             }
@@ -44,7 +42,6 @@ class AgentRepositoryExposed(
             id = id.toUInt(),
             userId = userId,
             name = name,
-            token = token,
             createdAt = createdAt,
             endpoint = null
         )
@@ -106,6 +103,11 @@ class AgentRepositoryExposed(
                 ?.toAgent()
         }
 
+    override suspend fun getAll(): List<Agent> = transaction(db) {
+        AgentTable.selectAll()
+            .map { it.toAgent() }
+    }
+
     private fun ResultRow.toAgent(): Agent {
 
         val endpointName =
@@ -140,7 +142,6 @@ class AgentRepositoryExposed(
             id = this[AgentTable.id].toUInt(),
             userId = this[AgentTable.userId].toUInt(),
             name = this[AgentTable.name],
-            token = this[AgentTable.token],
             createdAt = this[AgentTable.createdAt],
             endpoint = endpoint
         )

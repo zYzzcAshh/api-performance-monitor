@@ -6,10 +6,68 @@ import com.github.ajalt.clikt.core.parse
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
+import com.github.ajalt.clikt.parameters.types.long
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pt.isel.api_pm.api.ApiClient
 
 private val apiClient = ApiClient()
+
+class AgentCreateEndpoint(val authStore: AuthStore, val agentController: AgentController) : CliktCommand(name = "agent-create-endpoint") {
+    val name: String by option("--name", help = "Name of the endpoint to create").prompt("Endpoint name")
+    val url: String by option("--url", help = "Url of the endpoint").prompt("URL")
+    val intervalSeconds: Long by option("--interval", help = "Interval seconds").long().prompt("Interval seconds")
+
+    /*
+    Connects to socket
+     */
+
+    override fun run() = runBlocking {
+        echo("Creating agent endpoint")
+        if (authStore.getAgentToken() == null) {
+            echo("You need to register an agent first!")
+            return@runBlocking
+        }
+        val response = apiClient.createAgentEndpoint(authStore.getAgentToken()!!, name, intervalSeconds)
+
+        if (response.isSuccess) {
+            echo("Successfully created agent endpoint")
+            val agentMonitoredEndpoint = AgentMonitoredEndpoint(
+                name,
+                url,
+                intervalSeconds,
+            )
+            agentController.setMonitoredEndpoint(agentMonitoredEndpoint)
+            agentController.setMonitoring(true)
+        } else {
+            echo("Failed to create agent endpoint")
+        }
+    }
+}
+
+class AgentRegister(val authStore: AuthStore) : CliktCommand(name = "agent-register") {
+    val name: String by option("--name", help = "Name of the agent").prompt("Agent name")
+    //val intervalSeconds: Long by option("--interval", help = "Interval seconds").long().prompt("Interval seconds")
+
+    override fun run() = runBlocking {
+        echo("Registering agent $name")
+        if (authStore.getToken() == null) {
+            echo("You need to login first!")
+            return@runBlocking
+        }
+        val response = apiClient.agentRegister(authStore.getToken()!!, name)
+
+        if (response.isSuccess) {
+            echo("Successfully registered agent $name")
+            authStore.setAgentToken(response.getOrThrow())
+        } else {
+            echo("Failed to registered agent $name")
+        }
+    }
+}
 
 class Register(val authStore: AuthStore) : CliktCommand() {
     val username: String by option("-u", "--username").prompt("Username")
@@ -60,10 +118,11 @@ fun main() {
     println("Usage: register --username <u> --password <p>")
 
     val authStore = AuthStore()
+    val agentController = AgentController()
 
-    val root = Root().subcommands(Register(authStore), Login(authStore), Info(authStore))
+    val root = Root().subcommands(Register(authStore), Login(authStore), Info(authStore), AgentRegister(authStore), AgentCreateEndpoint(authStore, agentController))
 
-    while (true) {
+    while (!agentController.isMonitoring()) {
         print("> ")
         val line = readlnOrNull()?.trim() ?: break
         if (line == "exit" || line == "quit") {
@@ -78,4 +137,21 @@ fun main() {
             println("Unexpected error: ${e.message}")
         }
     }
+    println("Starting monitoring...")
+    /*
+    loop to receive from the socket, when receives a command to do a request do it,
+     */
+    val agentSocketClient = AgentSocketClient(authStore, agentController)
+    val job = SupervisorJob()
+    val scope = CoroutineScope(Dispatchers.Default + job)
+
+    Runtime.getRuntime().addShutdownHook(Thread {
+        println("Shutting down agent...")
+        job.cancel()
+        agentSocketClient.close()
+    })
+
+    scope.launch { agentSocketClient.run() }
+
+    runBlocking { job.join() } // keep main() alive until cancelled
 }

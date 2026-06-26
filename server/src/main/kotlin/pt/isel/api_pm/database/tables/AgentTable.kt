@@ -19,13 +19,9 @@ object AgentTable : Table("agents") {
     val name =
         varchar("name", 255)
 
-    val token =
-        varchar("token", 255)
-
     val createdAt =
         timestamp("created_at")
 
-    // agent endpoint fields
     val endpointName =
         varchar("endpoint_name", 255)
             .nullable()

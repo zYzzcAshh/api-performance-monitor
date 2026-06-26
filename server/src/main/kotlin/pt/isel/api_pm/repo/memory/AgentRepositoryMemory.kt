@@ -14,8 +14,7 @@ class AgentRepositoryMemory : AgentRepository {
 
     override suspend fun register(
         userId: UInt,
-        name: String,
-        token: String
+        name: String
     ): Agent {
 
         val idVal =
@@ -30,7 +29,6 @@ class AgentRepositoryMemory : AgentRepository {
                 id = id,
                 userId = userId,
                 name = name,
-                token = token,
                 createdAt = Clock.System.now(),
                 endpoint = null
             )
@@ -86,4 +84,6 @@ class AgentRepositoryMemory : AgentRepository {
         agentId: UInt
     ): Agent? =
         agents[userId]?.get(agentId)
+
+    override suspend fun getAll(): List<Agent> = agents.values.flatMap { it.values }
 }

@@ -19,6 +19,10 @@ fun Route.metricsRoutes(
     metricsService: MetricsService,
     monitoringService: MonitoringService,
 ) {
+    get("/metrics/agent") {
+        // TODO: Just for testing, needs to be removed in the future
+        call.respond(metricsService.getAllAgentMetrics())
+    }
 
     authenticate(AuthConfig.JWT_NAME) {
 

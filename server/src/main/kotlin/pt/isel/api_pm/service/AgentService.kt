@@ -7,14 +7,13 @@ import pt.isel.api_pm.repo.AgentRepository
 
 class AgentService(
     private val repo: AgentRepository,
-    private val jwtService: JwtService,
-    private val sessionManager: AgentSessionManager
+    private val jwtService: JwtService
 ) {
     suspend fun register(userId: UInt, name: String): AgentRegisterResponse {
         // Verificar se já existe um agente com aquele nome associado aquele user
 
-        val token = jwtService.generateAgentToken(userId, name)
-        val agent = repo.register(userId, name, token)
+        val agent = repo.register(userId, name)
+        val token = jwtService.generateAgentToken(userId, agent.id)
         return AgentRegisterResponse(agent.id, token)
     }
 
@@ -24,4 +23,6 @@ class AgentService(
 
         repo.addEndpoint(userId, agentId, name, intervalSeconds)
     }
+
+    suspend fun getAll() = repo.getAll()
 }

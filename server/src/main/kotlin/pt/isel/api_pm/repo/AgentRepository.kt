@@ -7,8 +7,7 @@ interface AgentRepository {
 
     suspend fun register(
         userId: UInt,
-        name: String,
-        token: String
+        name: String
     ): Agent
 
     suspend fun addEndpoint(
@@ -22,4 +21,6 @@ interface AgentRepository {
         userId: UInt,
         agentId: UInt
     ): Agent?
+
+    suspend fun getAll(): List<Agent>
 }

@@ -76,9 +76,6 @@ class AppDependencies(
         else
             AgentRepositoryExposed(requireNotNull(db))
 
-    private val sessionManager =
-        AgentSessionManager(agentRepo)
-
     val userService =
         UserService(userRepository)
 
@@ -107,10 +104,11 @@ class AppDependencies(
     val agentService =
         AgentService(
             agentRepo,
-            jwtService,
-            sessionManager
+            jwtService
         )
 
     val alertEvaluator =
         AlertEvaluator()
+
+    val agentSessionManager = AgentSessionManager(agentRepo, metricsRepository)
 }

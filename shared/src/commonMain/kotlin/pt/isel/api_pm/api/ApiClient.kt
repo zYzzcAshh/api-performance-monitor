@@ -8,6 +8,9 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
+import pt.isel.api_pm.dto.agent.AgentCreateEndpointRequest
+import pt.isel.api_pm.dto.agent.AgentRegisterRequest
+import pt.isel.api_pm.dto.agent.AgentRegisterResponse
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
@@ -50,6 +53,49 @@ class ApiClient(
 
             response.body()
         }
+
+    override suspend fun agentRegister(
+        token: String,
+        name: String
+    ): Result<String> =
+        runCatching {
+            val response: AgentRegisterResponse = client.post("${ApiConfig.BASE_URL}/agent/register") {
+                contentType(ContentType.Application.Json)
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+                setBody(
+                    AgentRegisterRequest(
+                        name
+                    )
+                )
+            }.body()
+
+            response.token
+        }
+
+    override suspend fun createAgentEndpoint(
+        token: String,
+        name: String,
+        intervalSeconds: Long
+    ): Result<String> = runCatching {
+        val response = client.post("${ApiConfig.BASE_URL}/agent/endpoints") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
+            setBody(
+                AgentCreateEndpointRequest(
+                    name,
+                    intervalSeconds
+                )
+            )
+        }
+
+        response.body()
+    }
 
     override suspend fun login(
         username: String,

@@ -22,13 +22,13 @@ class JwtService {
             .sign(algorithm)
     }
 
-    fun generateAgentToken(userId: UInt, name: String): String {
+    fun generateAgentToken(userId: UInt, agentId: UInt): String {
         val now = System.currentTimeMillis()
         return JWT
             .create()
             .withIssuer(issuer)
             .withClaim(AuthConfig.USER_ID_CLAIM, userId.toInt())
-            .withClaim("name", name)
+            .withClaim(AuthConfig.AGENT_ID_CLAIM, agentId.toInt())
             .withExpiresAt(Date(now + agentValidity))
             .sign(algorithm)
     }

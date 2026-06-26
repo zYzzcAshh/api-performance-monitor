@@ -1,7 +1,12 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJcImFwaS1wbVwiIiwidXNlcklkIjoxLCJleHAiOjE3NzkyMzE1MTN9.7xyzBk-bO8TiajGpK9IYQAjyymXJB1NeYEwHh-hy0qI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfaXNzdWVyIiwidXNlcklkIjoxLCJleHAiOjE3ODI1MjU2NzV9.2Jm2VYyM1kKfWSM2SqZzE-k4zbJejAlp2Pr-LItWFvk
+
+###
+GET {{baseUrl}}/metrics/agent
+Content-Type: application/json
+Accept: application/json
 
 ###
 # Register a new user
@@ -21,8 +26,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "example1",
-  "password": "Example1"
+  "username": "Admin12",
+  "password": "Admin12"
 }
 
 ###

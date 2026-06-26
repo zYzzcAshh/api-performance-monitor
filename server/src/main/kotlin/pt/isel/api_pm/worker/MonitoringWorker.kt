@@ -8,6 +8,8 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import pt.isel.api_pm.alert.AlertEvaluator
 import pt.isel.api_pm.alert.AlertRule
+import pt.isel.api_pm.manager.AgentSessionManager
+import pt.isel.api_pm.service.AgentService
 import pt.isel.api_pm.service.EndpointService
 import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
@@ -20,6 +22,8 @@ class MonitoringWorker(
     private val monitoringService: MonitoringService,
     private val metricsService: MetricsService,
     private val endpointService: EndpointService,
+    private val agentService: AgentService,
+    private val agentSessionManager: AgentSessionManager,
     private val notificationService: NotificationService,
     private val alertEvaluator: AlertEvaluator,
     private val intervalSeconds: Long,
@@ -48,6 +52,8 @@ class MonitoringWorker(
 
                 val endpoints =
                     endpointService.getAll()
+
+                val agentEndpoints = agentService.getAll()
 
                 coroutineScope {
 
@@ -146,6 +152,21 @@ class MonitoringWorker(
                                     "Error checking ${endpoint.url.value}: ${e.message}"
                                 )
                             }
+                        }
+                    }
+
+                    agentEndpoints.forEach { endpoint ->
+                        if (endpoint.endpoint?.intervalSeconds?.value != intervalSeconds) {
+                            return@forEach
+                        }
+                        logger.info("GOOD REQUEST WORKED FOR $endpoint !!!!!!!!!!!!!")
+
+                        launch {
+                            agentSessionManager.sendDoRequest(
+                                endpoint.userId,
+                                endpoint.id,
+                                endpoint.name
+                            )
                         }
                     }
                 }
