@@ -3,8 +3,11 @@ package org.api
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
 import io.ktor.utils.io.CancellationException
@@ -14,6 +17,7 @@ import io.ktor.websocket.readText
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.dto.AgentMessage
 import pt.isel.api_pm.dto.ServerMessage
 
@@ -64,7 +68,12 @@ class AgentSocketClient(
 
     private suspend fun performRequest(endpoint: AgentMonitoredEndpoint): AgentMessage.Metrics {
         val start = System.currentTimeMillis()
-        val response = client.get(endpoint.url)
+        val response = when (endpoint.method) {
+            HttpMethod.GET -> client.get(endpoint.url)
+            HttpMethod.POST -> client.post(endpoint.url)
+            HttpMethod.PUT -> client.put(endpoint.url)
+            HttpMethod.DELETE -> client.delete(endpoint.url)
+        }
         val latency = System.currentTimeMillis() - start
         println("Local agent performed a request for ${endpoint.url} and got: ${response.status.value} status code; ${latency}ms latency")
         return AgentMessage.Metrics(endpoint.name, response.status.value, latency, System.currentTimeMillis())
