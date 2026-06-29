@@ -5,9 +5,8 @@ import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.serialization.json.Json
-import pt.isel.api_pm.dto.AgentMessage
-import pt.isel.api_pm.dto.ServerMessage
-import pt.isel.api_pm.repo.AgentRepository
+import pt.isel.api_pm.dto.message.AgentMessage
+import pt.isel.api_pm.dto.message.ServerMessage
 import pt.isel.api_pm.repo.MetricsRepository
 import java.util.concurrent.ConcurrentHashMap
 

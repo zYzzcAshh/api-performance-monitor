@@ -54,10 +54,13 @@ class AgentCreateEndpoint(val authStore: AuthStore, val agentController: AgentCo
 
 class AgentRegister(val authStore: AuthStore) : CliktCommand(name = "agent-register") {
     val name: String by option("--name", help = "Name of the agent").prompt("Agent name")
-    //val intervalSeconds: Long by option("--interval", help = "Interval seconds").long().prompt("Interval seconds")
 
     override fun run() = runBlocking {
         echo("Registering agent $name")
+        if (authStore.getAgentToken() != null) {
+            echo("There is already an agent registered")
+            return@runBlocking
+        }
         if (authStore.getToken() == null) {
             echo("You need to login first!")
             return@runBlocking
@@ -90,6 +93,14 @@ class Register() : CliktCommand() {
     }
 }
 
+class Logout(val authStore: AuthStore) : CliktCommand() {
+    override fun run() {
+        authStore.clearToken()
+        authStore.clearAgentToken()
+        echo("Successfully logged out!")
+    }
+}
+
 class Login(val authStore: AuthStore) : CliktCommand() {
     val username: String by option("-u", "--username").prompt("Username")
     val password: String by option("-p", "--password").prompt("Password", hideInput = true)
@@ -117,16 +128,67 @@ class Info(val authStore: AuthStore) : CliktCommand() {
     }
 }
 
+class Help() : CliktCommand() {
+    override fun run() {
+        echo(
+            """
+            Authentication
+              register
+                  Register a new user.
+
+              login
+                  Login to your account.
+
+              logout
+                  Logout and clear stored credentials.
+
+            Agent
+              agent-register
+                  Register a monitoring agent.
+
+              agent-create-endpoint
+                  Create an endpoint and start monitoring it.
+
+            Utility
+              info
+                  Display stored user and agent tokens.
+
+              help
+                  Show this help message.
+
+              exit
+                  Exit the application.
+
+            ------------------------------------------
+            Examples
+
+              register --username alice --password secret
+
+              login --username alice --password secret
+
+              agent-register --name "Home PC"
+
+              agent-create-endpoint \
+                  --name "Google" \
+                  --url "https://google.com" \
+                  --method GET \
+                  --interval 60
+            ------------------------------------------
+            """.trimIndent()
+        )
+    }
+}
+
 class Root : NoOpCliktCommand(name = "app")
 
 fun main() {
-    println("CLI started. Type a command (register, login, agent-register, agent-create-endpoint, info, exit):")
+    println("CLI started. Type a command (help, register, login, logout, agent-register, agent-create-endpoint, info, exit):")
     println("Usage: register --username <u> --password <p>")
 
     val authStore = AuthStore()
     val agentController = AgentController()
 
-    val root = Root().subcommands(Register(), Login(authStore), Info(authStore), AgentRegister(authStore), AgentCreateEndpoint(authStore, agentController))
+    val root = Root().subcommands(Help(), Register(), Login(authStore), Logout(authStore), Info(authStore), AgentRegister(authStore), AgentCreateEndpoint(authStore, agentController))
 
     while (!agentController.isMonitoring()) {
         print("> ")
@@ -139,8 +201,8 @@ fun main() {
 
         try {
             root.parse(line.split("\\s+".toRegex()))
-        } catch (e: Exception) {
-            println("Command not found!")
+        } catch (_: Exception) {
+                println("Error: Invalid command or arguments. Type 'help' for a list of commands.")
         }
     }
     println("Starting monitoring...")

@@ -2,7 +2,7 @@ package pt.isel.api_pm.service
 
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
-import pt.isel.api_pm.dto.AgentMessage
+import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository

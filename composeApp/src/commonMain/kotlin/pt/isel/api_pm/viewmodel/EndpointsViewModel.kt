@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.api.Api
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
@@ -102,6 +103,7 @@ class EndpointsViewModel(
             val request = CreateEndpointRequest(
                 url = url,
                 name = name,
+                method = HttpMethod.GET, //NEEDS TO BE IMPLEMENTED
                 intervalSeconds = intervalInt.toLong(),
                 notification = notification,
                 alertRule = alertRule

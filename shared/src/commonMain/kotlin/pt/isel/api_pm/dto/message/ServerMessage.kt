@@ -1,4 +1,4 @@
-package pt.isel.api_pm.dto
+package pt.isel.api_pm.dto.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

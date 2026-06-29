@@ -1,7 +1,6 @@
 package pt.isel.api_pm.repo.memory
 
-import pt.isel.api_pm.dto.AgentMessage
-import pt.isel.api_pm.dto.metric.AgentRequestMetric
+import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 import java.util.concurrent.ConcurrentHashMap
@@ -47,4 +46,13 @@ class MetricsRepositoryMemory : MetricsRepository {
     }
 
     override suspend fun getAllAgentMetrics(): List<AgentMessage.Metrics> = agentMetrics.values.flatMap { it.values }.flatten()
+
+    override suspend fun getAgentMetricsByInterval(
+        userId: UInt,
+        agentId: UInt,
+        from: Instant,
+        to: Instant
+    ): List<AgentMessage.Metrics> {
+        return agentMetrics[userId]?.get(agentId)?.filter { Instant.fromEpochSeconds(it.timestamp) in from..to } ?: emptyList()
+    }
 }

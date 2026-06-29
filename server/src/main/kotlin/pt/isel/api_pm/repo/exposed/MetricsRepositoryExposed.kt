@@ -11,7 +11,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import pt.isel.api_pm.database.tables.AgentMetricsTable
 import pt.isel.api_pm.database.tables.RequestMetricsTable
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
-import pt.isel.api_pm.dto.AgentMessage
+import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 import kotlin.time.Instant
@@ -94,6 +94,28 @@ class MetricsRepositoryExposed(
 
     override suspend fun getAllAgentMetrics(): List<AgentMessage.Metrics> = transaction(db) {
         AgentMetricsTable.selectAll()
+            .map {
+                AgentMessage.Metrics(
+                    endpointName = it[AgentMetricsTable.endpointName],
+                    statusCode = it[AgentMetricsTable.statusCode],
+                    responseTimeMs = it[AgentMetricsTable.responseTimeMs],
+                    timestamp = it[AgentMetricsTable.timestamp].toEpochMilliseconds()
+                )
+            }
+    }
+
+    override suspend fun getAgentMetricsByInterval(
+        userId: UInt,
+        agentId: UInt,
+        from: Instant,
+        to: Instant
+    ): List<AgentMessage.Metrics> = transaction(db) {
+        AgentMetricsTable.selectAll()
+            .where {
+                (AgentMetricsTable.userId eq userId.toInt()) and
+                        (AgentMetricsTable.agentId eq agentId.toInt()) and
+                        (AgentMetricsTable.timestamp.between(from, to))
+            }
             .map {
                 AgentMessage.Metrics(
                     endpointName = it[AgentMetricsTable.endpointName],

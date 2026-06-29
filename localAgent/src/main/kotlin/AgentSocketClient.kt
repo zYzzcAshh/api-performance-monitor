@@ -18,8 +18,8 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import pt.isel.api_pm.domain.endpoint.HttpMethod
-import pt.isel.api_pm.dto.AgentMessage
-import pt.isel.api_pm.dto.ServerMessage
+import pt.isel.api_pm.dto.message.AgentMessage
+import pt.isel.api_pm.dto.message.ServerMessage
 
 class AgentSocketClient(
     private val authStore: AuthStore,

@@ -1,6 +1,6 @@
 package pt.isel.api_pm.repo
 
-import pt.isel.api_pm.dto.AgentMessage
+import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.metric.RequestMetric
 import kotlin.time.Instant
 
@@ -32,4 +32,11 @@ interface MetricsRepository {
     )
 
     suspend fun getAllAgentMetrics() : List<AgentMessage.Metrics>
+
+    suspend fun getAgentMetricsByInterval(
+        userId: UInt,
+        agentId: UInt,
+        from: Instant,
+        to: Instant,
+    ) : List<AgentMessage.Metrics>
 }
