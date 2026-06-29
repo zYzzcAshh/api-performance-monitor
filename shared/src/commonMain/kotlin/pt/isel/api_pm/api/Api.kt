@@ -1,6 +1,7 @@
 package pt.isel.api_pm.api
 
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
@@ -49,6 +50,7 @@ interface Api {
     suspend fun createAgentEndpoint(
         token: String,
         name: String,
+        method: HttpMethod,
         intervalSeconds: Long
     ): Result<String>
 }

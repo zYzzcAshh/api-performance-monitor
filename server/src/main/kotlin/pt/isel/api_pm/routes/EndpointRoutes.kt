@@ -45,6 +45,7 @@ fun Route.endpointRoutes(
                 userId,
                 url,
                 request.name,
+                request.method,
                 interval,
                 request.notification,
                 request.alertRule

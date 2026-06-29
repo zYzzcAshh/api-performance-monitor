@@ -1,6 +1,7 @@
 package pt.isel.api_pm.repo
 
 import pt.isel.api_pm.domain.agent.Agent
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 
 interface AgentRepository {
@@ -14,6 +15,7 @@ interface AgentRepository {
         userId: UInt,
         agentId: UInt,
         name: String,
+        method: HttpMethod,
         intervalSeconds: IntervalSeconds
     )
 

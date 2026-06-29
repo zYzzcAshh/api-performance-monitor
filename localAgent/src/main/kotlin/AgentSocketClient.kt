@@ -65,10 +65,11 @@ class AgentSocketClient(
     }
 
     private suspend fun performRequest(endpoint: AgentMonitoredEndpoint): AgentMessage.Metrics {
-        println("Local agent performing a request for ${endpoint.name}")
         val start = System.currentTimeMillis()
         val response = client.get(endpoint.url)
-        return AgentMessage.Metrics(endpoint.name, response.status.value, System.currentTimeMillis() - start, System.currentTimeMillis())
+        val latency = System.currentTimeMillis() - start
+        println("Local agent performed a request for ${endpoint.url} and got: ${response.status.value} status code; ${latency}ms latency")
+        return AgentMessage.Metrics(endpoint.name, response.status.value, latency, System.currentTimeMillis())
     }
 
     fun close() = client.close()

@@ -10,6 +10,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.database.tables.MonitoredEndpointTable
 import pt.isel.api_pm.database.tables.RequestMetricsTable
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.EndpointRepository
@@ -48,6 +49,7 @@ class EndpointRepositoryExposed(
         userId: UInt,
         url: String,
         name: String,
+        method: HttpMethod,
         intervalSeconds: Long,
         notification: NotificationConfig,
         alertRule: AlertRule?
@@ -74,6 +76,8 @@ class EndpointRepositoryExposed(
 
                 it[MonitoredEndpointTable.name] =
                     name
+
+                it[MonitoredEndpointTable.method] = method
 
                 it[MonitoredEndpointTable.intervalSeconds] =
                     intervalSeconds

@@ -1,5 +1,6 @@
 package pt.isel.api_pm.service
 
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.dto.agent.AgentRegisterResponse
 import pt.isel.api_pm.manager.AgentSessionManager
@@ -17,11 +18,11 @@ class AgentService(
         return AgentRegisterResponse(agent.id, token)
     }
 
-    suspend fun addEndpoint(userId: UInt, agentId: UInt, name: String, intervalSeconds: IntervalSeconds) {
+    suspend fun addEndpoint(userId: UInt, agentId: UInt, name: String, method: HttpMethod, intervalSeconds: IntervalSeconds) {
         // Verificar se ja existe um endpoint a ser monitorado por aquele agent
         // Verificar se ja existe um endpoint com aquele nome a ser monitorado
 
-        repo.addEndpoint(userId, agentId, name, intervalSeconds)
+        repo.addEndpoint(userId, agentId, name, method, intervalSeconds)
     }
 
     suspend fun getAll() = repo.getAll()

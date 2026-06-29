@@ -2,6 +2,7 @@ package pt.isel.api_pm.service
 
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.INTERVAL_SECONDS_LIST
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
@@ -20,6 +21,7 @@ class EndpointService(
         userId: UInt,
         url: EndpointUrl,
         name: String,
+        method: HttpMethod,
         interval: IntervalSeconds,
         notification: NotificationConfig,
         alertRule: AlertRule?
@@ -34,7 +36,7 @@ class EndpointService(
             throw DuplicateEndpointException(normalizedUrl)
         }
 
-        repo.add(userId, normalizedUrl, name, interval.value, notification, alertRule)
+        repo.add(userId, normalizedUrl, name, method, interval.value, notification, alertRule)
     }
 
     suspend fun delete(

@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfaXNzdWVyIiwidXNlcklkIjoxLCJleHAiOjE3ODI1MjU2NzV9.2Jm2VYyM1kKfWSM2SqZzE-k4zbJejAlp2Pr-LItWFvk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfaXNzdWVyIiwidXNlcklkIjoxLCJleHAiOjE3ODI3NzMxNjV9.-bpLYeXrSN1KbsCR9hJawFnXYWpXcvuONj9N3Iurjlw
 
 ###
 GET {{baseUrl}}/metrics/agent
@@ -15,8 +15,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "example1",
-  "password": "Example1"
+  "username": "Admin12",
+  "password": "Admin12"
 }
 
 ###
@@ -40,6 +40,7 @@ Authorization: Bearer {{token}}
 {
   "url": "https://example.com",
   "name": "ExampleTestAPI",
+  "method": "GET",
   "intervalSeconds": 60,
   "notification": {
     "type": "discord_webhook",
@@ -86,7 +87,7 @@ Authorization: Bearer {{token}}
 
 ###
 # Get metrics for a certain endpoint
-GET {{baseUrl}}/api/metrics/0
+GET {{baseUrl}}/metrics/1
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{token}}

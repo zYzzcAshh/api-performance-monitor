@@ -19,6 +19,7 @@ fun ResultRow.toEndpoint(): MonitoredEndpoint =
         userId = this[MonitoredEndpointTable.userId].toUInt(),
         url = EndpointUrl(this[MonitoredEndpointTable.url]),
         name = this[MonitoredEndpointTable.name],
+        method = this[MonitoredEndpointTable.method],
         interval = IntervalSeconds(this[MonitoredEndpointTable.intervalSeconds]),
         createdAt = this[MonitoredEndpointTable.createdAt],
         notification = this.toNotification(),

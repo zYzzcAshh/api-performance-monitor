@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.dto.agent.AgentCreateEndpointRequest
 import pt.isel.api_pm.dto.agent.AgentRegisterRequest
 import pt.isel.api_pm.dto.agent.AgentRegisterResponse
@@ -78,6 +79,7 @@ class ApiClient(
     override suspend fun createAgentEndpoint(
         token: String,
         name: String,
+        method: HttpMethod,
         intervalSeconds: Long
     ): Result<String> = runCatching {
         val response = client.post("${ApiConfig.BASE_URL}/agent/endpoints") {
@@ -89,6 +91,7 @@ class ApiClient(
             setBody(
                 AgentCreateEndpointRequest(
                     name,
+                    method,
                     intervalSeconds
                 )
             )

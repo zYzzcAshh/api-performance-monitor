@@ -33,20 +33,6 @@ fun Route.metricsRoutes(
             )
         }
 
-        post(Routes.Metrics.CHECK) {
-
-            val request =
-                call.receive<CheckRequest>()
-
-            val url =
-                EndpointUrl(request.url)
-
-            val metric =
-                monitoringService.checkEndpoint(url)
-
-            call.respond(metric)
-        }
-
         get(Routes.Metrics.BY_ENDPOINT) {
 
             val principal =

@@ -3,6 +3,7 @@ package pt.isel.api_pm.repo.memory
 import org.slf4j.LoggerFactory
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.notification.NotificationConfig
@@ -24,6 +25,7 @@ class EndpointRepositoryMemory : EndpointRepository {
         userId: UInt,
         url: String,
         name: String,
+        method: HttpMethod,
         intervalSeconds: Long,
         notification: NotificationConfig,
         alertRule: AlertRule?
@@ -44,6 +46,7 @@ class EndpointRepositoryMemory : EndpointRepository {
                 userId = userId,
                 url = EndpointUrl(normalizedUrl),
                 name = name,
+                method = method,
                 interval = IntervalSeconds(intervalSeconds),
                 createdAt = Clock.System.now(),
                 notification = notification,

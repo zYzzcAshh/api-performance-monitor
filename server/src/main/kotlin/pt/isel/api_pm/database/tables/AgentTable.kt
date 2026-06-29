@@ -3,6 +3,7 @@ package pt.isel.api_pm.database.tables
 import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.timestamp
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 
 object AgentTable : Table("agents") {
 
@@ -25,6 +26,9 @@ object AgentTable : Table("agents") {
     val endpointName =
         varchar("endpoint_name", 255)
             .nullable()
+
+    val endpointMethod =
+        enumerationByName("endpoint_method", 10, HttpMethod::class).nullable()
 
     val endpointIntervalSeconds =
         long("endpoint_interval_seconds")

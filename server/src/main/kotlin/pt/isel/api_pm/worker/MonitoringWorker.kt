@@ -69,7 +69,7 @@ class MonitoringWorker(
 
                                 val metric =
                                     monitoringService.checkEndpoint(
-                                        endpoint.url
+                                        endpoint
                                     )
 
                                 metricsService.save(

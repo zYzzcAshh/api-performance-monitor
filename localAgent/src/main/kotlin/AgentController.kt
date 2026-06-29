@@ -1,5 +1,7 @@
 package org.api
 
+import pt.isel.api_pm.domain.endpoint.HttpMethod
+
 class AgentController {
     private var monitoring = false
     private var monitoredEndpoint: AgentMonitoredEndpoint? = null
@@ -19,6 +21,7 @@ class AgentController {
 
 data class AgentMonitoredEndpoint(
     val name: String,
+    val method: HttpMethod,
     val url: String,
     val intervalSeconds: Long,
 )

@@ -9,8 +9,10 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 import pt.isel.api_pm.database.tables.AgentTable
+import pt.isel.api_pm.database.tables.MonitoredEndpointTable.method
 import pt.isel.api_pm.domain.agent.Agent
 import pt.isel.api_pm.domain.agent.AgentEndpoint
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.repo.AgentRepository
 import kotlin.time.Clock
@@ -51,6 +53,7 @@ class AgentRepositoryExposed(
         userId: UInt,
         agentId: UInt,
         name: String,
+        method: HttpMethod,
         intervalSeconds: IntervalSeconds
     ) {
 
@@ -81,6 +84,7 @@ class AgentRepositoryExposed(
             }) {
 
                 it[endpointName] = name
+                it[endpointMethod] = method
                 it[endpointIntervalSeconds] = intervalSeconds.value
                 it[endpointCreatedAt] = Clock.System.now()
             }
@@ -113,6 +117,8 @@ class AgentRepositoryExposed(
         val endpointName =
             this[AgentTable.endpointName]
 
+        val endpointMethod = this[AgentTable.endpointMethod]
+
         val endpointInterval =
             this[AgentTable.endpointIntervalSeconds]
 
@@ -123,11 +129,13 @@ class AgentRepositoryExposed(
             if (
                 endpointName != null &&
                 endpointInterval != null &&
-                endpointCreatedAt != null
+                endpointCreatedAt != null &&
+                endpointMethod != null
             ) {
 
                 AgentEndpoint(
                     name = endpointName,
+                    method = endpointMethod,
                     intervalSeconds = IntervalSeconds(
                         endpointInterval
                     ),
