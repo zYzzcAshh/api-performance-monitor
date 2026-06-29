@@ -112,6 +112,12 @@ class AgentRepositoryExposed(
             .map { it.toAgent() }
     }
 
+    override suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent> = transaction(db) {
+        AgentTable.selectAll()
+            .where { AgentTable.endpointIntervalSeconds eq intervalSeconds.value }
+            .map { it.toAgent() }
+    }
+
     private fun ResultRow.toAgent(): Agent {
 
         val endpointName =

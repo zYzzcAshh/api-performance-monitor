@@ -25,4 +25,6 @@ interface AgentRepository {
     ): Agent?
 
     suspend fun getAll(): List<Agent>
+
+    suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent>
 }

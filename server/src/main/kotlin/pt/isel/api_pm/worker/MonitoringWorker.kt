@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import pt.isel.api_pm.alert.AlertEvaluator
 import pt.isel.api_pm.alert.AlertRule
+import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.manager.AgentSessionManager
 import pt.isel.api_pm.service.AgentService
 import pt.isel.api_pm.service.EndpointService
@@ -41,6 +42,7 @@ class MonitoringWorker(
         ConcurrentHashMap<UInt, ConcurrentHashMap<UInt, Long>>()
 
     fun start(scope: CoroutineScope) {
+        val interval = IntervalSeconds(intervalSeconds)
 
         logger.info(
             "Starting worker for ${intervalSeconds}s..."
@@ -51,9 +53,10 @@ class MonitoringWorker(
             while (isActive) {
 
                 val endpoints =
-                    endpointService.getAll()
+                    endpointService.getAllByIntervalSeconds(interval)
 
-                val agentEndpoints = agentService.getAll()
+                val agentEndpoints =
+                    agentService.getAllByIntervalSeconds(interval)
 
                 coroutineScope {
 

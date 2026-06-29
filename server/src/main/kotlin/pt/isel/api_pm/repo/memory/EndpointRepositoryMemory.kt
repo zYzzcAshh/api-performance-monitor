@@ -19,6 +19,10 @@ class EndpointRepositoryMemory : EndpointRepository {
 
     override suspend fun getAll(): List<MonitoredEndpoint> = endpoints.values.flatMap { it.values }
 
+    override suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<MonitoredEndpoint> {
+        return endpoints.values.flatMap { it.values }.filter { it.interval == intervalSeconds }
+    }
+
     override suspend fun getByUser(userId: UInt): List<MonitoredEndpoint> = endpoints[userId]?.values?.toList() ?: emptyList()
 
     override suspend fun add(

@@ -11,6 +11,7 @@ import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.database.tables.MonitoredEndpointTable
 import pt.isel.api_pm.database.tables.RequestMetricsTable
 import pt.isel.api_pm.domain.endpoint.HttpMethod
+import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.EndpointRepository
@@ -27,6 +28,18 @@ class EndpointRepositoryExposed(
 
             MonitoredEndpointTable
                 .selectAll()
+                .map {
+                    it.toEndpoint()
+                }
+        }
+
+    override suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<MonitoredEndpoint> =
+        transaction(db) {
+            MonitoredEndpointTable
+                .selectAll()
+                .where {
+                    MonitoredEndpointTable.intervalSeconds eq intervalSeconds.value
+                }
                 .map {
                     it.toEndpoint()
                 }

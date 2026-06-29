@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfaXNzdWVyIiwidXNlcklkIjoxLCJleHAiOjE3ODI3NzMxNjV9.-bpLYeXrSN1KbsCR9hJawFnXYWpXcvuONj9N3Iurjlw
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfaXNzdWVyIiwidXNlcklkIjoxLCJleHAiOjE3ODI3NzUyMzh9.LgfN0W8mRZAZvT4X6KWV8omlFE8llVvsQB-6exU_SSo
 
 ###
 GET {{baseUrl}}/metrics/agent

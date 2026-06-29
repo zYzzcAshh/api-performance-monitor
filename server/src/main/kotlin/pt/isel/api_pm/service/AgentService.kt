@@ -26,4 +26,6 @@ class AgentService(
     }
 
     suspend fun getAll() = repo.getAll()
+
+    suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllByIntervalSeconds(intervalSeconds)
 }

@@ -89,4 +89,8 @@ class AgentRepositoryMemory : AgentRepository {
         agents[userId]?.get(agentId)
 
     override suspend fun getAll(): List<Agent> = agents.values.flatMap { it.values }
+
+    override suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent> {
+        return agents.values.flatMap { it.values }.filter { it.endpoint?.intervalSeconds == intervalSeconds }
+    }
 }
