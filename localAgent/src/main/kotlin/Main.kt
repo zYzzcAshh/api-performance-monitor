@@ -156,5 +156,5 @@ fun main() {
 
     scope.launch { agentSocketClient.run() }
 
-    runBlocking { job.join() } // keep main() alive until cancelled
+    runBlocking { job.join() }
 }

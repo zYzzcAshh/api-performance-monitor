@@ -49,9 +49,7 @@ class MonitoringWorker(
         )
 
         scope.launch {
-
             while (isActive) {
-
                 val endpoints =
                     endpointService.getAllByIntervalSeconds(interval)
 
@@ -59,7 +57,6 @@ class MonitoringWorker(
                     agentService.getAllByIntervalSeconds(interval)
 
                 coroutineScope {
-
                     endpoints.forEach { endpoint ->
 
                         if (endpoint.interval.value != intervalSeconds) {

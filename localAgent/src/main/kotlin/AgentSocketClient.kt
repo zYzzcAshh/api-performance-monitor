@@ -24,17 +24,15 @@ class AgentSocketClient(
     private val client = HttpClient { install(WebSockets) }
 
     suspend fun run() {
-        var backoffMs = 1_000L
-        val maxBackoffMs = 30_000L
+        var backoffMs = 1000L
+        val maxBackoffMs = 30000L
 
         while (currentCoroutineContext().isActive) {
             try {
                 connectAndListen()
-                // connectAndListen returned normally -> server closed the socket cleanly.
-                // Treat like a drop and retry, but don't blow up the backoff for a clean close.
-                backoffMs = 1_000L
+                backoffMs = 1000L
             } catch (e: CancellationException) {
-                throw e // real shutdown request, don't swallow it
+                throw e
             } catch (e: Exception) {
                 println("Agent connection lost: ${e.message}. Retrying in ${backoffMs}ms...")
             }
@@ -53,7 +51,7 @@ class AgentSocketClient(
         ) {
             for (frame in incoming) {
                 if (frame !is Frame.Text) continue
-                when (val msg = Json.decodeFromString<ServerMessage>(frame.readText())) {
+                when (Json.decodeFromString<ServerMessage>(frame.readText())) {
                     is ServerMessage.DoRequest -> {
                         val endpoint = agentController.getMonitoredEndpoint() ?: continue
                         val result = performRequest(endpoint)

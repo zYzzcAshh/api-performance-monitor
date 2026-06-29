@@ -110,5 +110,5 @@ class AppDependencies(
     val alertEvaluator =
         AlertEvaluator()
 
-    val agentSessionManager = AgentSessionManager(agentRepo, metricsRepository)
+    val agentSessionManager = AgentSessionManager(metricsRepository)
 }

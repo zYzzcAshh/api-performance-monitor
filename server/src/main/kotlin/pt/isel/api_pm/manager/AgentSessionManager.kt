@@ -12,7 +12,6 @@ import pt.isel.api_pm.repo.MetricsRepository
 import java.util.concurrent.ConcurrentHashMap
 
 class AgentSessionManager(
-    private val repo: AgentRepository,
     private val metricsRepository: MetricsRepository
 ) {
     private val sessions = ConcurrentHashMap<UInt, ConcurrentHashMap<UInt, DefaultWebSocketSession>>()
@@ -31,11 +30,11 @@ class AgentSessionManager(
     }
 
     suspend fun sendDoRequest(userId: UInt, agentId: UInt, endpointName: String) {
-        val session = sessions[userId]?.get(agentId) ?: return // agent isn't connected right now
+        val session = sessions[userId]?.get(agentId) ?: return
         try {
             session.send(Frame.Text(Json.encodeToString<ServerMessage>(ServerMessage.DoRequest(endpointName))))
         } catch (_: Exception) {
-            unregister(userId, agentId) // session is dead, clean it up
+            unregister(userId, agentId)
         }
     }
 
