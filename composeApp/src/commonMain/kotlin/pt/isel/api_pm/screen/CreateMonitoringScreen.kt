@@ -60,6 +60,18 @@ fun CreateMonitoringScreen(
     var alertOperator by remember { mutableStateOf("Greater Than (>)") }
     var alertValue by remember { mutableStateOf("500") }
     var alertDuration by remember { mutableStateOf("60") }
+    var aggregation by remember { mutableStateOf("Occurrences") }
+    var aggregationCount by remember { mutableStateOf("1") }
+
+    LaunchedEffect(alertType) {
+
+        if (alertType == "Down Time") {
+
+            alertValue = ""
+            aggregation = "Occurrences"
+            aggregationCount = "1"
+        }
+    }
 
     val operator = when (alertOperator) {
         "Greater Than (>)"          -> ComparisonOperator.GT
@@ -69,18 +81,33 @@ fun CreateMonitoringScreen(
         else                        -> ComparisonOperator.EQ
     }
 
+    val aggregationType =
+        when (aggregation) {
+
+            "Any request" ->
+                AggregationType.ALL
+
+            "Average" ->
+                AggregationType.AVG
+
+            else ->
+                AggregationType.COUNT(
+                    aggregationCount.toIntOrNull() ?: 1
+                )
+        }
+
     val alertRule = when (alertType) {
         "Status Code" -> AlertRule.StatusCodeRule(
             operator = operator,
             value = alertValue.toIntOrNull() ?: 500,
             durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60),
-            aggregation = AggregationType.COUNT(1)
+            aggregation = aggregationType
         )
         "Latency" -> AlertRule.LatencyRule(
             operator = operator,
             value = alertValue.toLongOrNull() ?: 1000,
             durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60),
-            aggregation = AggregationType.COUNT(1)
+            aggregation = aggregationType
         )
         else -> AlertRule.DownTimeRule(
             durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60)
@@ -215,11 +242,18 @@ fun CreateMonitoringScreen(
                 subtitle = "When should an alert be triggered?",
                 icon = Icons.Default.Warning
             ) {
+
                 StyledDropdown(
                     label = "Trigger type",
                     selected = alertType,
-                    options = listOf("Status Code", "Latency", "Down Time"),
-                    onSelected = { alertType = it }
+                    options = listOf(
+                        "Status Code",
+                        "Latency",
+                        "Down Time"
+                    ),
+                    onSelected = {
+                        alertType = it
+                    }
                 )
 
                 AnimatedVisibility(
@@ -227,7 +261,42 @@ fun CreateMonitoringScreen(
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically()
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        StyledDropdown(
+                            label = "Aggregation",
+                            selected = aggregation,
+                            options = listOf(
+                                "Any request",
+                                "Average",
+                                "Occurrences"
+                            ),
+                            onSelected = {
+                                aggregation = it
+                            }
+                        )
+
+                        AnimatedVisibility(
+                            visible = aggregation == "Occurrences",
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+
+                            AppTextField(
+                                value = aggregationCount,
+                                onValueChange = {
+                                    aggregationCount = it
+                                },
+                                label = "Occurrences",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                            )
+                        }
+
                         StyledDropdown(
                             label = "Condition",
                             selected = alertOperator,
@@ -238,13 +307,21 @@ fun CreateMonitoringScreen(
                                 "Less Than or Equal (<=)",
                                 "Equal (=)"
                             ),
-                            onSelected = { alertOperator = it },
-                            modifier = Modifier.padding(top = 8.dp)
+                            onSelected = {
+                                alertOperator = it
+                            }
                         )
+
                         AppTextField(
                             value = alertValue,
-                            onValueChange = { alertValue = it },
-                            label = if (alertType == "Status Code") "Status code" else "Latency (ms)",
+                            onValueChange = {
+                                alertValue = it
+                            },
+                            label =
+                                if (alertType == "Status Code")
+                                    "Status code"
+                                else
+                                    "Latency (ms)",
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

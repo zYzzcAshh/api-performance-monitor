@@ -18,6 +18,7 @@ import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.dto.user.LoginRequest
 import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
+import io.ktor.client.statement.bodyAsText
 
 private val httpClient = HttpClient {
     install(ContentNegotiation) {
@@ -52,7 +53,16 @@ class ApiClient(
                 )
             }
 
-            response.body()
+            if (response.status.isSuccess()) {
+
+                response.body<String>()
+
+            } else {
+
+                throw Exception(
+                    response.bodyAsText()
+                )
+            }
         }
 
     override suspend fun agentRegister(
@@ -106,20 +116,28 @@ class ApiClient(
     ): Result<String> =
         runCatching {
 
-            val response: LoginResponse =
-                client.post("${ApiConfig.BASE_URL}/auth/login") {
+            val response = client.post("${ApiConfig.BASE_URL}/auth/login") {
 
-                    contentType(ContentType.Application.Json)
+                contentType(ContentType.Application.Json)
 
-                    setBody(
-                        LoginRequest(
-                            username,
-                            password
-                        )
+                setBody(
+                    LoginRequest(
+                        username,
+                        password
                     )
-                }.body()
+                )
+            }
 
-            response.token
+            if (response.status.isSuccess()) {
+
+                response.body<LoginResponse>().token
+
+            } else {
+
+                throw Exception(
+                    "Invalid username or password."
+                )
+            }
         }
 
     override suspend fun getEndpoints(

@@ -5,7 +5,7 @@ import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 
-class FakeApi : Api {
+abstract class FakeApi : Api {
 
     var loginResult: Result<String> =
         Result.success("token")

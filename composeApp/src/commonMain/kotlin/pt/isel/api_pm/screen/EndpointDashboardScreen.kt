@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import pt.isel.api_pm.components.ScreenContainer
+import pt.isel.api_pm.components.charts.LatencyChart
+import pt.isel.api_pm.components.charts.StatusCodeChart
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.theme.Primary
@@ -96,8 +98,13 @@ fun EndpointDashboardScreen(
             summary?.let { s ->
                 item { OverviewCard(s) }
                 item { PerformanceCard(s) }
+                item { LatencyChart(metrics = state.metrics) }
                 item { MonitoringWindowCard(s) }
-                item { StatusCodesCard(s) }
+                item {
+                    StatusCodeChart(
+                        distribution = s.statusCodeDistribution
+                    )
+                }
             }
 
             // recent metrics header
