@@ -17,6 +17,7 @@ import pt.isel.api_pm.service.MonitoringService
 import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.utils.AlertPipeline
 import pt.isel.api_pm.utils.CooldownManager
+import pt.isel.api_pm.utils.MetricsEventBus
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -28,6 +29,7 @@ class MonitoringWorker(
     private val agentService: AgentService,
     private val agentSessionManager: AgentSessionManager,
     private val alertPipeline: AlertPipeline,
+    private val metricsEventBus: MetricsEventBus,
     private val intervalSeconds: Long,
 ) {
 
@@ -68,6 +70,12 @@ class MonitoringWorker(
                                     )
 
                                 metricsService.save(
+                                    endpoint.userId,
+                                    endpoint.id,
+                                    metric
+                                )
+
+                                metricsEventBus.publishEndpoint(
                                     endpoint.userId,
                                     endpoint.id,
                                     metric
@@ -116,6 +124,8 @@ class MonitoringWorker(
                                 endpoint.id,
                                 endpoint.name
                             )
+
+                            logger.info("Sent do request to agent ${endpoint.name} for endpoint ${endpoint.endpoint!!.name}")
                         }
                     }
                 }

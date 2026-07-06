@@ -17,11 +17,13 @@ import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.utils.AlertPipeline
 import pt.isel.api_pm.utils.CooldownManager
+import pt.isel.api_pm.utils.MetricsEventBus
 import java.util.concurrent.ConcurrentHashMap
 
 class AgentSessionManager(
     private val metricsService: MetricsService,
     private val agentService: AgentService,
+    private val metricsEventBus: MetricsEventBus,
     private val alertPipeline: AlertPipeline,
 ) {
     private val logger = LoggerFactory.getLogger(AgentSessionManager::class.java)
@@ -56,6 +58,8 @@ class AgentSessionManager(
             is AgentMessage.Metrics -> {
                 logger.info("Received metrics message: {}", msg)
                 metricsService.saveAgentMetrics(userId, agentId, msg.toAgentEndpointMetrics())
+                metricsEventBus.publishAgent(userId, agentId, msg.toAgentEndpointMetrics())
+
                 val agentEndpoint = agentService.getByIds(userId, agentId)?.endpoint
                 val rule = agentEndpoint?.alertRule
 

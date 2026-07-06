@@ -66,8 +66,8 @@ class MetricsRepositoryExposed(
                     AgentEndpointMetrics(
                         endpointName = it[AgentMetricsTable.endpointName],
                         statusCode = it[AgentMetricsTable.statusCode],
-                        responseTimeMs = it[AgentMetricsTable.responseTimeMs],
-                        timestamp = it[AgentMetricsTable.timestamp].toEpochMilliseconds()
+                        latency = it[AgentMetricsTable.latency],
+                        timestamp = it[AgentMetricsTable.timestamp]
                     )
                 }
         }
@@ -109,8 +109,8 @@ class MetricsRepositoryExposed(
 
                 it[endpointName] = message.endpointName
                 it[statusCode] = message.statusCode
-                it[responseTimeMs] = message.responseTimeMs
-                it[timestamp] = Instant.fromEpochSeconds(message.timestamp)
+                it[latency] = message.latency
+                it[timestamp] = message.timestamp
             }
         }
     }
@@ -121,8 +121,8 @@ class MetricsRepositoryExposed(
                 AgentEndpointMetrics(
                     endpointName = it[AgentMetricsTable.endpointName],
                     statusCode = it[AgentMetricsTable.statusCode],
-                    responseTimeMs = it[AgentMetricsTable.responseTimeMs],
-                    timestamp = it[AgentMetricsTable.timestamp].toEpochMilliseconds()
+                    latency = it[AgentMetricsTable.latency],
+                    timestamp = it[AgentMetricsTable.timestamp]
                 )
             }
     }
@@ -143,8 +143,8 @@ class MetricsRepositoryExposed(
                 AgentEndpointMetrics(
                     endpointName = it[AgentMetricsTable.endpointName],
                     statusCode = it[AgentMetricsTable.statusCode],
-                    responseTimeMs = it[AgentMetricsTable.responseTimeMs],
-                    timestamp = it[AgentMetricsTable.timestamp].toEpochMilliseconds()
+                    latency = it[AgentMetricsTable.latency],
+                    timestamp = it[AgentMetricsTable.timestamp]
                 )
             }
     }

@@ -9,4 +9,5 @@ fun Application.configureAll() {
     configureIgnoreTrailingSlash()
     configureCORS()
     configureWebsockets()
+    configureSSE()
 }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.isActive
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.message.ServerMessage
+import kotlin.time.Clock.System.now
 
 class AgentSocketClient(
     private val authStore: AuthStore,
@@ -84,7 +85,7 @@ class AgentSocketClient(
         }
         val latency = System.currentTimeMillis() - start
         println("Local agent performed a request for ${endpoint.url} and got: ${response.status.value} status code; ${latency}ms latency")
-        return AgentMessage.Metrics(endpoint.name, response.status.value, latency, System.currentTimeMillis())
+        return AgentMessage.Metrics(endpoint.name, response.status.value, latency, now())
     }
 
     fun close() {

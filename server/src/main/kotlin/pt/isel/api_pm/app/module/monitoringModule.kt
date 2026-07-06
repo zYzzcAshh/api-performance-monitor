@@ -15,6 +15,7 @@ import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
 import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.utils.AlertPipeline
+import pt.isel.api_pm.utils.MetricsEventBus
 import pt.isel.api_pm.worker.MonitoringWorker
 
 fun Application.monitoringModule(
@@ -23,12 +24,13 @@ fun Application.monitoringModule(
     endpointService: EndpointService,
     agentService: AgentService,
     agentSessionManager: AgentSessionManager,
+    metricsEventBus: MetricsEventBus,
     alertPipeline: AlertPipeline,
 ) {
     val monitoringScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     INTERVAL_SECONDS_LIST.forEach { intervalSeconds ->
-        val worker = MonitoringWorker(monitoringService, metricsService, endpointService,agentService, agentSessionManager, alertPipeline, intervalSeconds)
+        val worker = MonitoringWorker(monitoringService, metricsService, endpointService,agentService, agentSessionManager, alertPipeline, metricsEventBus, intervalSeconds)
         worker.start(monitoringScope)
     }
 

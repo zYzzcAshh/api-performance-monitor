@@ -14,7 +14,7 @@ class AlertEvaluator {
     }
 
     fun shouldTriggerAgent(metrics: List<AgentEndpointMetrics>, rule: AlertRule): Boolean {
-        return evaluate(metrics.map { MetricSample(it.responseTimeMs, it.statusCode) }, rule)
+        return evaluate(metrics.map { MetricSample(it.latency, it.statusCode) }, rule)
     }
 
     private fun evaluate(samples: List<MetricSample>, rule: AlertRule): Boolean {

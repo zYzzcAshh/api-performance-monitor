@@ -2,6 +2,7 @@ package pt.isel.api_pm.dto.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 @Serializable
 sealed class AgentMessage {
@@ -10,8 +11,8 @@ sealed class AgentMessage {
     data class Metrics(
         val endpointName: String,
         val statusCode: Int,
-        val responseTimeMs: Long,
-        val timestamp: Long,
+        val latency: Long,
+        val timestamp: Instant,
     ) : AgentMessage()
 
     @Serializable

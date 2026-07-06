@@ -42,6 +42,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:1.3.0")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:1.3.0")
     implementation("com.h2database:h2:2.4.240")
+    implementation("io.ktor:ktor-server-core:3.4.1")
+    implementation("io.ktor:ktor-server-sse:3.4.1")
+    implementation("io.ktor:ktor-server-core:3.4.1")
+    implementation("io.ktor:ktor-server-sse:3.4.1")
 
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(kotlin("test"))

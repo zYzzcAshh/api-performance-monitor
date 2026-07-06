@@ -21,6 +21,7 @@ import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.service.UserService
 import pt.isel.api_pm.utils.AlertPipeline
 import pt.isel.api_pm.utils.CooldownManager
+import pt.isel.api_pm.utils.MetricsEventBus
 import pt.isel.api_pm.utils.PasswordHasher
 import pt.isel.api_pm.utils.SmtpConfig
 import pt.isel.api_pm.utils.SmtpEmailSender
@@ -120,5 +121,7 @@ class AppDependencies(
         cooldownManager
     )
 
-    val agentSessionManager = AgentSessionManager(metricsService, agentService, alertPipeline)
+    val metricsEventBus = MetricsEventBus()
+
+    val agentSessionManager = AgentSessionManager(metricsService, agentService, metricsEventBus, alertPipeline)
 }

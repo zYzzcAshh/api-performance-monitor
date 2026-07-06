@@ -2,8 +2,6 @@ package pt.isel.api_pm.repo.memory
 
 import pt.isel.api_pm.domain.metrics.AgentEndpointMetrics
 import pt.isel.api_pm.domain.metrics.EndpointMetrics
-import pt.isel.api_pm.dto.message.AgentMessage
-import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Instant
@@ -62,6 +60,6 @@ class MetricsRepositoryMemory : MetricsRepository {
         from: Instant,
         to: Instant
     ): List<AgentEndpointMetrics> {
-        return agentMetrics[userId]?.get(agentId)?.filter { Instant.fromEpochSeconds(it.timestamp) in from..to } ?: emptyList()
+        return agentMetrics[userId]?.get(agentId)?.filter { it.timestamp in from..to } ?: emptyList()
     }
 }

@@ -41,6 +41,7 @@ fun Application.module() {
         dependencies.endpointService,
         dependencies.agentService,
         dependencies.agentSessionManager,
+        dependencies.metricsEventBus,
         dependencies.alertPipeline
     )
 
@@ -48,7 +49,10 @@ fun Application.module() {
         userRoutes(dependencies.userService)
         authRoutes(dependencies.authService)
         metricsRoutes(
-            dependencies.metricsService
+            dependencies.metricsService,
+            dependencies.endpointService,
+            dependencies.agentService,
+            dependencies.metricsEventBus
         )
         endpointRoutes(dependencies.endpointService)
         agentRoutes(dependencies.agentService, dependencies.agentSessionManager)

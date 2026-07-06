@@ -1,26 +1,27 @@
 package pt.isel.api_pm.domain.metrics
 
 import pt.isel.api_pm.dto.message.AgentMessage
+import kotlin.time.Instant
 
 data class AgentEndpointMetrics (
     val endpointName: String,
     val statusCode: Int,
-    val responseTimeMs: Long,
-    val timestamp: Long,
+    val latency: Long,
+    val timestamp: Instant,
 )
 
 fun AgentMessage.Metrics.toAgentEndpointMetrics() =
     AgentEndpointMetrics(
         endpointName,
         statusCode,
-        responseTimeMs,
+        latency,
         timestamp
     )
 
 fun AgentEndpointMetrics.toAgentMessageMetrics() = AgentMessage.Metrics(
     endpointName,
     statusCode,
-    responseTimeMs,
+    latency,
     timestamp
 )
 

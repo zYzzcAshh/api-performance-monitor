@@ -12,7 +12,7 @@ object AgentMetricsTable : Table("agent_metrics") {
     val endpointName = varchar("endpoint_name", 255)
 
     val statusCode = integer("status_code")
-    val responseTimeMs = long("latency")
+    val latency = long("latency")
 
     val timestamp = timestamp("timestamp")
 
