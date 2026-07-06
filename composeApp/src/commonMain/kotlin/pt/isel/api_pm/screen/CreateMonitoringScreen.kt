@@ -96,7 +96,10 @@ fun CreateMonitoringScreen(
                 )
         }
 
-    val alertRule = when (alertType) {
+    val alertRule: AlertRule? = if (notificationType == "None") {
+        null
+    } else {
+        when (alertType) {
         "Status Code" -> AlertRule.StatusCodeRule(
             operator = operator,
             value = alertValue.toIntOrNull() ?: 500,
@@ -112,6 +115,7 @@ fun CreateMonitoringScreen(
         else -> AlertRule.DownTimeRule(
             durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60)
         )
+        }
     }
 
     val notification = when (notificationType) {
@@ -239,102 +243,88 @@ fun CreateMonitoringScreen(
             // section: alert rule
             SectionCard(
                 title = "Alert Rule",
-                subtitle = "When should an alert be triggered?",
+                subtitle = if (notificationType == "None")
+                    "Choose a notification channel first"
+                else
+                    "When should an alert be triggered?",
                 icon = Icons.Default.Warning
             ) {
+                val alertEnabled = notificationType != "None"
 
-                StyledDropdown(
-                    label = "Trigger type",
-                    selected = alertType,
-                    options = listOf(
-                        "Status Code",
-                        "Latency",
-                        "Down Time"
-                    ),
-                    onSelected = {
-                        alertType = it
-                    }
-                )
-
-                AnimatedVisibility(
-                    visible = alertType != "Down Time",
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    StyledDropdown(
+                        label = "Trigger type",
+                        selected = alertType,
+                        options = listOf("Status Code", "Latency", "Down Time"),
+                        onSelected = { alertType = it },
+                        enabled = alertEnabled
+                    )
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    AnimatedVisibility(
+                        visible = alertType != "Down Time" && alertEnabled,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
                     ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            StyledDropdown(
+                                label = "Aggregation",
+                                selected = aggregation,
+                                options = listOf("Any request", "Average", "Occurrences"),
+                                onSelected = { aggregation = it },
+                                enabled = alertEnabled
+                            )
 
-                        StyledDropdown(
-                            label = "Aggregation",
-                            selected = aggregation,
-                            options = listOf(
-                                "Any request",
-                                "Average",
-                                "Occurrences"
-                            ),
-                            onSelected = {
-                                aggregation = it
+                            AnimatedVisibility(
+                                visible = aggregation == "Occurrences",
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically()
+                            ) {
+                                AppTextField(
+                                    value = aggregationCount,
+                                    onValueChange = { aggregationCount = it },
+                                    label = "Occurrences",
+                                    enabled = alertEnabled,
+                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                                )
                             }
-                        )
 
-                        AnimatedVisibility(
-                            visible = aggregation == "Occurrences",
-                            enter = fadeIn() + expandVertically(),
-                            exit = fadeOut() + shrinkVertically()
-                        ) {
+                            StyledDropdown(
+                                label = "Condition",
+                                selected = alertOperator,
+                                options = listOf(
+                                    "Greater Than (>)",
+                                    "Greater Than or Equal (>=)",
+                                    "Less Than (<)",
+                                    "Less Than or Equal (<=)",
+                                    "Equal (=)"
+                                ),
+                                onSelected = { alertOperator = it },
+                                enabled = alertEnabled
+                            )
 
                             AppTextField(
-                                value = aggregationCount,
-                                onValueChange = {
-                                    aggregationCount = it
-                                },
-                                label = "Occurrences",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp)
+                                value = alertValue,
+                                onValueChange = { alertValue = it },
+                                label = if (alertType == "Status Code") "Status code" else "Latency (ms)",
+                                enabled = alertEnabled,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
-
-                        StyledDropdown(
-                            label = "Condition",
-                            selected = alertOperator,
-                            options = listOf(
-                                "Greater Than (>)",
-                                "Greater Than or Equal (>=)",
-                                "Less Than (<)",
-                                "Less Than or Equal (<=)",
-                                "Equal (=)"
-                            ),
-                            onSelected = {
-                                alertOperator = it
-                            }
-                        )
-
-                        AppTextField(
-                            value = alertValue,
-                            onValueChange = {
-                                alertValue = it
-                            },
-                            label =
-                                if (alertType == "Status Code")
-                                    "Status code"
-                                else
-                                    "Latency (ms)",
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
-                }
 
-                AppTextField(
-                    value = alertDuration,
-                    onValueChange = { alertDuration = it },
-                    label = "Duration (seconds)",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = if (alertType == "Down Time") 0.dp else 8.dp)
-                )
+                    AppTextField(
+                        value = alertDuration,
+                        onValueChange = { alertDuration = it },
+                        label = "Duration (seconds)",
+                        enabled = alertEnabled,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = if (alertType == "Down Time") 0.dp else 8.dp)
+                    )
+                }
             }
 
             Spacer(Modifier.height(24.dp))
@@ -469,29 +459,31 @@ private fun StyledDropdown(
     selected: String,
     options: List<String>,
     onSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        expanded = expanded && enabled,
+        onExpandedChange = { if (enabled) expanded = !expanded },
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = selected,
             onValueChange = {},
             readOnly = true,
+            enabled = enabled,
             label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded && enabled) },
             shape = RoundedCornerShape(18.dp),
             modifier = Modifier
-                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true)
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = enabled)
                 .fillMaxWidth()
         )
 
         ExposedDropdownMenu(
-            expanded = expanded,
+            expanded = expanded && enabled,
             onDismissRequest = { expanded = false }
         ) {
             options.forEach { option ->

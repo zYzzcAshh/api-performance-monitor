@@ -16,6 +16,11 @@ class AgentController {
         this.monitoredEndpoint = endpoint
     }
 
+    fun clear() {
+        this.monitoredEndpoint = null
+        this.monitoring = false
+    }
+
     fun getMonitoredEndpoint() = monitoredEndpoint
 }
 

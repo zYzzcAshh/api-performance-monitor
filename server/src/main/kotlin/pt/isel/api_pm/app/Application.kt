@@ -49,8 +49,7 @@ fun Application.module() {
         userRoutes(dependencies.userService)
         authRoutes(dependencies.authService)
         metricsRoutes(
-            dependencies.metricsService,
-            dependencies.monitoringService,
+            dependencies.metricsService
         )
         endpointRoutes(dependencies.endpointService)
         agentRoutes(dependencies.agentService, dependencies.agentSessionManager)

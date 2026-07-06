@@ -19,6 +19,8 @@ interface AgentRepository {
         intervalSeconds: IntervalSeconds
     )
 
+    suspend fun inactiveAgent(userId: UInt, agentId: UInt)
+
     suspend fun getById(
         userId: UInt,
         agentId: UInt
@@ -27,4 +29,6 @@ interface AgentRepository {
     suspend fun getAll(): List<Agent>
 
     suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent>
+
+    suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent>
 }

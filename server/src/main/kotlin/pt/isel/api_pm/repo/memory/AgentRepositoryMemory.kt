@@ -31,7 +31,8 @@ class AgentRepositoryMemory : AgentRepository {
                 userId = userId,
                 name = name,
                 createdAt = Clock.System.now(),
-                endpoint = null
+                endpoint = null,
+                active = false
             )
 
         agents
@@ -78,7 +79,27 @@ class AgentRepositoryMemory : AgentRepository {
 
         userAgents[agentId] =
             agent.copy(
-                endpoint = endpoint
+                endpoint = endpoint,
+                active = true
+            )
+    }
+
+    override suspend fun inactiveAgent(userId: UInt, agentId: UInt) {
+        val userAgents =
+            agents[userId]
+                ?: throw IllegalArgumentException(
+                    "User with id $userId not found"
+                )
+
+        val agent =
+            userAgents[agentId]
+                ?: throw IllegalArgumentException(
+                    "Agent with id $agentId not found"
+                )
+
+        userAgents[agentId] =
+            agent.copy(
+                active = false
             )
     }
 
@@ -92,5 +113,9 @@ class AgentRepositoryMemory : AgentRepository {
 
     override suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent> {
         return agents.values.flatMap { it.values }.filter { it.endpoint?.intervalSeconds == intervalSeconds }
+    }
+
+    override suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent> {
+        return agents.values.flatMap { it.values }.filter { it.endpoint?.intervalSeconds == intervalSeconds && it.active }
     }
 }

@@ -90,7 +90,7 @@ class EndpointsViewModel(
         url: String,
         interval: String,
         notification: NotificationConfig,
-        alertRule: AlertRule
+        alertRule: AlertRule?
     ) {
 
         scope.launch {
@@ -109,11 +109,15 @@ class EndpointsViewModel(
                 alertRule = alertRule
             )
 
+            println(request)
+
             val result =
                 api.createEndpointMonitor(
                     token,
                     request
                 )
+
+            println(result)
 
             _state.value = if (result.isSuccess) {
 

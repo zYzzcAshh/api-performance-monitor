@@ -11,11 +11,3 @@ data class RequestMetric (
     val latency: Long,
     val statusCode: Int
 )
-
-@Serializable
-data class AgentRequestMetric (
-    val name: String,
-    val timestamp: Instant,
-    val latency: Long,
-    val statusCode: Int,
-)

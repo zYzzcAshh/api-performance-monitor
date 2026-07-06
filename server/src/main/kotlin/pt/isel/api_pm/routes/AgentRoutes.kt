@@ -66,7 +66,7 @@ fun Route.agentRoutes(
                     if (frame is Frame.Text) sessionManager.handleIncoming(userId, agentId, frame)
                 }
             } finally {
-                sessionManager.unregister(userId, agentId) // runs on disconnect, including network drops
+                sessionManager.unregister(userId, agentId)
             }
         }
     }

@@ -2,6 +2,8 @@ package pt.isel.api_pm.service
 
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.metrics.AgentEndpointMetrics
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
@@ -15,15 +17,15 @@ class MetricsService(
     suspend fun save(
         userId: UInt,
         monitoredEndpointId: UInt,
-        metric: RequestMetric,
+        metric: EndpointMetrics,
     ) = repo.save(userId, monitoredEndpointId, metric)
 
-    suspend fun getAll(): List<RequestMetric> = repo.getAll()
+    suspend fun getAll(): List<EndpointMetrics> = repo.getAll()
 
     suspend fun getByEndpoint(
         userId: UInt,
         monitoredEndpointId: UInt,
-    ): List<RequestMetric> = repo.getByEndpoint(userId, monitoredEndpointId)
+    ): List<EndpointMetrics> = repo.getByEndpoint(userId, monitoredEndpointId)
 
     suspend fun getSummary(
         userId: UInt,
@@ -137,7 +139,7 @@ class MetricsService(
         userId: UInt,
         endpointId: UInt,
         alertRule: AlertRule
-    ): List<RequestMetric> {
+    ): List<EndpointMetrics> {
         val now = Clock.System.now()
 
         val from = now.minus(alertRule.durationSeconds.value.seconds)
@@ -150,5 +152,5 @@ class MetricsService(
         )
     }
 
-    suspend fun getAllAgentMetrics(): List<AgentMessage.Metrics> = repo.getAllAgentMetrics()
+    suspend fun getAllAgentMetrics(): List<AgentEndpointMetrics> = repo.getAllAgentMetrics()
 }

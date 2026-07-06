@@ -38,6 +38,8 @@ object AgentTable : Table("agents") {
         timestamp("endpoint_created_at")
             .nullable()
 
+    val active = bool("active")
+
     override val primaryKey =
         PrimaryKey(id)
 }

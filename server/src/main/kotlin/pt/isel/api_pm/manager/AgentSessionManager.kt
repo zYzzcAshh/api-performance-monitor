@@ -5,13 +5,16 @@ import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.serialization.json.Json
+import pt.isel.api_pm.domain.metrics.toAgentEndpointMetrics
 import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.message.ServerMessage
 import pt.isel.api_pm.repo.MetricsRepository
+import pt.isel.api_pm.service.AgentService
 import java.util.concurrent.ConcurrentHashMap
 
 class AgentSessionManager(
-    private val metricsRepository: MetricsRepository
+    private val metricsRepository: MetricsRepository,
+    private val agentService: AgentService
 ) {
     private val sessions = ConcurrentHashMap<UInt, ConcurrentHashMap<UInt, DefaultWebSocketSession>>()
 
@@ -20,12 +23,13 @@ class AgentSessionManager(
         userSessions[agentId] = session
     }
 
-    fun unregister(userId: UInt, agentId: UInt) {
+    suspend fun unregister(userId: UInt, agentId: UInt) {
         val userSessions = sessions[userId] ?: return
         userSessions.remove(agentId)
         if (userSessions.isEmpty()) {
             sessions.remove(userId)
         }
+        agentService.inactiveAgent(userId, agentId)
     }
 
     suspend fun sendDoRequest(userId: UInt, agentId: UInt, endpointName: String) {
@@ -39,7 +43,7 @@ class AgentSessionManager(
 
     suspend fun handleIncoming(userId: UInt, agentId: UInt, frame: Frame.Text) {
         when (val msg = Json.decodeFromString<AgentMessage>(frame.readText())) {
-            is AgentMessage.Metrics -> metricsRepository.saveAgentMetrics(userId, agentId, msg)
+            is AgentMessage.Metrics -> metricsRepository.saveAgentMetrics(userId, agentId, msg.toAgentEndpointMetrics())
             is AgentMessage.Error -> println("Received error from agent $agentId for user $userId: ${msg.message}")
         }
     }

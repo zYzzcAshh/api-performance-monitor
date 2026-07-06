@@ -54,7 +54,7 @@ class MonitoringWorker(
                     endpointService.getAllByIntervalSeconds(interval)
 
                 val agentEndpoints =
-                    agentService.getAllByIntervalSeconds(interval)
+                    agentService.getAllActiveByIntervalSeconds(interval)
 
                 coroutineScope {
                     endpoints.forEach { endpoint ->

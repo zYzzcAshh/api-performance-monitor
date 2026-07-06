@@ -7,5 +7,6 @@ data class Agent (
     val userId: UInt,
     val name: String,
     val createdAt: Instant,
-    val endpoint: AgentEndpoint?
+    val endpoint: AgentEndpoint?,
+    val active: Boolean
 )

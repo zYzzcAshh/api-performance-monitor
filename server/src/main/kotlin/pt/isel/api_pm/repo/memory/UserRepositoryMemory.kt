@@ -11,25 +11,6 @@ import kotlin.time.Clock
 class UserRepositoryMemory : UserRepository {
     private val users = ConcurrentHashMap<UInt, User>()
 
-
-    init {
-        val hasher = PasswordHasher()
-
-        val passwordHash = PasswordHash(
-            hasher.hash("Admin1234")
-        )
-
-        val admin =
-            User(
-                id = 0u,
-                username = Username("admin"),
-                passwordHash = passwordHash,
-                createdAt = Clock.System.now(),
-            )
-
-        users[admin.id] = admin
-    }
-
     override suspend fun getUsers(): List<User> = users.values.toList()
 
     override suspend fun getUserById(id: UInt): User? = users[id]

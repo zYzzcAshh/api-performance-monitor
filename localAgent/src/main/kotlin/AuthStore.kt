@@ -5,7 +5,6 @@ class AuthStore() {
     private var agentToken: String? = null
 
     fun setToken(newToken: String) {
-        println("User token is $newToken")
         token = newToken
     }
 
@@ -18,7 +17,6 @@ class AuthStore() {
     }
 
     fun setAgentToken(newAgentToken: String) {
-        println("Agent token is $newAgentToken")
         agentToken = newAgentToken
     }
 

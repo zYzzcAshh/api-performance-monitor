@@ -1,11 +1,12 @@
 package pt.isel.api_pm.alert
 
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import pt.isel.api_pm.dto.metric.RequestMetric
 
 class AlertEvaluator {
 
     fun shouldTrigger(
-        metrics: List<RequestMetric>,
+        metrics: List<EndpointMetrics>,
         rule: AlertRule
     ): Boolean {
         if (metrics.isEmpty()) return false

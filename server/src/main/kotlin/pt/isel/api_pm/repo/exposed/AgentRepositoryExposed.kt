@@ -45,7 +45,8 @@ class AgentRepositoryExposed(
             userId = userId,
             name = name,
             createdAt = createdAt,
-            endpoint = null
+            endpoint = null,
+            active = false
         )
     }
 
@@ -87,6 +88,39 @@ class AgentRepositoryExposed(
                 it[endpointMethod] = method
                 it[endpointIntervalSeconds] = intervalSeconds.value
                 it[endpointCreatedAt] = Clock.System.now()
+                it[active] = true
+            }
+        }
+    }
+
+    override suspend fun inactiveAgent(userId: UInt, agentId: UInt) {
+        transaction(db) {
+
+            val existing =
+                AgentTable
+                    .selectAll()
+                    .where {
+                        (AgentTable.id eq agentId.toInt()) and
+                                (AgentTable.userId eq userId.toInt())
+                    }
+                    .singleOrNull()
+                    ?: throw IllegalArgumentException(
+                        "Agent with id $agentId not found"
+                    )
+
+            if (!existing[AgentTable.active]) {
+
+                throw IllegalStateException(
+                    "Agent with id $agentId is already inactive"
+                )
+            }
+
+            AgentTable.update({
+                (AgentTable.id eq agentId.toInt()) and
+                        (AgentTable.userId eq userId.toInt())
+            }) {
+
+                it[active] = false
             }
         }
     }
@@ -117,6 +151,16 @@ class AgentRepositoryExposed(
             .where { AgentTable.endpointIntervalSeconds eq intervalSeconds.value }
             .map { it.toAgent() }
     }
+
+    override suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds): List<Agent> =
+        transaction(db) {
+            AgentTable.selectAll()
+                .where {
+                    (AgentTable.endpointIntervalSeconds eq intervalSeconds.value) and
+                            (AgentTable.active eq true)
+                }
+                .map { it.toAgent() }
+        }
 
     private fun ResultRow.toAgent(): Agent {
 
@@ -157,7 +201,8 @@ class AgentRepositoryExposed(
             userId = this[AgentTable.userId].toUInt(),
             name = this[AgentTable.name],
             createdAt = this[AgentTable.createdAt],
-            endpoint = endpoint
+            endpoint = endpoint,
+            active = this[AgentTable.active]
         )
     }
 }

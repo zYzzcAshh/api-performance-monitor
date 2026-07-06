@@ -12,10 +12,12 @@ fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
 
     OutlinedTextField(
+        enabled = enabled,
         value = value,
         onValueChange = onValueChange,
         label = {

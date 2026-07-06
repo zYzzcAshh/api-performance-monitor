@@ -29,16 +29,24 @@ class AgentSocketClient(
 
     suspend fun run() {
         var backoffMs = 1000L
+        var retries = 0
         val maxBackoffMs = 30000L
+        val maxRetries = 10
 
         while (currentCoroutineContext().isActive) {
             try {
                 connectAndListen()
                 backoffMs = 1000L
             } catch (e: CancellationException) {
+                close()
                 throw e
             } catch (e: Exception) {
-                println("Agent connection lost: ${e.message}. Retrying in ${backoffMs}ms...")
+                if (retries++ >= maxRetries) {
+                    println("Max retries reached. Exiting...")
+                    close()
+                    break
+                }
+                println("Agent connection lost: ${e.message}. ($retries/$maxRetries retries) Retrying in ${backoffMs}ms...")
             }
             delay(backoffMs)
             backoffMs = (backoffMs * 2).coerceAtMost(maxBackoffMs)
@@ -79,5 +87,7 @@ class AgentSocketClient(
         return AgentMessage.Metrics(endpoint.name, response.status.value, latency, System.currentTimeMillis())
     }
 
-    fun close() = client.close()
+    fun close() {
+        client.close()
+    }
 }

@@ -3,6 +3,9 @@ package pt.isel.api_pm.service
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.dto.agent.AgentRegisterResponse
+import pt.isel.api_pm.exceptions.AgentRegistrationFailedException
+import pt.isel.api_pm.exceptions.EndpointAlreadyExistsException
+import pt.isel.api_pm.exceptions.EndpointNameAlreadyInUseException
 import pt.isel.api_pm.manager.AgentSessionManager
 import pt.isel.api_pm.repo.AgentRepository
 
@@ -11,7 +14,8 @@ class AgentService(
     private val jwtService: JwtService
 ) {
     suspend fun register(userId: UInt, name: String): AgentRegisterResponse {
-        // Verificar se já existe um agente com aquele nome associado aquele user
+        val existing = repo.getAll().find { it.userId == userId && it.name == name }
+        if (existing != null) throw AgentRegistrationFailedException(name)
 
         val agent = repo.register(userId, name)
         val token = jwtService.generateAgentToken(userId, agent.id)
@@ -19,13 +23,21 @@ class AgentService(
     }
 
     suspend fun addEndpoint(userId: UInt, agentId: UInt, name: String, method: HttpMethod, intervalSeconds: IntervalSeconds) {
-        // Verificar se ja existe um endpoint a ser monitorado por aquele agent
-        // Verificar se ja existe um endpoint com aquele nome a ser monitorado
+        val existing = repo.getAll().find { it.userId == userId && it.id == agentId && it.endpoint?.name == name }
+        if (existing != null) throw EndpointAlreadyExistsException(name)
+        val existingName = repo.getAll().find { it.userId == userId && it.id == agentId && it.endpoint?.name == name }?.name
+        if (existingName != null) throw EndpointNameAlreadyInUseException(existingName)
 
         repo.addEndpoint(userId, agentId, name, method, intervalSeconds)
+    }
+
+    suspend fun inactiveAgent(userId: UInt, agentId: UInt) {
+        repo.inactiveAgent(userId, agentId)
     }
 
     suspend fun getAll() = repo.getAll()
 
     suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllByIntervalSeconds(intervalSeconds)
+
+    suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllActiveByIntervalSeconds(intervalSeconds)
 }

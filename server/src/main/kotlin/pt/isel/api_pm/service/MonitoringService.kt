@@ -4,7 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
-import pt.isel.api_pm.dto.metric.RequestMetric
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -12,7 +12,7 @@ class MonitoringService(
     private val client: HttpClient,
 ) {
     @OptIn(ExperimentalTime::class)
-    suspend fun checkEndpoint(endpoint: MonitoredEndpoint): RequestMetric {
+    suspend fun checkEndpoint(endpoint: MonitoredEndpoint): EndpointMetrics {
         val start = System.currentTimeMillis()
 
         val response = when (endpoint.method) {
@@ -34,7 +34,7 @@ class MonitoringService(
 
         val latency = System.currentTimeMillis() - start
 
-        return RequestMetric(
+        return EndpointMetrics(
             endpoint = endpoint.url,
             timestamp = Clock.System.now(),
             latency = latency,

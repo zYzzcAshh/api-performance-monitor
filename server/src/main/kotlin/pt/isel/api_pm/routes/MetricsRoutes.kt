@@ -8,6 +8,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import pt.isel.api_pm.utils.AuthConfig
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.metrics.toAgentMessageMetricsList
+import pt.isel.api_pm.domain.metrics.toRequestMetrics
 import pt.isel.api_pm.dto.endpoint.CheckRequest
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.MetricsService
@@ -17,19 +19,17 @@ import pt.isel.api_pm.utils.requireUserId
 
 fun Route.metricsRoutes(
     metricsService: MetricsService,
-    monitoringService: MonitoringService,
 ) {
     get("/metrics/agent") {
         // TODO: Just for testing, needs to be removed in the future
-        call.respond(metricsService.getAllAgentMetrics())
+        call.respond(metricsService.getAllAgentMetrics().toAgentMessageMetricsList())
     }
 
     authenticate(AuthConfig.JWT_NAME) {
 
         get(Routes.Metrics.BASE) {
-
             call.respond(
-                metricsService.getAll()
+                metricsService.getAll().toRequestMetrics()
             )
         }
 
@@ -46,11 +46,13 @@ fun Route.metricsRoutes(
                 call.parameters["endpoint"]
                     .requireUIntParameter("endpoint ID")
 
+            val message = metricsService.getByEndpoint(
+                userId,
+                endpointId
+            ).toRequestMetrics()
+
             call.respond(
-                metricsService.getByEndpoint(
-                    userId,
-                    endpointId
-                )
+                message
             )
         }
 

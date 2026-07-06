@@ -11,6 +11,8 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import pt.isel.api_pm.database.tables.AgentMetricsTable
 import pt.isel.api_pm.database.tables.RequestMetricsTable
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.metrics.AgentEndpointMetrics
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import pt.isel.api_pm.dto.message.AgentMessage
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.MetricsRepository
@@ -22,7 +24,7 @@ class MetricsRepositoryExposed(
     override suspend fun save(
         userId: UInt,
         monitoredEndpointId: UInt,
-        metric: RequestMetric,
+        metric: EndpointMetrics,
     ) {
         transaction(db) {
             RequestMetricsTable.insert {
@@ -40,7 +42,7 @@ class MetricsRepositoryExposed(
     override suspend fun getByEndpoint(
         userId: UInt,
         monitoredEndpointId: UInt,
-    ): List<RequestMetric> =
+    ): List<EndpointMetrics> =
         transaction(db) {
             RequestMetricsTable
                 .selectAll()
@@ -50,7 +52,7 @@ class MetricsRepositoryExposed(
                 .map { it.toMetric() }
         }
 
-    override suspend fun getAll(): List<RequestMetric> =
+    override suspend fun getAll(): List<EndpointMetrics> =
         transaction(db) {
             RequestMetricsTable
                 .selectAll()
@@ -62,7 +64,7 @@ class MetricsRepositoryExposed(
         monitoredEndpointId: UInt,
         from: Instant,
         to: Instant
-    ): List<RequestMetric> =
+    ): List<EndpointMetrics> =
     transaction(db) {
         RequestMetricsTable
             .selectAll()
@@ -77,7 +79,7 @@ class MetricsRepositoryExposed(
     override suspend fun saveAgentMetrics(
         userId: UInt,
         agentId: UInt,
-        message: AgentMessage.Metrics
+        message: AgentEndpointMetrics
     ) {
         transaction(db) {
             AgentMetricsTable.insert {
@@ -92,10 +94,10 @@ class MetricsRepositoryExposed(
         }
     }
 
-    override suspend fun getAllAgentMetrics(): List<AgentMessage.Metrics> = transaction(db) {
+    override suspend fun getAllAgentMetrics(): List<AgentEndpointMetrics> = transaction(db) {
         AgentMetricsTable.selectAll()
             .map {
-                AgentMessage.Metrics(
+                AgentEndpointMetrics(
                     endpointName = it[AgentMetricsTable.endpointName],
                     statusCode = it[AgentMetricsTable.statusCode],
                     responseTimeMs = it[AgentMetricsTable.responseTimeMs],
@@ -109,7 +111,7 @@ class MetricsRepositoryExposed(
         agentId: UInt,
         from: Instant,
         to: Instant
-    ): List<AgentMessage.Metrics> = transaction(db) {
+    ): List<AgentEndpointMetrics> = transaction(db) {
         AgentMetricsTable.selectAll()
             .where {
                 (AgentMetricsTable.userId eq userId.toInt()) and
@@ -117,7 +119,7 @@ class MetricsRepositoryExposed(
                         (AgentMetricsTable.timestamp.between(from, to))
             }
             .map {
-                AgentMessage.Metrics(
+                AgentEndpointMetrics(
                     endpointName = it[AgentMetricsTable.endpointName],
                     statusCode = it[AgentMetricsTable.statusCode],
                     responseTimeMs = it[AgentMetricsTable.responseTimeMs],
@@ -126,8 +128,8 @@ class MetricsRepositoryExposed(
             }
     }
 
-    private fun ResultRow.toMetric(): RequestMetric =
-        RequestMetric(
+    private fun ResultRow.toMetric(): EndpointMetrics =
+        EndpointMetrics(
             endpoint = EndpointUrl(this[RequestMetricsTable.url]),
             timestamp = this[RequestMetricsTable.timestamp],
             latency = this[RequestMetricsTable.latency],
