@@ -89,10 +89,10 @@ class Register() : CliktCommand() {
     }
 }
 
-class Logout(val authStore: AuthStore) : CliktCommand() {
+class Logout(val authStore: AuthStore, val agentController: AgentController) : CliktCommand() {
     override fun run() {
-        authStore.clearToken()
-        authStore.clearAgentToken()
+        authStore.clear()
+        agentController.clear()
         echo("Successfully logged out!")
     }
 }
@@ -121,6 +121,14 @@ class Info(val authStore: AuthStore) : CliktCommand() {
         echo("User token being stored right now is: $token")
         val agentToken = authStore.getAgentToken()
         echo("Agent token being stored right now is: $agentToken")
+    }
+}
+
+class Clear(val authStore: AuthStore, val agentController: AgentController) : CliktCommand() {
+    override fun run() {
+        echo("Clearing data...")
+        authStore.clear()
+        agentController.clear()
     }
 }
 

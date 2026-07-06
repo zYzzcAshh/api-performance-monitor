@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.api.commands.AgentCreateEndpoint
 import org.api.commands.AgentRegister
+import org.api.commands.Clear
 import org.api.commands.Help
 import org.api.commands.Info
 import org.api.commands.Login
@@ -22,14 +23,16 @@ fun main() {
     println("CLI started. Type a command (help, register, login, logout, agent-register, agent-create-endpoint, info, exit):")
     println("Usage: register --username <u> --password <p>")
 
-    val authStore = AuthStore()
-    val agentController = AgentController()
+    val propertiesFileStore = PropertiesFileStore()
+    val authStore = AuthStore(propertiesFileStore)
+    val agentController = AgentController(propertiesFileStore)
 
     val root = Root().subcommands(
         Help(),
+        Clear(authStore, agentController),
         Register(),
         Login(authStore),
-        Logout(authStore),
+        Logout(authStore, agentController),
         Info(authStore),
         AgentRegister(authStore),
         AgentCreateEndpoint(authStore, agentController)
