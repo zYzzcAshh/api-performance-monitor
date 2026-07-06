@@ -11,6 +11,7 @@ import pt.isel.api_pm.utils.AuthConfig
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
+import pt.isel.api_pm.dto.endpoint.StopContinueEndpointRequest
 import pt.isel.api_pm.dto.endpoint.toDTO
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.EndpointService
@@ -70,6 +71,40 @@ fun Route.endpointRoutes(
 
             call.respond(
                 endpoints.toDTO()
+            )
+        }
+
+        post(Routes.Endpoints.STOP) {
+            val request = call.receive<StopContinueEndpointRequest>()
+
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
+
+            val userId =
+                principal.requireUserId()
+
+            service.stopMonitoring(userId, request.id)
+
+            call.respond(
+                HttpStatusCode.OK
+            )
+        }
+
+        post(Routes.Endpoints.CONTINUE) {
+            val request = call.receive<StopContinueEndpointRequest>()
+
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
+
+            val userId =
+                principal.requireUserId()
+
+            service.continueMonitoring(userId, request.id)
+
+            call.respond(
+                HttpStatusCode.OK
             )
         }
 

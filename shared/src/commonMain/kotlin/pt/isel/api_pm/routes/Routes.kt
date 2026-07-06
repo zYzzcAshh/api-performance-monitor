@@ -17,7 +17,8 @@ object Routes {
 
     object Endpoints {
         const val BASE = "/endpoints"
-
+        const val STOP = "$BASE/stop"
+        const val CONTINUE = "$BASE/continue"
         const val DELETE = "$BASE/{id}"
     }
 

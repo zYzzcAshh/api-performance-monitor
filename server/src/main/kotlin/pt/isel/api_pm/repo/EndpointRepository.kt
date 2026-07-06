@@ -11,6 +11,8 @@ interface EndpointRepository {
 
     suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds): List<MonitoredEndpoint>
 
+    suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds): List<MonitoredEndpoint>
+
     suspend fun getByUser(userId: UInt): List<MonitoredEndpoint>
 
     suspend fun add(
@@ -22,6 +24,10 @@ interface EndpointRepository {
         notification: NotificationConfig,
         alertRule: AlertRule?
     )
+
+    suspend fun stopMonitoring(userId: UInt, monitoredEndpointId: UInt)
+
+    suspend fun continueMonitoring(userId: UInt, monitoredEndpointId: UInt)
 
     suspend fun delete(
         userId: UInt,

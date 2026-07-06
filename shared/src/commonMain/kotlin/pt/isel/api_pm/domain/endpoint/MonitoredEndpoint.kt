@@ -14,6 +14,7 @@ data class MonitoredEndpoint(
     val createdAt: Instant,
     val notification: NotificationConfig,
     val alertRule: AlertRule?,
+    val active: Boolean
 )
 
 enum class HttpMethod {
@@ -21,10 +22,10 @@ enum class HttpMethod {
 }
 
 fun String.toHttpMethod(): HttpMethod {
-    when (this.lowercase()) {
-        "POST" -> return HttpMethod.POST
-        "PUT" -> return HttpMethod.PUT
-        "DELETE" -> return HttpMethod.DELETE
-        else -> return HttpMethod.GET
+    return when (this.lowercase()) {
+        "POST" -> HttpMethod.POST
+        "PUT" -> HttpMethod.PUT
+        "DELETE" -> HttpMethod.DELETE
+        else -> HttpMethod.GET
     }
 }

@@ -23,7 +23,8 @@ fun ResultRow.toEndpoint(): MonitoredEndpoint =
         interval = IntervalSeconds(this[MonitoredEndpointTable.intervalSeconds]),
         createdAt = this[MonitoredEndpointTable.createdAt],
         notification = this.toNotification(),
-        alertRule = this.toAlertRule()
+        alertRule = this.toAlertRule(),
+        active = this[MonitoredEndpointTable.active],
     )
 
 private fun ResultRow.toNotification(): NotificationConfig {

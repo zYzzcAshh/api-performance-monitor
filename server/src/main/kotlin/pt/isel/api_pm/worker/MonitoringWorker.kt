@@ -51,7 +51,7 @@ class MonitoringWorker(
         scope.launch {
             while (isActive) {
                 val endpoints =
-                    endpointService.getAllByIntervalSeconds(interval)
+                    endpointService.getAllActiveByIntervalSeconds(interval)
 
                 val agentEndpoints =
                     agentService.getAllActiveByIntervalSeconds(interval)

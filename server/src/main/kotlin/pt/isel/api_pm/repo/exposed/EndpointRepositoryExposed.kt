@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.database.tables.MonitoredEndpointTable
 import pt.isel.api_pm.database.tables.RequestMetricsTable
@@ -44,6 +45,20 @@ class EndpointRepositoryExposed(
                     it.toEndpoint()
                 }
         }
+
+    override suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds): List<MonitoredEndpoint> {
+        return transaction(db) {
+            MonitoredEndpointTable
+                .selectAll()
+                .where {
+                    (MonitoredEndpointTable.intervalSeconds eq intervalSeconds.value) and
+                            (MonitoredEndpointTable.active eq true)
+                }
+                .map {
+                    it.toEndpoint()
+                }
+        }
+    }
 
     override suspend fun getByUser(userId: UInt): List<MonitoredEndpoint> =
         transaction(db) {
@@ -109,6 +124,30 @@ class EndpointRepositoryExposed(
 
                 it[MonitoredEndpointTable.alertRuleData] =
                     alertData
+
+                it[MonitoredEndpointTable.active] = true
+            }
+        }
+    }
+
+    override suspend fun stopMonitoring(userId: UInt, monitoredEndpointId: UInt) {
+        transaction(db) {
+            MonitoredEndpointTable.update({
+                (MonitoredEndpointTable.userId eq userId.toInt()) and
+                        (MonitoredEndpointTable.id eq monitoredEndpointId.toInt())
+            }) {
+                it[active] = false
+            }
+        }
+    }
+
+    override suspend fun continueMonitoring(userId: UInt, monitoredEndpointId: UInt) {
+        transaction(db) {
+            MonitoredEndpointTable.update({
+                (MonitoredEndpointTable.userId eq userId.toInt()) and
+                        (MonitoredEndpointTable.id eq monitoredEndpointId.toInt())
+            }) {
+                it[active] = true
             }
         }
     }

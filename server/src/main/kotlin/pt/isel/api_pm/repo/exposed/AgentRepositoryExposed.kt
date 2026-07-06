@@ -33,10 +33,10 @@ class AgentRepositoryExposed(
             transaction(db) {
 
                 AgentTable.insert {
-
                     it[AgentTable.userId] = userId.toInt()
                     it[AgentTable.name] = name
                     it[AgentTable.createdAt] = createdAt
+                    it[AgentTable.active] = false
                 }[AgentTable.id]
             }
 

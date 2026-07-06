@@ -17,6 +17,8 @@ class EndpointService(
 
     suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllByIntervalSeconds(intervalSeconds)
 
+    suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllActiveByIntervalSeconds(intervalSeconds)
+
     suspend fun getByUser(userId: UInt) = repo.getByUser(userId)
 
     suspend fun add(
@@ -40,6 +42,16 @@ class EndpointService(
 
         repo.add(userId, normalizedUrl, name, method, interval.value, notification, alertRule)
     }
+
+    suspend fun stopMonitoring(
+        userId: UInt,
+        monitoredEndpointId: UInt,
+    ) = repo.stopMonitoring(userId, monitoredEndpointId)
+
+    suspend fun continueMonitoring(
+        userId: UInt,
+        monitoredEndpointId: UInt,
+    ) = repo.continueMonitoring(userId, monitoredEndpointId)
 
     suspend fun delete(
         userId: UInt,

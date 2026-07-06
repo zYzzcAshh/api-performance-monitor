@@ -23,6 +23,10 @@ class EndpointRepositoryMemory : EndpointRepository {
         return endpoints.values.flatMap { it.values }.filter { it.interval == intervalSeconds }
     }
 
+    override suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds): List<MonitoredEndpoint> {
+        return endpoints.values.flatMap { it.values }.filter { it.interval == intervalSeconds && it.active }
+    }
+
     override suspend fun getByUser(userId: UInt): List<MonitoredEndpoint> = endpoints[userId]?.values?.toList() ?: emptyList()
 
     override suspend fun add(
@@ -55,6 +59,7 @@ class EndpointRepositoryMemory : EndpointRepository {
                 createdAt = Clock.System.now(),
                 notification = notification,
                 alertRule = alertRule,
+                active = true
             )
 
         endpoints
@@ -64,6 +69,34 @@ class EndpointRepositoryMemory : EndpointRepository {
         logger.info(
             "Added endpoint: userId=$userId, endpointId=$monitoredEndpointId, url=$normalizedUrl"
         )
+    }
+
+    override suspend fun stopMonitoring(userId: UInt, monitoredEndpointId: UInt) {
+        val userEndpoints = endpoints[userId]
+            ?: throw IllegalArgumentException("User with id $userId not found")
+
+        val endpoint = userEndpoints[monitoredEndpointId]
+            ?: throw IllegalArgumentException("Endpoint with id $monitoredEndpointId not found")
+
+        val updatedEndpoint = endpoint.copy(active = false)
+
+        userEndpoints[monitoredEndpointId] = updatedEndpoint
+
+        logger.info("Stopped monitoring endpoint: userId=$userId, endpointId=$monitoredEndpointId")
+    }
+
+    override suspend fun continueMonitoring(userId: UInt, monitoredEndpointId: UInt) {
+        val userEndpoints = endpoints[userId]
+            ?: throw IllegalArgumentException("User with id $userId not found")
+
+        val endpoint = userEndpoints[monitoredEndpointId]
+            ?: throw IllegalArgumentException("Endpoint with id $monitoredEndpointId not found")
+
+        val updatedEndpoint = endpoint.copy(active = true)
+
+        userEndpoints[monitoredEndpointId] = updatedEndpoint
+
+        logger.info("Continue monitoring endpoint: userId=$userId, endpointId=$monitoredEndpointId")
     }
 
     override suspend fun delete(

@@ -23,5 +23,7 @@ object MonitoredEndpointTable : Table("endpoints") {
     val alertRuleType = varchar("alert_rule_type", 50).nullable()
     val alertRuleData = text("alert_rule_data").nullable()
 
+    val active = bool("active")
+
     override val primaryKey = PrimaryKey(id)
 }
