@@ -1,7 +1,7 @@
 # Complete requests
 
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfaXNzdWVyIiwidXNlcklkIjoxLCJleHAiOjE3ODI3NzUyMzh9.LgfN0W8mRZAZvT4X6KWV8omlFE8llVvsQB-6exU_SSo
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ5b3VyX2p3dF9pc3N1ZXIiLCJ1c2VySWQiOjEsImV4cCI6MTc4MzM3OTM3NX0.r57lON6MXRfXoqcP5Zg6qM23QMl06OaH2AGYvQFo-so
 
 ###
 GET {{baseUrl}}/metrics/agent
@@ -44,7 +44,7 @@ Authorization: Bearer {{token}}
   "intervalSeconds": 60,
   "notification": {
     "type": "discord_webhook",
-    "webhookUrl" : "https://discord.com/api/webhooks/1501258756464316447/QwewEWmGGk830Pfy_NJz7XUsMMS8miqMowaUrtfC7SRpSWDyQ1c-Z8IUDmb6IkYhwd6V"
+    "webhookUrl" : "https://discord.com/api/webhooks/1523767417912688831/MJUoWPYMVBhncvAeC-7E3kSgjsY1dvqbzo-NjaO1Ez897_OgE4Ug4M6MpYcxUZ9CQb1J"
   },
   "alertRule": {
     "type": "status_code",

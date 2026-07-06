@@ -1,85 +1,62 @@
 package pt.isel.api_pm.alert
 
+import pt.isel.api_pm.domain.metrics.AgentEndpointMetrics
 import pt.isel.api_pm.domain.metrics.EndpointMetrics
-import pt.isel.api_pm.dto.metric.RequestMetric
 
 class AlertEvaluator {
+    private data class MetricSample(
+        val latency: Long,
+        val statusCode: Int
+    )
 
-    fun shouldTrigger(
-        metrics: List<EndpointMetrics>,
-        rule: AlertRule
-    ): Boolean {
-        if (metrics.isEmpty()) return false
+    fun shouldTrigger(metrics: List<EndpointMetrics>, rule: AlertRule): Boolean {
+        return evaluate(metrics.map { MetricSample(it.latency, it.statusCode) }, rule)
+    }
+
+    fun shouldTriggerAgent(metrics: List<AgentEndpointMetrics>, rule: AlertRule): Boolean {
+        return evaluate(metrics.map { MetricSample(it.responseTimeMs, it.statusCode) }, rule)
+    }
+
+    private fun evaluate(samples: List<MetricSample>, rule: AlertRule): Boolean {
+        if (samples.isEmpty()) return false
 
         return when (rule) {
 
             is AlertRule.LatencyRule -> {
-
-                val values = metrics.map { it.latency }
-
-                when (val agg = rule.aggregation) {
-
-                    is AggregationType.ALL -> {
-                        values.all {
-                            evaluateCondition(it, rule.operator, rule.value)
-                        }
-                    }
-
-                    is AggregationType.AVG -> {
-                        val avg = values.average().toLong()
-                        evaluateCondition(avg, rule.operator, rule.value)
-                    }
-
-                    is AggregationType.COUNT -> {
-                        val count = values.count {
-                            evaluateCondition(it, rule.operator, rule.value)
-                        }
-
-                        count >= agg.count
-                    }
+                val values = samples.map { it.latency }
+                matchesAggregation(values, rule.aggregation) {
+                    evaluateCondition(it, rule.operator, rule.value)
                 }
             }
 
             is AlertRule.StatusCodeRule -> {
-
-                val values = metrics.map { it.statusCode.toLong() }
-
-                when (val agg = rule.aggregation) {
-
-                    is AggregationType.ALL -> {
-                        values.all {
-                            evaluateCondition(it, rule.operator, rule.value.toLong())
-                        }
-                    }
-
-                    is AggregationType.AVG -> {
-                        val avg = values.average().toLong()
-                        evaluateCondition(avg, rule.operator, rule.value.toLong())
-                    }
-
-                    is AggregationType.COUNT -> {
-                        val count = values.count {
-                            evaluateCondition(it, rule.operator, rule.value.toLong())
-                        }
-
-                        count >= agg.count
-                    }
+                val values = samples.map { it.statusCode.toLong() }
+                matchesAggregation(values, rule.aggregation) {
+                    evaluateCondition(it, rule.operator, rule.value.toLong())
                 }
             }
 
             is AlertRule.DownTimeRule -> {
-
-                val failed = metrics.count { it.statusCode >= 500 }
+                val failed = samples.count { it.statusCode >= 500 }
 
                 when (val agg = rule.aggregation) {
-
-                    is AggregationType.ALL -> failed == metrics.size
-
-                    is AggregationType.AVG -> failed.toDouble() / metrics.size >= 0.5
-
+                    is AggregationType.ALL -> failed == samples.size
+                    is AggregationType.AVG -> failed.toDouble() / samples.size >= 0.5
                     is AggregationType.COUNT -> failed >= agg.count
                 }
             }
+        }
+    }
+
+    private fun matchesAggregation(
+        values: List<Long>,
+        aggregation: AggregationType,
+        condition: (Long) -> Boolean
+    ): Boolean {
+        return when (aggregation) {
+            is AggregationType.ALL -> values.all(condition)
+            is AggregationType.AVG -> condition(values.average().toLong())
+            is AggregationType.COUNT -> values.count(condition) >= aggregation.count
         }
     }
 }

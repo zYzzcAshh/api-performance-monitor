@@ -49,7 +49,15 @@ fun Route.agentRoutes(
             val agentId = call.principal<JWTPrincipal>()
                 ?.requireAgentId() ?: throw MissingTokenException()
 
-            agentService.addEndpoint(userId, agentId, request.name, request.method, IntervalSeconds(request.intervalSeconds))
+            agentService.addEndpoint(
+                userId,
+                agentId,
+                request.name,
+                request.method,
+                IntervalSeconds(request.intervalSeconds),
+                request.notification,
+                request.alertRule
+            )
             call.respond(HttpStatusCode.Created, "Endpoint added successfully")
         }
 

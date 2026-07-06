@@ -19,6 +19,8 @@ import pt.isel.api_pm.service.MetricsService
 import pt.isel.api_pm.service.MonitoringService
 import pt.isel.api_pm.service.NotificationService
 import pt.isel.api_pm.service.UserService
+import pt.isel.api_pm.utils.AlertPipeline
+import pt.isel.api_pm.utils.CooldownManager
 import pt.isel.api_pm.utils.PasswordHasher
 import pt.isel.api_pm.utils.SmtpConfig
 import pt.isel.api_pm.utils.SmtpEmailSender
@@ -110,5 +112,13 @@ class AppDependencies(
     val alertEvaluator =
         AlertEvaluator()
 
-    val agentSessionManager = AgentSessionManager(metricsRepository, agentService)
+    val cooldownManager = CooldownManager()
+
+    val alertPipeline = AlertPipeline(
+        alertEvaluator,
+        notificationService,
+        cooldownManager
+    )
+
+    val agentSessionManager = AgentSessionManager(metricsService, agentService, alertPipeline)
 }

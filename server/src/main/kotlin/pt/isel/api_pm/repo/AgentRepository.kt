@@ -1,8 +1,10 @@
 package pt.isel.api_pm.repo
 
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.agent.Agent
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
+import pt.isel.api_pm.notification.NotificationConfig
 
 interface AgentRepository {
 
@@ -16,7 +18,9 @@ interface AgentRepository {
         agentId: UInt,
         name: String,
         method: HttpMethod,
-        intervalSeconds: IntervalSeconds
+        intervalSeconds: IntervalSeconds,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
     )
 
     suspend fun inactiveAgent(userId: UInt, agentId: UInt)

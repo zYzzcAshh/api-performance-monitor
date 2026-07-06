@@ -19,6 +19,8 @@ import pt.isel.api_pm.dto.user.LoginRequest
 import pt.isel.api_pm.dto.user.LoginResponse
 import pt.isel.api_pm.dto.user.RegisterRequest
 import io.ktor.client.statement.bodyAsText
+import pt.isel.api_pm.alert.AlertRule
+import pt.isel.api_pm.notification.NotificationConfig
 
 private val httpClient = HttpClient {
     install(ContentNegotiation) {
@@ -90,7 +92,9 @@ class ApiClient(
         token: String,
         name: String,
         method: HttpMethod,
-        intervalSeconds: Long
+        intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?,
     ): Result<String> = runCatching {
         val response = client.post("${ApiConfig.BASE_URL}/agent/endpoints") {
             contentType(ContentType.Application.Json)
@@ -102,7 +106,9 @@ class ApiClient(
                 AgentCreateEndpointRequest(
                     name,
                     method,
-                    intervalSeconds
+                    intervalSeconds,
+                    notification,
+                    alertRule
                 )
             )
         }

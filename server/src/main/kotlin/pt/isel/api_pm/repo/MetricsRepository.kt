@@ -18,6 +18,8 @@ interface MetricsRepository {
         monitoredEndpointId: UInt,
     ): List<EndpointMetrics>
 
+    suspend fun getByAgent(userId: UInt, agentId: UInt): List<AgentEndpointMetrics>
+
     suspend fun getAll(): List<EndpointMetrics>
 
     suspend fun getByInterval(

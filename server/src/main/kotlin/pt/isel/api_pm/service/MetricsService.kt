@@ -22,10 +22,17 @@ class MetricsService(
 
     suspend fun getAll(): List<EndpointMetrics> = repo.getAll()
 
+    suspend fun saveAgentMetrics(userId: UInt, agentId: UInt, message: AgentEndpointMetrics) = repo.saveAgentMetrics(userId, agentId, message)
+
     suspend fun getByEndpoint(
         userId: UInt,
         monitoredEndpointId: UInt,
     ): List<EndpointMetrics> = repo.getByEndpoint(userId, monitoredEndpointId)
+
+    suspend fun getByAgent(
+        userId: UInt,
+        agentId: UInt,
+    ): List<AgentEndpointMetrics> = repo.getByAgent(userId, agentId)
 
     suspend fun getSummary(
         userId: UInt,

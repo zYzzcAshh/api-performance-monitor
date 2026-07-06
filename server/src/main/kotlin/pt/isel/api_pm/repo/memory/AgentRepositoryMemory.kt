@@ -1,9 +1,11 @@
 package pt.isel.api_pm.repo.memory
 
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.agent.Agent
 import pt.isel.api_pm.domain.agent.AgentEndpoint
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
+import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.AgentRepository
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Clock
@@ -48,7 +50,9 @@ class AgentRepositoryMemory : AgentRepository {
         agentId: UInt,
         name: String,
         method: HttpMethod,
-        intervalSeconds: IntervalSeconds
+        intervalSeconds: IntervalSeconds,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
     ) {
 
         val userAgents =
@@ -75,6 +79,8 @@ class AgentRepositoryMemory : AgentRepository {
                 method = method,
                 intervalSeconds = intervalSeconds,
                 createdAt = Clock.System.now(),
+                notification = notification,
+                alertRule = alertRule
             )
 
         userAgents[agentId] =

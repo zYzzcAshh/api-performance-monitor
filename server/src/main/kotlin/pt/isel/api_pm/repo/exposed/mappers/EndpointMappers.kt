@@ -9,7 +9,7 @@ import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
 import pt.isel.api_pm.notification.NotificationConfig
 
-private val json = Json {
+val json = Json {
     ignoreUnknownKeys = true
 }
 
@@ -28,12 +28,10 @@ fun ResultRow.toEndpoint(): MonitoredEndpoint =
     )
 
 private fun ResultRow.toNotification(): NotificationConfig {
-
     val type = this[MonitoredEndpointTable.notificationType]
     val data = this[MonitoredEndpointTable.notificationData]
 
     return when (type) {
-
         "none" ->
             NotificationConfig.None
 
@@ -71,12 +69,10 @@ private fun ResultRow.toNotification(): NotificationConfig {
 }
 
 private fun ResultRow.toAlertRule(): AlertRule? {
-
     val type = this[MonitoredEndpointTable.alertRuleType] ?: return null
     val data = this[MonitoredEndpointTable.alertRuleData] ?: return null
 
     return when (type) {
-
         "status_code" ->
             json.decodeFromString<AlertRule.StatusCodeRule>(data)
 

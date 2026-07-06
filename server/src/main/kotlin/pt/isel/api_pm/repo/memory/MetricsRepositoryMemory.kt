@@ -25,6 +25,13 @@ class MetricsRepositoryMemory : MetricsRepository {
         monitoredEndpointId: UInt,
     ): List<EndpointMetrics> = metrics[userId]?.get(monitoredEndpointId)?.toList() ?: emptyList()
 
+    override suspend fun getByAgent(
+        userId: UInt,
+        agentId: UInt
+    ): List<AgentEndpointMetrics> {
+        return agentMetrics[userId]?.get(agentId)?.toList() ?: emptyList()
+    }
+
     override suspend fun getAll(): List<EndpointMetrics> = metrics.values.flatMap { it.values }.flatten()
 
     override suspend fun getByInterval(

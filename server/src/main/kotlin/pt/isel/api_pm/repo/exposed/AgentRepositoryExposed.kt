@@ -8,13 +8,17 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.database.tables.AgentTable
-import pt.isel.api_pm.database.tables.MonitoredEndpointTable.method
+import pt.isel.api_pm.database.tables.MonitoredEndpointTable
 import pt.isel.api_pm.domain.agent.Agent
 import pt.isel.api_pm.domain.agent.AgentEndpoint
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
+import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.AgentRepository
+import pt.isel.api_pm.repo.exposed.mappers.json
+import pt.isel.api_pm.repo.exposed.serializers.toDb
 import kotlin.time.Clock
 
 class AgentRepositoryExposed(
@@ -37,6 +41,7 @@ class AgentRepositoryExposed(
                     it[AgentTable.name] = name
                     it[AgentTable.createdAt] = createdAt
                     it[AgentTable.active] = false
+                    it[AgentTable.endpointNotificationType] = "None"
                 }[AgentTable.id]
             }
 
@@ -55,7 +60,9 @@ class AgentRepositoryExposed(
         agentId: UInt,
         name: String,
         method: HttpMethod,
-        intervalSeconds: IntervalSeconds
+        intervalSeconds: IntervalSeconds,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
     ) {
 
         transaction(db) {
@@ -79,6 +86,12 @@ class AgentRepositoryExposed(
                 )
             }
 
+            val (notifType, notifData) =
+                notification.toDb()
+
+            val (alertType, alertData) =
+                alertRule?.toDb() ?: (null to null)
+
             AgentTable.update({
                 (AgentTable.id eq agentId.toInt()) and
                         (AgentTable.userId eq userId.toInt())
@@ -88,6 +101,10 @@ class AgentRepositoryExposed(
                 it[endpointMethod] = method
                 it[endpointIntervalSeconds] = intervalSeconds.value
                 it[endpointCreatedAt] = Clock.System.now()
+                it[MonitoredEndpointTable.notificationType] = notifType
+                it[MonitoredEndpointTable.notificationData] = notifData
+                it[MonitoredEndpointTable.alertRuleType] = alertType
+                it[MonitoredEndpointTable.alertRuleData] = alertData
                 it[active] = true
             }
         }
@@ -189,6 +206,8 @@ class AgentRepositoryExposed(
                     intervalSeconds = IntervalSeconds(
                         endpointInterval
                     ),
+                    notification = this.toNotification(),
+                    alertRule = this.toAlertRule(),
                     createdAt = endpointCreatedAt
                 )
 
@@ -204,5 +223,64 @@ class AgentRepositoryExposed(
             endpoint = endpoint,
             active = this[AgentTable.active]
         )
+    }
+
+    private fun ResultRow.toNotification(): NotificationConfig {
+        val type = this[AgentTable.endpointNotificationType]
+        val data = this[AgentTable.endpointNotificationData]
+
+        return when (type) {
+            "none" ->
+                NotificationConfig.None
+
+            "log" ->
+                NotificationConfig.Log
+
+            "discord_webhook" -> {
+                val jsonData = data ?: return NotificationConfig.None
+                json.decodeFromString<NotificationConfig.DiscordWebhook>(jsonData)
+            }
+
+            "email" -> {
+                val jsonData = data ?: return NotificationConfig.None
+                json.decodeFromString<NotificationConfig.Email>(jsonData)
+            }
+
+            "slack_webhook" -> {
+                val jsonData = data ?: return NotificationConfig.None
+                json.decodeFromString<NotificationConfig.SlackWebhook>(jsonData)
+            }
+
+            "telegram" -> {
+                val jsonData = data ?: return NotificationConfig.None
+                json.decodeFromString<NotificationConfig.Telegram>(jsonData)
+            }
+
+            "webhook" -> {
+                val jsonData = data ?: return NotificationConfig.None
+                json.decodeFromString<NotificationConfig.Webhook>(jsonData)
+            }
+
+            else ->
+                NotificationConfig.None
+        }
+    }
+
+    private fun ResultRow.toAlertRule(): AlertRule? {
+        val type = this[AgentTable.endpointAlertRuleType] ?: return null
+        val data = this[AgentTable.endpointAlertRuleData] ?: return null
+
+        return when (type) {
+            "status_code" ->
+                json.decodeFromString<AlertRule.StatusCodeRule>(data)
+
+            "latency" ->
+                json.decodeFromString<AlertRule.LatencyRule>(data)
+
+            "down_time" ->
+                json.decodeFromString<AlertRule.DownTimeRule>(data)
+
+            else -> null
+        }
     }
 }

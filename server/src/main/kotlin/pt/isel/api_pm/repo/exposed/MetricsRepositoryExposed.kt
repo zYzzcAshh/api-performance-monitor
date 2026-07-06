@@ -52,6 +52,27 @@ class MetricsRepositoryExposed(
                 .map { it.toMetric() }
         }
 
+    override suspend fun getByAgent(
+        userId: UInt,
+        agentId: UInt
+    ): List<AgentEndpointMetrics> {
+        return transaction(db) {
+            AgentMetricsTable
+                .selectAll()
+                .where {
+                    (AgentMetricsTable.userId eq userId.toInt()) and (AgentMetricsTable.agentId eq agentId.toInt())
+                }
+                .map {
+                    AgentEndpointMetrics(
+                        endpointName = it[AgentMetricsTable.endpointName],
+                        statusCode = it[AgentMetricsTable.statusCode],
+                        responseTimeMs = it[AgentMetricsTable.responseTimeMs],
+                        timestamp = it[AgentMetricsTable.timestamp].toEpochMilliseconds()
+                    )
+                }
+        }
+    }
+
     override suspend fun getAll(): List<EndpointMetrics> =
         transaction(db) {
             RequestMetricsTable

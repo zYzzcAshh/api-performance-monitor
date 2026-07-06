@@ -38,6 +38,13 @@ object AgentTable : Table("agents") {
         timestamp("endpoint_created_at")
             .nullable()
 
+    val endpointNotificationType = varchar("notification_type", 50)
+
+    val endpointNotificationData = text("notification_data").nullable()
+
+    val endpointAlertRuleType = varchar("alert_rule_type", 50).nullable()
+    val endpointAlertRuleData = text("alert_rule_data").nullable()
+
     val active = bool("active")
 
     override val primaryKey =

@@ -1,10 +1,12 @@
 package pt.isel.api_pm.api
 
+import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
+import pt.isel.api_pm.notification.NotificationConfig
 
 interface Api {
 
@@ -51,6 +53,8 @@ interface Api {
         token: String,
         name: String,
         method: HttpMethod,
-        intervalSeconds: Long
+        intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?,
     ): Result<String>
 }

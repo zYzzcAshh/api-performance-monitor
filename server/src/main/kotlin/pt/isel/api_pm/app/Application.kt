@@ -39,10 +39,9 @@ fun Application.module() {
         dependencies.monitoringService,
         dependencies.metricsService,
         dependencies.endpointService,
-        dependencies.notificationService,
         dependencies.agentService,
         dependencies.agentSessionManager,
-        dependencies.alertEvaluator,
+        dependencies.alertPipeline
     )
 
     routing {
