@@ -49,6 +49,7 @@ fun AgentDashboardScreen(
         while (true) {
             viewModel.loadAgentMetrics(agentId)
             viewModel.loadAgentSummary(agentId)
+            viewModel.loadAgents()
             delay(10000.milliseconds)
         }
     }
@@ -56,6 +57,7 @@ fun AgentDashboardScreen(
     val latestMetric = state.agentMetrics.lastOrNull()
     val summary = state.agentSummary
     val recentMetrics = state.agentMetrics.reversed().take(50)
+    val agent = state.agents.firstOrNull { it.id == agentId }
 
     ScreenContainer {
         LazyColumn(
@@ -95,7 +97,10 @@ fun AgentDashboardScreen(
                         visible = true,
                         enter = fadeIn() + expandVertically()
                     ) {
-                        CurrentStatusCard(metric)
+                        CurrentStatusCard(
+                            metric = metric,
+                            active = agent?.active == true
+                        )
                     }
                 }
             }
@@ -135,9 +140,17 @@ fun AgentDashboardScreen(
 
 // current status
 @Composable
-private fun CurrentStatusCard(metric: AgentRequestMetric) {
+private fun CurrentStatusCard(
+    metric: AgentRequestMetric,
+    active: Boolean
+) {
     val isOk = metric.statusCode in 200..299
-    val statusColor = if (isOk) Color(0xFF22C55E) else Color(0xFFEF4444)
+
+    val statusColor = when {
+        !active -> Color(0xFFEF4444)
+        isOk -> Color(0xFF22C55E)
+        else -> Color(0xFFFF9800)
+    }
 
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -170,7 +183,11 @@ private fun CurrentStatusCard(metric: AgentRequestMetric) {
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = if (isOk) "● Online" else "● Degraded",
+                        text = when {
+                            !active -> "● Offline"
+                            isOk -> "● Online"
+                            else -> "● Degraded"
+                        },
                         color = statusColor,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold
