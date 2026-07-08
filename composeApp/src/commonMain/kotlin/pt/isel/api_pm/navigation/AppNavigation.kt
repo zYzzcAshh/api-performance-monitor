@@ -73,6 +73,9 @@ fun AppNavigation(
                     },
                     onOpenEndpoint = { endpointId ->
                         navController.navigate("${Screen.EndpointDashboard.route}/$endpointId")
+                    },
+                    onOpenAgents = {
+                        navController.navigate(Screen.Agents.route)
                     }
                 )
             }
@@ -103,6 +106,46 @@ fun AppNavigation(
                     endpointId = endpointId,
                     viewModel = vm,
                     onBack = { navController.popBackStack() }
+                )
+            }
+        }
+
+        composable(Screen.Agents.route) {
+
+            endpointsViewModel?.let { vm ->
+
+                AgentsScreen(
+                    viewModel = vm,
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onOpenAgent = { agentId ->
+                        navController.navigate("${Screen.AgentDashboard.route}/$agentId")
+                    }
+                )
+            }
+        }
+
+        composable(
+            route = "${Screen.AgentDashboard.route}/{agentId}"
+        ) { backStackEntry ->
+
+            val agentId =
+                backStackEntry.arguments
+                    ?.read {
+                        getString("agentId")
+                    }
+                    ?.toUInt()
+                    ?: return@composable
+
+            endpointsViewModel?.let { vm ->
+
+                AgentDashboardScreen(
+                    agentId = agentId,
+                    viewModel = vm,
+                    onBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }

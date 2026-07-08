@@ -21,6 +21,9 @@ import pt.isel.api_pm.dto.user.RegisterRequest
 import io.ktor.client.statement.bodyAsText
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.notification.NotificationConfig
+import pt.isel.api_pm.domain.agent.AgentUiModel
+import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
+import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
 private val httpClient = HttpClient {
     install(ContentNegotiation) {
@@ -226,6 +229,53 @@ class ApiClient(
                     "Authorization",
                     "Bearer $token"
                 )
+            }.body()
+        }
+
+    override suspend fun getAgents(
+        token: String
+    ): Result<List<AgentUiModel>> =
+        runCatching {
+
+            client.get("${ApiConfig.BASE_URL}/agent") {
+
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+
+            }.body()
+        }
+
+    override suspend fun getAgentMetrics(
+        token: String,
+        agentId: UInt
+    ): Result<List<AgentRequestMetric>> =
+        runCatching {
+
+            client.get("${ApiConfig.BASE_URL}/metrics/agent/$agentId") {
+
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+
+            }.body<List<AgentRequestMetric>>()
+        }
+
+    override suspend fun getAgentSummary(
+        token: String,
+        agentId: UInt
+    ): Result<AgentAggregatedMetric> =
+        runCatching {
+
+            client.get("${ApiConfig.BASE_URL}/metrics/agent/$agentId/summary") {
+
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+
             }.body()
         }
 }

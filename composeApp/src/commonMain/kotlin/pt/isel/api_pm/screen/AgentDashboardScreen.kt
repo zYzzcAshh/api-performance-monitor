@@ -29,8 +29,8 @@ import pt.isel.api_pm.components.dashboard.BigStatCard
 import pt.isel.api_pm.components.dashboard.DashboardSectionCard
 import pt.isel.api_pm.components.dashboard.InfoRow
 import pt.isel.api_pm.components.dashboard.StatusChip
-import pt.isel.api_pm.dto.metric.AggregatedMetric
-import pt.isel.api_pm.dto.metric.RequestMetric
+import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
+import pt.isel.api_pm.dto.metric.AgentRequestMetric
 import pt.isel.api_pm.theme.Primary
 import pt.isel.api_pm.utils.formatTimestamp
 import pt.isel.api_pm.utils.roundTo
@@ -38,24 +38,24 @@ import pt.isel.api_pm.viewmodel.EndpointsViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun EndpointDashboardScreen(
-    endpointId: UInt,
+fun AgentDashboardScreen(
+    agentId: UInt,
     viewModel: EndpointsViewModel,
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(endpointId) {
+    LaunchedEffect(agentId) {
         while (true) {
-            viewModel.loadMetrics(endpointId)
-            viewModel.loadSummary(endpointId)
+            viewModel.loadAgentMetrics(agentId)
+            viewModel.loadAgentSummary(agentId)
             delay(10000.milliseconds)
         }
     }
 
-    val latestMetric = state.metrics.lastOrNull()
-    val summary = state.summary
-    val recentMetrics = state.metrics.reversed().take(50)
+    val latestMetric = state.agentMetrics.lastOrNull()
+    val summary = state.agentSummary
+    val recentMetrics = state.agentMetrics.reversed().take(50)
 
     ScreenContainer {
         LazyColumn(
@@ -104,7 +104,7 @@ fun EndpointDashboardScreen(
             summary?.let { s ->
                 item { OverviewCard(s) }
                 item { PerformanceCard(s) }
-                item { LatencyChart(metrics = state.metrics) }
+                item { LatencyChart(metrics = state.agentMetrics) }
                 item { MonitoringWindowCard(s) }
                 item {
                     StatusCodeChart(
@@ -135,7 +135,7 @@ fun EndpointDashboardScreen(
 
 // current status
 @Composable
-private fun CurrentStatusCard(metric: RequestMetric) {
+private fun CurrentStatusCard(metric: AgentRequestMetric) {
     val isOk = metric.statusCode in 200..299
     val statusColor = if (isOk) Color(0xFF22C55E) else Color(0xFFEF4444)
 
@@ -201,7 +201,7 @@ private fun CurrentStatusCard(metric: RequestMetric) {
                 )
             }
 
-            InfoRow("Endpoint", metric.endpoint.value)
+            InfoRow("Endpoint", metric.endpointName)
             InfoRow("Checked at", formatTimestamp(metric.timestamp.toString()))
         }
     }
@@ -210,7 +210,7 @@ private fun CurrentStatusCard(metric: RequestMetric) {
 
 // overview
 @Composable
-private fun OverviewCard(summary: AggregatedMetric) {
+private fun OverviewCard(summary: AgentAggregatedMetric) {
     DashboardSectionCard(title = "Overview") {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -255,7 +255,7 @@ private fun OverviewCard(summary: AggregatedMetric) {
 
 // performance
 @Composable
-private fun PerformanceCard(summary: AggregatedMetric) {
+private fun PerformanceCard(summary: AgentAggregatedMetric) {
     DashboardSectionCard(title = "Performance") {
         InfoRow("95th Percentile", "${summary.percentile95} ms")
         InfoRow("99th Percentile", "${summary.percentile99} ms")
@@ -266,7 +266,7 @@ private fun PerformanceCard(summary: AggregatedMetric) {
 
 // monitoring window
 @Composable
-private fun MonitoringWindowCard(summary: AggregatedMetric) {
+private fun MonitoringWindowCard(summary: AgentAggregatedMetric) {
     DashboardSectionCard(title = "Monitoring Window") {
         InfoRow("Started", formatTimestamp(summary.startTime.toString()))
         InfoRow("Last Metric", formatTimestamp(summary.endTime.toString()))
@@ -275,7 +275,7 @@ private fun MonitoringWindowCard(summary: AggregatedMetric) {
 
 // recent metric row card
 @Composable
-private fun MetricRowCard(metric: RequestMetric) {
+private fun MetricRowCard(metric: AgentRequestMetric) {
     val isOk = metric.statusCode in 200..299
     val statusColor = if (isOk) Color(0xFF22C55E) else Color(0xFFEF4444)
 

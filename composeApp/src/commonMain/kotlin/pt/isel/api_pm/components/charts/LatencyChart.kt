@@ -45,11 +45,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pt.isel.api_pm.dto.metric.RequestMetric
+import pt.isel.api_pm.dto.metric.LatencyMetric
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-// Cores de estado consoante a saude da latencia — ajusta os thresholds a vontade
 private val ColorHealthy = Color(0xFF34C77B)
 private val ColorWarning = Color(0xFFFFB020)
 private val ColorCritical = Color(0xFFFF5A5F)
@@ -66,7 +65,7 @@ private fun formatLatency(value: Float): String =
 
 @Composable
 fun LatencyChart(
-    metrics: List<RequestMetric>,
+    metrics: List<LatencyMetric>,
     warningThresholdMs: Float = 300f,
     criticalThresholdMs: Float = 600f
 ) {
@@ -107,7 +106,7 @@ fun LatencyChart(
 
             if (metrics.size < 2) {
                 Text(
-                    "Sem dados suficientes ainda",
+                    "Not enough data yet.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 32.dp)

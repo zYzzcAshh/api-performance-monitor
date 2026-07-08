@@ -7,6 +7,9 @@ import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
+import pt.isel.api_pm.domain.agent.AgentUiModel
+import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
+import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
 interface Api {
 
@@ -57,4 +60,18 @@ interface Api {
         notification: NotificationConfig,
         alertRule: AlertRule?,
     ): Result<String>
+
+    suspend fun getAgents(
+        token: String
+    ): Result<List<AgentUiModel>>
+
+    suspend fun getAgentMetrics(
+        token: String,
+        agentId: UInt
+    ): Result<List<AgentRequestMetric>>
+
+    suspend fun getAgentSummary(
+        token: String,
+        agentId: UInt
+    ): Result<AgentAggregatedMetric>
 }

@@ -31,7 +31,8 @@ fun EndpointsScreen(
     viewModel: EndpointsViewModel,
     onLogout: () -> Unit,
     onCreateMonitoring: () -> Unit,
-    onOpenEndpoint: (UInt) -> Unit
+    onOpenEndpoint: (UInt) -> Unit,
+    onOpenAgents: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -108,24 +109,37 @@ fun EndpointsScreen(
 
             // create button
             item {
-                Button(
-                    onClick = onCreateMonitoring,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(18.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Primary)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "New Monitor",
-                        style = MaterialTheme.typography.labelLarge
-                    )
+                    Button(
+                        onClick = onCreateMonitoring,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Primary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("New Monitor")
+                    }
+                    OutlinedButton(
+                        onClick = onOpenAgents,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        shape = RoundedCornerShape(18.dp)
+                    ) {
+                        Text("Local Agents")
+                    }
                 }
             }
 

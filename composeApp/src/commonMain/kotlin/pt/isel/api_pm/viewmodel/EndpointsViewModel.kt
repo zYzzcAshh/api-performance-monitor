@@ -13,11 +13,20 @@ import pt.isel.api_pm.dto.endpoint.CreateEndpointRequest
 import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
+import pt.isel.api_pm.domain.agent.AgentUiModel
+import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
+import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
 data class EndpointsState(
     val summary: AggregatedMetric? = null,
     val metrics: List<RequestMetric> = emptyList(),
+
+    val agentSummary: AgentAggregatedMetric? = null,
+    val agentMetrics: List<AgentRequestMetric> = emptyList(),
+    val agents: List<AgentUiModel> = emptyList(),
+
     val monitoredEndpoints: List<EndpointUiModel> = emptyList(),
+
     val isLoading: Boolean = false,
     val error: String? = null,
     val creating: Boolean = false,
@@ -80,6 +89,87 @@ class EndpointsViewModel(
                     _state.value.copy(
                         error = result.exceptionOrNull()?.message,
                         isLoading = false
+                    )
+                }
+        }
+    }
+
+    fun loadAgents() {
+
+        scope.launch {
+
+            _state.value = _state.value.copy(
+                isLoading = true
+            )
+
+            val result =
+                api.getAgents(token)
+
+            _state.value =
+                if (result.isSuccess) {
+
+                    _state.value.copy(
+                        agents = result.getOrNull() ?: emptyList(),
+                        isLoading = false
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        error = result.exceptionOrNull()?.message,
+                        isLoading = false
+                    )
+                }
+        }
+    }
+
+    fun loadAgentMetrics(agentId: UInt) {
+
+        scope.launch {
+
+            val result =
+                api.getAgentMetrics(
+                    token,
+                    agentId
+                )
+
+            _state.value =
+                if (result.isSuccess) {
+
+                    _state.value.copy(
+                        agentMetrics = result.getOrNull() ?: emptyList()
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        error = result.exceptionOrNull()?.message
+                    )
+                }
+        }
+    }
+
+    fun loadAgentSummary(agentId: UInt) {
+
+        scope.launch {
+
+            val result =
+                api.getAgentSummary(
+                    token,
+                    agentId
+                )
+
+            _state.value =
+                if (result.isSuccess) {
+
+                    _state.value.copy(
+                        agentSummary = result.getOrNull()
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        error = result.exceptionOrNull()?.message
                     )
                 }
         }

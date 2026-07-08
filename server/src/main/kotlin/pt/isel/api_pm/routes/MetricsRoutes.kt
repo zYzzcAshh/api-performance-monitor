@@ -1,36 +1,26 @@
 package pt.isel.api_pm.routes
 
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
-import io.ktor.server.plugins.NotFoundException
-import io.ktor.server.request.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sse.heartbeat
-import io.ktor.server.sse.sse
-import io.ktor.sse.ServerSentEvent
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import io.ktor.server.sse.*
+import io.ktor.sse.*
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
-import pt.isel.api_pm.utils.AuthConfig
-import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import pt.isel.api_pm.domain.metrics.toAgentMessageMetrics
 import pt.isel.api_pm.domain.metrics.toAgentMessageMetricsList
 import pt.isel.api_pm.domain.metrics.toRequestMetric
 import pt.isel.api_pm.domain.metrics.toRequestMetrics
-import pt.isel.api_pm.dto.endpoint.CheckRequest
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.AgentService
 import pt.isel.api_pm.service.EndpointService
 import pt.isel.api_pm.service.MetricsService
-import pt.isel.api_pm.service.MonitoringService
+import pt.isel.api_pm.utils.AuthConfig
 import pt.isel.api_pm.utils.MetricsEventBus
 import pt.isel.api_pm.utils.requireUIntParameter
 import pt.isel.api_pm.utils.requireUserId
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 fun Route.metricsRoutes(
@@ -148,6 +138,50 @@ fun Route.metricsRoutes(
             call.respond(
                 message
             )
+        }
+
+        get(Routes.Metrics.BY_AGENT) {
+
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
+
+            val userId =
+                principal.requireUserId()
+
+            val agentId =
+                call.parameters["agentId"]
+                    .requireUIntParameter("agent ID")
+
+            val metrics =
+                metricsService.getByAgent(
+                    userId,
+                    agentId
+                ).toAgentMessageMetricsList()
+
+            call.respond(metrics)
+        }
+
+        get(Routes.Metrics.AGENT_SUMMARY) {
+
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
+
+            val userId =
+                principal.requireUserId()
+
+            val agentId =
+                call.parameters["agentId"]
+                    .requireUIntParameter("agent ID")
+
+            val summary =
+                metricsService.getAgentSummary(
+                    userId,
+                    agentId
+                )
+
+            call.respond(summary)
         }
 
         get(Routes.Metrics.SUMMARY) {

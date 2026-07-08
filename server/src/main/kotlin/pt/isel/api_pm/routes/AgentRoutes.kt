@@ -17,6 +17,7 @@ import pt.isel.api_pm.manager.AgentSessionManager
 import pt.isel.api_pm.service.AgentService
 import pt.isel.api_pm.utils.requireAgentId
 import pt.isel.api_pm.utils.requireUserId
+import pt.isel.api_pm.dto.agent.toDTO
 
 fun Route.agentRoutes(
     agentService: AgentService,
@@ -24,6 +25,27 @@ fun Route.agentRoutes(
 ) {
 
     authenticate(AuthConfig.JWT_NAME) {
+
+        get(Routes.Agent.LIST) {
+
+            val principal =
+                call.principal<JWTPrincipal>()
+                    ?: throw MissingTokenException()
+
+            val userId =
+                principal.requireUserId()
+
+            val agents =
+                agentService
+                    .getAll()
+                    .filter {
+                        it.userId == userId
+                    }
+
+            call.respond(
+                agents.toDTO()
+            )
+        }
 
         post(Routes.Agent.REGISTER) {
             val request =

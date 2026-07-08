@@ -1,12 +1,11 @@
 package pt.isel.api_pm.dto.metric
 
 import kotlinx.serialization.Serializable
-import pt.isel.api_pm.domain.endpoint.EndpointUrl
 import kotlin.time.Instant
 
 @Serializable
-data class RequestMetric(
-    val endpoint: EndpointUrl,
+data class AgentRequestMetric(
+    val endpointName: String,
     val timestamp: Instant,
     override val latency: Long,
     val statusCode: Int

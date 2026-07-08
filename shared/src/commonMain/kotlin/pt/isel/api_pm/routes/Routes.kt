@@ -6,6 +6,8 @@ object Routes {
         const val BASE = "/agent"
         const val REGISTER = "$BASE/register"
         const val ENDPOINTS = "$BASE/endpoints"
+
+        const val LIST = BASE
     }
 
     object Auth {
@@ -28,6 +30,9 @@ object Routes {
         const val CHECK = "$BASE/check"
         const val BY_ENDPOINT = "$BASE/{endpoint}"
         const val SUMMARY = "$BASE/{endpointId}/summary"
+
+        const val BY_AGENT = "$BASE/agent/{agentId}"
+        const val AGENT_SUMMARY = "$BASE/agent/{agentId}/summary"
     }
 
     object Users {
