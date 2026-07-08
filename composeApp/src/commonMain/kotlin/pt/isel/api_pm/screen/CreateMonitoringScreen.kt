@@ -1,10 +1,6 @@
 package pt.isel.api_pm.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +26,7 @@ import pt.isel.api_pm.components.AppButton
 import pt.isel.api_pm.components.AppTextField
 import pt.isel.api_pm.components.ScreenContainer
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.theme.Primary
 import pt.isel.api_pm.validation.CreateEndpointValidator
@@ -53,6 +50,7 @@ fun CreateMonitoringScreen(
     var url by remember { mutableStateOf("") }
     var interval by remember { mutableStateOf("") }
     var notificationType by remember { mutableStateOf("None") }
+    var method by remember { mutableStateOf(HttpMethod.GET) }
     var webhookUrl by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var subject by remember { mutableStateOf("") }
@@ -175,6 +173,14 @@ fun CreateMonitoringScreen(
                     onValueChange = { url = it },
                     label = "URL",
                     modifier = Modifier.fillMaxWidth()
+                )
+                StyledDropdown(
+                    label = "HTTP Method",
+                    selected = method.name,
+                    options = HttpMethod.entries.map { it.name },
+                    onSelected = {
+                        method = HttpMethod.valueOf(it)
+                    }
                 )
                 AppTextField(
                     value = interval,
@@ -367,7 +373,7 @@ fun CreateMonitoringScreen(
                 text = if (state.creating) "Creating…" else "Create Monitor",
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    viewModel.createEndpoint(name, url, interval, notification, alertRule)
+                    viewModel.createEndpoint(name, url, method, interval, notification, alertRule)
                 }
             )
 

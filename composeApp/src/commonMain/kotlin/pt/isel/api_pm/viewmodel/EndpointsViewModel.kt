@@ -178,6 +178,7 @@ class EndpointsViewModel(
     fun createEndpoint(
         name: String,
         url: String,
+        method: HttpMethod,
         interval: String,
         notification: NotificationConfig,
         alertRule: AlertRule?
@@ -193,7 +194,7 @@ class EndpointsViewModel(
             val request = CreateEndpointRequest(
                 url = url,
                 name = name,
-                method = HttpMethod.GET, //NEEDS TO BE IMPLEMENTED
+                method = method,
                 intervalSeconds = intervalInt.toLong(),
                 notification = notification,
                 alertRule = alertRule
