@@ -21,11 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.isel.api_pm.components.ScreenContainer
+import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.theme.Primary
 import pt.isel.api_pm.theme.PrimaryVariant
 import pt.isel.api_pm.theme.Surface
 import pt.isel.api_pm.theme.TextSecondary
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
+import androidx.compose.material.icons.filled.Edit
 
 @Composable
 fun EndpointsScreen(
@@ -33,7 +35,8 @@ fun EndpointsScreen(
     onLogout: () -> Unit,
     onCreateMonitoring: () -> Unit,
     onOpenEndpoint: (UInt) -> Unit,
-    onOpenAgents: () -> Unit
+    onOpenAgents: () -> Unit,
+    onEditEndpoint: (EndpointUiModel) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val activeCount = state.monitoredEndpoints.count { it.active }
@@ -289,7 +292,12 @@ fun EndpointsScreen(
                         else
                             viewModel.continueEndpoint(endpoint.id)
                     },
-                    onDelete = { viewModel.deleteEndpoint(endpoint.id) }
+                    onEdit = {
+                        onEditEndpoint(endpoint)
+                    },
+                    onDelete = {
+                        viewModel.deleteEndpoint(endpoint.id)
+                    }
                 )
             }
 
@@ -334,6 +342,7 @@ private fun EndpointListCard(
     active: Boolean,
     onViewMetrics: () -> Unit,
     onToggle: () -> Unit,
+    onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -447,6 +456,18 @@ private fun EndpointListCard(
                 ) {
                     Text(
                         if (active) "Pause" else "Resume"
+                    )
+                }
+
+                OutlinedButton(
+                    onClick = onEdit,
+                    modifier = Modifier.height(40.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        modifier = Modifier.size(16.dp)
                     )
                 }
 

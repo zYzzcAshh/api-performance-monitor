@@ -115,4 +115,30 @@ class EndpointRepositoryMemory : EndpointRepository {
         endpoints[userId]?.values?.any {
             it.url.normalized() == url.removeSuffix("/")
         } ?: false
+
+    override suspend fun update(
+        userId: UInt,
+        monitoredEndpointId: UInt,
+        url: String,
+        name: String,
+        method: HttpMethod,
+        intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
+    ) {
+        val userEndpoints = endpoints[userId]
+            ?: throw IllegalArgumentException("User with id $userId not found")
+
+        val endpoint = userEndpoints[monitoredEndpointId]
+            ?: throw IllegalArgumentException("Endpoint with id $monitoredEndpointId not found")
+
+        userEndpoints[monitoredEndpointId] = endpoint.copy(
+            url = EndpointUrl(url.removeSuffix("/")),
+            name = name,
+            method = method,
+            interval = IntervalSeconds(intervalSeconds),
+            notification = notification,
+            alertRule = alertRule
+        )
+    }
 }

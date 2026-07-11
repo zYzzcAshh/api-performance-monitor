@@ -8,6 +8,7 @@ import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.domain.agent.AgentUiModel
+import pt.isel.api_pm.dto.endpoint.UpdateEndpointRequest
 import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
 import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
@@ -84,4 +85,9 @@ interface Api {
         token: String,
         endpointId: UInt
     ): Result<Unit>
+
+    suspend fun updateEndpoint(
+        token: String,
+        request: UpdateEndpointRequest
+    ): Result<String>
 }

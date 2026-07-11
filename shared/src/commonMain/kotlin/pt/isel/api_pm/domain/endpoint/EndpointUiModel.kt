@@ -8,6 +8,7 @@ data class EndpointUiModel(
     val userId: UInt,
     val url: String,
     val name: String,
+    val method: HttpMethod,
     val intervalSeconds: Long,
     val createdAt: String,
     val active: Boolean

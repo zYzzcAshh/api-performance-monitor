@@ -19,6 +19,7 @@ object Routes {
 
     object Endpoints {
         const val BASE = "/endpoints"
+        const val UPDATE = BASE
         const val STOP = "$BASE/stop"
         const val CONTINUE = "$BASE/continue"
         const val DELETE = "$BASE/{id}"
@@ -37,7 +38,6 @@ object Routes {
 
     object Users {
         const val BASE = "/users"
-
         const val BY_ID = "$BASE/{id}"
     }
 

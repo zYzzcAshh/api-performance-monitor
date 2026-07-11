@@ -1,14 +1,12 @@
 package pt.isel.api_pm.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.savedstate.read
 import pt.isel.api_pm.api.ApiClient
+import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.screen.*
 import pt.isel.api_pm.viewmodel.AuthViewModel
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
@@ -20,10 +18,8 @@ fun AppNavigation(
     val authViewModel = remember { AuthViewModel(api) }
     val navController = rememberNavController()
     val authState by authViewModel.state.collectAsState()
-
-    val endpointsViewModel = authState.token?.let { token ->
-        remember(token) { EndpointsViewModel(api, token) }
-    }
+    val endpointsViewModel = authState.token?.let { token -> remember(token) { EndpointsViewModel(api, token) } }
+    var editingEndpoint by remember { mutableStateOf<EndpointUiModel?>(null) }
 
     NavHost(
         navController = navController,
@@ -69,6 +65,7 @@ fun AppNavigation(
                         }
                     },
                     onCreateMonitoring = {
+                        editingEndpoint = null
                         navController.navigate(Screen.CreateMonitoring.route)
                     },
                     onOpenEndpoint = { endpointId ->
@@ -76,6 +73,10 @@ fun AppNavigation(
                     },
                     onOpenAgents = {
                         navController.navigate(Screen.Agents.route)
+                    },
+                    onEditEndpoint = { endpoint ->
+                        editingEndpoint = endpoint
+                        navController.navigate(Screen.CreateMonitoring.route)
                     }
                 )
             }
@@ -85,7 +86,11 @@ fun AppNavigation(
             endpointsViewModel?.let { vm ->
                 CreateMonitoringScreen(
                     viewModel = vm,
-                    onBack = { navController.popBackStack() }
+                    endpoint = editingEndpoint,
+                    onBack = {
+                        editingEndpoint = null
+                        navController.popBackStack()
+                    }
                 )
             }
         }

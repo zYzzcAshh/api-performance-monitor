@@ -23,6 +23,7 @@ import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.domain.agent.AgentUiModel
 import pt.isel.api_pm.dto.endpoint.StopContinueEndpointRequest
+import pt.isel.api_pm.dto.endpoint.UpdateEndpointRequest
 import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
 import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
@@ -320,5 +321,24 @@ class ApiClient(
                     StopContinueEndpointRequest(endpointId)
                 )
             }
+        }
+
+    override suspend fun updateEndpoint(
+        token: String,
+        request: UpdateEndpointRequest
+    ): Result<String> =
+        runCatching {
+
+            client.put("${ApiConfig.BASE_URL}/endpoints") {
+
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+
+                contentType(ContentType.Application.Json)
+
+                setBody(request)
+            }.body()
         }
 }

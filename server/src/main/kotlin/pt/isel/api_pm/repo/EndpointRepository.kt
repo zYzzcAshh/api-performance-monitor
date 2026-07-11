@@ -38,4 +38,15 @@ interface EndpointRepository {
         userId: UInt,
         url: String,
     ): Boolean
+
+    suspend fun update(
+        userId: UInt,
+        monitoredEndpointId: UInt,
+        url: String,
+        name: String,
+        method: HttpMethod,
+        intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
+    )
 }

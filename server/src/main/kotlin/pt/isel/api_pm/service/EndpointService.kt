@@ -9,6 +9,7 @@ import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.repo.EndpointRepository
+import pt.isel.api_pm.dto.endpoint.UpdateEndpointRequest
 
 class EndpointService(
     private val repo: EndpointRepository,
@@ -55,4 +56,26 @@ class EndpointService(
         userId: UInt,
         monitoredEndpointId: UInt,
     ) = repo.delete(userId, monitoredEndpointId)
+
+    suspend fun update(
+        userId: UInt,
+        request: UpdateEndpointRequest
+    ) {
+        val normalizedUrl = EndpointUrl(request.url).normalized()
+
+        if (request.intervalSeconds !in INTERVAL_SECONDS_LIST) {
+            throw InvalidIntervalException(request.intervalSeconds)
+        }
+
+        repo.update(
+            userId = userId,
+            monitoredEndpointId = request.id,
+            url = normalizedUrl,
+            name = request.name,
+            method = request.method,
+            intervalSeconds = request.intervalSeconds,
+            notification = request.notification,
+            alertRule = request.alertRule
+        )
+    }
 }

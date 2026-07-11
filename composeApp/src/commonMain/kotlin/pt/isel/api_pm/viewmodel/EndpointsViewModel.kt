@@ -14,6 +14,7 @@ import pt.isel.api_pm.dto.metric.AggregatedMetric
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.domain.agent.AgentUiModel
+import pt.isel.api_pm.dto.endpoint.UpdateEndpointRequest
 import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
 import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
@@ -300,6 +301,60 @@ class EndpointsViewModel(
                 endpointId
             )
             loadMonitored()
+        }
+    }
+
+    fun updateEndpoint(
+        id: UInt,
+        name: String,
+        url: String,
+        method: HttpMethod,
+        interval: String,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
+    ) {
+
+        scope.launch {
+
+            val intervalInt = interval.toInt()
+
+            _state.value = _state.value.copy(
+                creating = true,
+                message = null
+            )
+
+            val request = UpdateEndpointRequest(
+                id = id,
+                url = url,
+                name = name,
+                method = method,
+                intervalSeconds = intervalInt.toLong(),
+                notification = notification,
+                alertRule = alertRule
+            )
+
+            val result = api.updateEndpoint(
+                token,
+                request
+            )
+
+            _state.value =
+                if (result.isSuccess) {
+
+                    loadMonitored()
+
+                    _state.value.copy(
+                        message = "Updated successfully",
+                        creating = false
+                    )
+
+                } else {
+
+                    _state.value.copy(
+                        message = "Error: ${result.exceptionOrNull()?.message}",
+                        creating = false
+                    )
+                }
         }
     }
 

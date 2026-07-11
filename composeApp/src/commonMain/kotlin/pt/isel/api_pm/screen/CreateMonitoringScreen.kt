@@ -26,6 +26,7 @@ import pt.isel.api_pm.components.AppButton
 import pt.isel.api_pm.components.AppTextField
 import pt.isel.api_pm.components.ScreenContainer
 import pt.isel.api_pm.domain.endpoint.DurationSeconds
+import pt.isel.api_pm.domain.endpoint.EndpointUiModel
 import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.theme.Primary
@@ -36,22 +37,26 @@ import pt.isel.api_pm.viewmodel.EndpointsViewModel
 @Composable
 fun CreateMonitoringScreen(
     viewModel: EndpointsViewModel,
+    endpoint: EndpointUiModel? = null,
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(state.message) {
-        if (state.message == "Created successfully") {
+        if (
+            state.message == "Created successfully" ||
+            state.message == "Updated successfully"
+        ) {
             viewModel.clearMessage()
             onBack()
         }
     }
 
-    var name by remember { mutableStateOf("") }
-    var url by remember { mutableStateOf("") }
-    var interval by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(endpoint?.name ?: "") }
+    var url by remember { mutableStateOf(endpoint?.url ?: "") }
+    var interval by remember { mutableStateOf(endpoint?.intervalSeconds?.toString() ?: "") }
     var notificationType by remember { mutableStateOf("None") }
-    var method by remember { mutableStateOf(HttpMethod.GET) }
+    var method by remember { mutableStateOf(endpoint?.method ?: HttpMethod.GET) }
     var webhookUrl by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var subject by remember { mutableStateOf("") }
@@ -148,8 +153,9 @@ fun CreateMonitoringScreen(
                     )
                 }
                 Spacer(Modifier.width(4.dp))
+
                 Text(
-                    text = "New Monitor",
+                    text = if (endpoint == null) "New Monitor" else "Edit Monitor",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = Primary
@@ -368,13 +374,36 @@ fun CreateMonitoringScreen(
                 }
             }
 
-            // submit
             AppButton(
                 enabled = validation.valid && !state.creating,
-                text = if (state.creating) "Creating…" else "Create Monitor",
+                text =
+                    if (state.creating) {
+                        if (endpoint == null) "Creating..." else "Saving..."
+                    } else {
+                        if (endpoint == null) "Create Monitor" else "Save Changes"
+                    },
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    viewModel.createEndpoint(name, url, method, interval, notification, alertRule)
+                    if (endpoint == null) {
+                        viewModel.createEndpoint(
+                            name,
+                            url,
+                            method,
+                            interval,
+                            notification,
+                            alertRule
+                        )
+                    } else {
+                        viewModel.updateEndpoint(
+                            endpoint.id,
+                            name,
+                            url,
+                            method,
+                            interval,
+                            notification,
+                            alertRule
+                        )
+                    }
                 }
             )
 

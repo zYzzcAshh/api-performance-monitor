@@ -191,4 +191,42 @@ class EndpointRepositoryExposed(
                 }
                 .any()
         }
+
+    override suspend fun update(
+        userId: UInt,
+        monitoredEndpointId: UInt,
+        url: String,
+        name: String,
+        method: HttpMethod,
+        intervalSeconds: Long,
+        notification: NotificationConfig,
+        alertRule: AlertRule?
+    ) {
+        transaction(db) {
+
+            val normalizedUrl = url.removeSuffix("/")
+
+            val (notifType, notifData) = notification.toDb()
+
+            val (alertType, alertData) =
+                alertRule?.toDb() ?: (null to null)
+
+            MonitoredEndpointTable.update({
+                (MonitoredEndpointTable.userId eq userId.toInt()) and
+                        (MonitoredEndpointTable.id eq monitoredEndpointId.toInt())
+            }) {
+
+                it[MonitoredEndpointTable.url] = normalizedUrl
+                it[MonitoredEndpointTable.name] = name
+                it[MonitoredEndpointTable.method] = method
+                it[MonitoredEndpointTable.intervalSeconds] = intervalSeconds
+
+                it[MonitoredEndpointTable.notificationType] = notifType
+                it[MonitoredEndpointTable.notificationData] = notifData
+
+                it[MonitoredEndpointTable.alertRuleType] = alertType
+                it[MonitoredEndpointTable.alertRuleData] = alertData
+            }
+        }
+    }
 }
