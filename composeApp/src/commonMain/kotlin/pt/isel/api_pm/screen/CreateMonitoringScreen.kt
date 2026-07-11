@@ -41,14 +41,22 @@ fun CreateMonitoringScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(state.message) {
-        if (
-            state.message == "Created successfully" ||
-            state.message == "Updated successfully"
-        ) {
-            viewModel.clearMessage()
-            onBack()
+        state.message?.let { message ->
+
+            snackbarHostState.showSnackbar(message)
+
+            if (
+                message == "Created successfully" ||
+                message == "Updated successfully"
+            ) {
+                viewModel.clearMessage()
+                onBack()
+            } else {
+                viewModel.clearMessage()
+            }
         }
     }
 
@@ -104,21 +112,21 @@ fun CreateMonitoringScreen(
         null
     } else {
         when (alertType) {
-        "Status Code" -> AlertRule.StatusCodeRule(
-            operator = operator,
-            value = alertValue.toIntOrNull() ?: 500,
-            durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60),
-            aggregation = aggregationType
-        )
-        "Latency" -> AlertRule.LatencyRule(
-            operator = operator,
-            value = alertValue.toLongOrNull() ?: 1000,
-            durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60),
-            aggregation = aggregationType
-        )
-        else -> AlertRule.DownTimeRule(
-            durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60)
-        )
+            "Status Code" -> AlertRule.StatusCodeRule(
+                operator = operator,
+                value = alertValue.toIntOrNull() ?: 500,
+                durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60),
+                aggregation = aggregationType
+            )
+            "Latency" -> AlertRule.LatencyRule(
+                operator = operator,
+                value = alertValue.toLongOrNull() ?: 1000,
+                durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60),
+                aggregation = aggregationType
+            )
+            else -> AlertRule.DownTimeRule(
+                durationSeconds = DurationSeconds(alertDuration.toLongOrNull() ?: 60)
+            )
         }
     }
 
@@ -133,295 +141,291 @@ fun CreateMonitoringScreen(
     val validation = CreateEndpointValidator.validate(name, url, interval, notification)
 
     ScreenContainer {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            // top bar
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Primary
+                // top bar
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Primary
+                        )
+                    }
+                    Spacer(Modifier.width(4.dp))
+
+                    Text(
+                        text = if (endpoint == null) "New Monitor" else "Edit Monitor",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Primary
                     )
                 }
-                Spacer(Modifier.width(4.dp))
 
-                Text(
-                    text = if (endpoint == null) "New Monitor" else "Edit Monitor",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Primary
-                )
-            }
+                Spacer(Modifier.height(8.dp))
 
-            Spacer(Modifier.height(8.dp))
-
-            // section: endpoint
-            SectionCard(
-                title = "Endpoint",
-                subtitle = "What do you want to monitor?"
-            ) {
-                AppTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = "Name",
-                    modifier = Modifier.fillMaxWidth()
-                )
-                AppTextField(
-                    value = url,
-                    onValueChange = { url = it },
-                    label = "URL",
-                    modifier = Modifier.fillMaxWidth()
-                )
-                StyledDropdown(
-                    label = "HTTP Method",
-                    selected = method.name,
-                    options = HttpMethod.entries.map { it.name },
-                    onSelected = {
-                        method = HttpMethod.valueOf(it)
-                    }
-                )
-                AppTextField(
-                    value = interval,
-                    onValueChange = { interval = it },
-                    label = "Check interval (seconds)",
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            // section: notifications
-            SectionCard(
-                title = "Notifications",
-                subtitle = "How should we alert you?",
-                icon = Icons.Default.Notifications
-            ) {
-                StyledDropdown(
-                    label = "Channel",
-                    selected = notificationType,
-                    options = listOf("None", "Log", "Discord", "Slack", "Email"),
-                    onSelected = { notificationType = it }
-                )
-
-                AnimatedVisibility(
-                    visible = notificationType == "Discord" || notificationType == "Slack",
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
+                // section: endpoint
+                SectionCard(
+                    title = "Endpoint",
+                    subtitle = "What do you want to monitor?"
                 ) {
                     AppTextField(
-                        value = webhookUrl,
-                        onValueChange = { webhookUrl = it },
-                        label = "Webhook URL",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
+                        value = name,
+                        onValueChange = { name = it },
+                        label = "Name",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    AppTextField(
+                        value = url,
+                        onValueChange = { url = it },
+                        label = "URL",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    StyledDropdown(
+                        label = "HTTP Method",
+                        selected = method.name,
+                        options = HttpMethod.entries.map { it.name },
+                        onSelected = {
+                            method = HttpMethod.valueOf(it)
+                        }
+                    )
+                    AppTextField(
+                        value = interval,
+                        onValueChange = { interval = it },
+                        label = "Check interval (seconds)",
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                AnimatedVisibility(
-                    visible = notificationType == "Email",
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
+                Spacer(Modifier.height(12.dp))
+
+                // section: notifications
+                SectionCard(
+                    title = "Notifications",
+                    subtitle = "How should we alert you?",
+                    icon = Icons.Default.Notifications
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    StyledDropdown(
+                        label = "Channel",
+                        selected = notificationType,
+                        options = listOf("None", "Log", "Discord", "Slack", "Email"),
+                        onSelected = { notificationType = it }
+                    )
+
+                    AnimatedVisibility(
+                        visible = notificationType == "Discord" || notificationType == "Slack",
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
                         AppTextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            label = "Email address",
+                            value = webhookUrl,
+                            onValueChange = { webhookUrl = it },
+                            label = "Webhook URL",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 8.dp)
                         )
-                        AppTextField(
-                            value = subject,
-                            onValueChange = { subject = it },
-                            label = "Subject",
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            // section: alert rule
-            SectionCard(
-                title = "Alert Rule",
-                subtitle = if (notificationType == "None")
-                    "Choose a notification channel first"
-                else
-                    "When should an alert be triggered?",
-                icon = Icons.Default.Warning
-            ) {
-                val alertEnabled = notificationType != "None"
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    StyledDropdown(
-                        label = "Trigger type",
-                        selected = alertType,
-                        options = listOf("Status Code", "Latency", "Down Time"),
-                        onSelected = { alertType = it },
-                        enabled = alertEnabled
-                    )
 
                     AnimatedVisibility(
-                        visible = alertType != "Down Time" && alertEnabled,
+                        visible = notificationType == "Email",
                         enter = fadeIn() + expandVertically(),
                         exit = fadeOut() + shrinkVertically()
                     ) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            StyledDropdown(
-                                label = "Aggregation",
-                                selected = aggregation,
-                                options = listOf("Any request", "Average", "Occurrences"),
-                                onSelected = { aggregation = it },
-                                enabled = alertEnabled
-                            )
-
-                            AnimatedVisibility(
-                                visible = aggregation == "Occurrences",
-                                enter = fadeIn() + expandVertically(),
-                                exit = fadeOut() + shrinkVertically()
-                            ) {
-                                AppTextField(
-                                    value = aggregationCount,
-                                    onValueChange = { aggregationCount = it },
-                                    label = "Occurrences",
-                                    enabled = alertEnabled,
-                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                                )
-                            }
-
-                            StyledDropdown(
-                                label = "Condition",
-                                selected = alertOperator,
-                                options = listOf(
-                                    "Greater Than (>)",
-                                    "Greater Than or Equal (>=)",
-                                    "Less Than (<)",
-                                    "Less Than or Equal (<=)",
-                                    "Equal (=)"
-                                ),
-                                onSelected = { alertOperator = it },
-                                enabled = alertEnabled
-                            )
-
                             AppTextField(
-                                value = alertValue,
-                                onValueChange = { alertValue = it },
-                                label = if (alertType == "Status Code") "Status code" else "Latency (ms)",
-                                enabled = alertEnabled,
+                                value = email,
+                                onValueChange = { email = it },
+                                label = "Email address",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                            )
+                            AppTextField(
+                                value = subject,
+                                onValueChange = { subject = it },
+                                label = "Subject",
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
-
-                    AppTextField(
-                        value = alertDuration,
-                        onValueChange = { alertDuration = it },
-                        label = "Duration (seconds)",
-                        enabled = alertEnabled,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = if (alertType == "Down Time") 0.dp else 8.dp)
-                    )
                 }
-            }
 
-            Spacer(Modifier.height(24.dp))
-
-            // validation error
-            AnimatedVisibility(
-                visible = validation.error != null,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                validation.error?.let { error ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.errorContainer)
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Warning,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onErrorContainer,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Text(
-                            text = error,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    Spacer(Modifier.height(12.dp))
-                }
-            }
-
-            AppButton(
-                enabled = validation.valid && !state.creating,
-                text =
-                    if (state.creating) {
-                        if (endpoint == null) "Creating..." else "Saving..."
-                    } else {
-                        if (endpoint == null) "Create Monitor" else "Save Changes"
-                    },
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    if (endpoint == null) {
-                        viewModel.createEndpoint(
-                            name,
-                            url,
-                            method,
-                            interval,
-                            notification,
-                            alertRule
-                        )
-                    } else {
-                        viewModel.updateEndpoint(
-                            endpoint.id,
-                            name,
-                            url,
-                            method,
-                            interval,
-                            notification,
-                            alertRule
-                        )
-                    }
-                }
-            )
-
-            // api message
-            state.message?.let { msg ->
                 Spacer(Modifier.height(12.dp))
-                Text(
-                    text = msg,
-                    color = if (msg.startsWith("Error"))
-                        MaterialTheme.colorScheme.error
+
+                // section: alert rule
+                SectionCard(
+                    title = "Alert Rule",
+                    subtitle = if (notificationType == "None")
+                        "Choose a notification channel first"
                     else
-                        Primary,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                        "When should an alert be triggered?",
+                    icon = Icons.Default.Warning
+                ) {
+                    val alertEnabled = notificationType != "None"
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        StyledDropdown(
+                            label = "Trigger type",
+                            selected = alertType,
+                            options = listOf("Status Code", "Latency", "Down Time"),
+                            onSelected = { alertType = it },
+                            enabled = alertEnabled
+                        )
+
+                        AnimatedVisibility(
+                            visible = alertType != "Down Time" && alertEnabled,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                StyledDropdown(
+                                    label = "Aggregation",
+                                    selected = aggregation,
+                                    options = listOf("Any request", "Average", "Occurrences"),
+                                    onSelected = { aggregation = it },
+                                    enabled = alertEnabled
+                                )
+
+                                AnimatedVisibility(
+                                    visible = aggregation == "Occurrences",
+                                    enter = fadeIn() + expandVertically(),
+                                    exit = fadeOut() + shrinkVertically()
+                                ) {
+                                    AppTextField(
+                                        value = aggregationCount,
+                                        onValueChange = { aggregationCount = it },
+                                        label = "Occurrences",
+                                        enabled = alertEnabled,
+                                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                                    )
+                                }
+
+                                StyledDropdown(
+                                    label = "Condition",
+                                    selected = alertOperator,
+                                    options = listOf(
+                                        "Greater Than (>)",
+                                        "Greater Than or Equal (>=)",
+                                        "Less Than (<)",
+                                        "Less Than or Equal (<=)",
+                                        "Equal (=)"
+                                    ),
+                                    onSelected = { alertOperator = it },
+                                    enabled = alertEnabled
+                                )
+
+                                AppTextField(
+                                    value = alertValue,
+                                    onValueChange = { alertValue = it },
+                                    label = if (alertType == "Status Code") "Status code" else "Latency (ms)",
+                                    enabled = alertEnabled,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+
+                        AppTextField(
+                            value = alertDuration,
+                            onValueChange = { alertDuration = it },
+                            label = "Duration (seconds)",
+                            enabled = alertEnabled,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = if (alertType == "Down Time") 0.dp else 8.dp)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                // validation error
+                AnimatedVisibility(
+                    visible = validation.error != null,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    validation.error?.let { error ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.errorContainer)
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = error,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
+
+                AppButton(
+                    enabled = validation.valid && !state.creating,
+                    text =
+                        if (state.creating) {
+                            if (endpoint == null) "Creating..." else "Saving..."
+                        } else {
+                            if (endpoint == null) "Create Monitor" else "Save Changes"
+                        },
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        if (endpoint == null) {
+                            viewModel.createEndpoint(
+                                name,
+                                url,
+                                method,
+                                interval,
+                                notification,
+                                alertRule
+                            )
+                        } else {
+                            viewModel.updateEndpoint(
+                                endpoint.id,
+                                name,
+                                url,
+                                method,
+                                interval,
+                                notification,
+                                alertRule
+                            )
+                        }
+                    }
                 )
+
+                Spacer(Modifier.height(32.dp))
             }
 
-            Spacer(Modifier.height(32.dp))
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            )
         }
     }
 }

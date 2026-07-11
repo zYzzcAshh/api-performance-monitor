@@ -30,6 +30,10 @@ import pt.isel.api_pm.viewmodel.EndpointsViewModel
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.graphics.Color
 import pt.isel.api_pm.domain.endpoint.HttpMethod
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Computer
 
 @Composable
 fun EndpointsScreen(
@@ -248,6 +252,14 @@ fun EndpointsScreen(
                             .height(56.dp),
                         shape = RoundedCornerShape(18.dp)
                     ) {
+                        Icon(
+                            Icons.Default.Computer,
+                            null,
+                            modifier = Modifier.size(18.dp)
+                        )
+
+                        Spacer(Modifier.width(8.dp))
+
                         Text("Local Agents")
                     }
                 }
@@ -466,6 +478,14 @@ private fun EndpointListCard(
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Primary)
                 ) {
+                    Icon(
+                        Icons.Default.BarChart,
+                        null,
+                        modifier = Modifier.size(16.dp)
+                    )
+
+                    Spacer(Modifier.width(6.dp))
+
                     Text(
                         text = "View Metrics",
                         style = MaterialTheme.typography.labelMedium
@@ -477,6 +497,18 @@ private fun EndpointListCard(
                     modifier = Modifier.height(40.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
+                    Icon(
+                        imageVector =
+                            if (active)
+                                Icons.Default.Pause
+                            else
+                                Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+
+                    Spacer(Modifier.width(4.dp))
+
                     Text(
                         if (active) "Pause" else "Resume"
                     )
@@ -488,10 +520,14 @@ private fun EndpointListCard(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
+                        Icons.Default.Edit,
+                        null,
                         modifier = Modifier.size(16.dp)
                     )
+
+                    Spacer(Modifier.width(4.dp))
+
+                    Text("Edit")
                 }
 
                 OutlinedButton(
@@ -506,10 +542,14 @@ private fun EndpointListCard(
                     )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
+                        Icons.Default.Delete,
+                        null,
                         modifier = Modifier.size(16.dp)
                     )
+
+                    Spacer(Modifier.width(4.dp))
+
+                    Text("Delete")
                 }
             }
         }

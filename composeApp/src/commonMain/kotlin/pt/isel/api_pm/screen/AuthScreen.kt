@@ -5,9 +5,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -73,6 +75,7 @@ fun AuthScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .widthIn(max = 460.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 32.dp, vertical = 40.dp),
@@ -128,6 +131,7 @@ fun AuthScreen(
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
+                        enabled = !isLoading,
                         label = { Text("Username") },
                         leadingIcon = {
                             Icon(
@@ -152,6 +156,7 @@ fun AuthScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
+                        enabled = !isLoading,
                         label = { Text("Password") },
                         leadingIcon = {
                             Icon(
@@ -282,7 +287,10 @@ fun AuthScreen(
                     Spacer(Modifier.height(8.dp))
 
                     // switch
-                    TextButton(onClick = onSwitch) {
+                    TextButton(
+                        onClick = onSwitch,
+                        enabled = !isLoading
+                    ) {
                         Text(
                             text = switchLabel,
                             style = MaterialTheme.typography.bodySmall,
