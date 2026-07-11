@@ -42,6 +42,7 @@ fun CreateMonitoringScreen(
 
     LaunchedEffect(state.message) {
         if (state.message == "Created successfully") {
+            viewModel.clearMessage()
             onBack()
         }
     }
