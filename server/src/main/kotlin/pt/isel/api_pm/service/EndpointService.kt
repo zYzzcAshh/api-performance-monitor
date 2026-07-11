@@ -15,8 +15,6 @@ class EndpointService(
 ) {
     suspend fun getAll() = repo.getAll()
 
-    suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllByIntervalSeconds(intervalSeconds)
-
     suspend fun getAllActiveByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllActiveByIntervalSeconds(intervalSeconds)
 
     suspend fun getByUser(userId: UInt) = repo.getByUser(userId)
