@@ -36,18 +36,42 @@ fun EndpointsScreen(
     onOpenAgents: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val activeCount = state.monitoredEndpoints.count { it.active }
+    val totalCount = state.monitoredEndpoints.size
     var search by remember { mutableStateOf("") }
+    var filter by remember { mutableStateOf(EndpointFilter.ALL) }
+    var sort by remember { mutableStateOf(EndpointSort.NAME) }
 
     LaunchedEffect(Unit) {
         viewModel.loadMonitored()
     }
 
     val filteredEndpoints =
-        state.monitoredEndpoints.filter {
+        state.monitoredEndpoints
+            .filter {
+                it.name.contains(search, ignoreCase = true) ||
+                        it.url.contains(search, ignoreCase = true)
+            }
+            .filter {
+                when (filter) {
+                    EndpointFilter.ALL -> true
+                    EndpointFilter.ACTIVE -> it.active
+                    EndpointFilter.PAUSED -> !it.active
+                }
+            }
+            .sortedWith(
+                when (sort) {
 
-            it.name.contains(search, ignoreCase = true) ||
-                    it.url.contains(search, ignoreCase = true)
-        }
+                    EndpointSort.NAME ->
+                        compareBy { it.name.lowercase() }
+
+                    EndpointSort.INTERVAL ->
+                        compareBy { it.intervalSeconds }
+
+                    EndpointSort.NEWEST ->
+                        compareByDescending { it.createdAt }
+                }
+            )
 
     ScreenContainer {
         LazyColumn(
@@ -89,6 +113,7 @@ fun EndpointsScreen(
                 }
             }
 
+            // search bar
             item {
                 OutlinedTextField(
                     value = search,
@@ -108,6 +133,58 @@ fun EndpointsScreen(
                 )
             }
 
+            // filter chips
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+
+                    FilterChip(
+                        selected = filter == EndpointFilter.ALL,
+                        onClick = { filter = EndpointFilter.ALL },
+                        label = { Text("All") }
+                    )
+
+                    FilterChip(
+                        selected = filter == EndpointFilter.ACTIVE,
+                        onClick = { filter = EndpointFilter.ACTIVE },
+                        label = { Text("Active") }
+                    )
+
+                    FilterChip(
+                        selected = filter == EndpointFilter.PAUSED,
+                        onClick = { filter = EndpointFilter.PAUSED },
+                        label = { Text("Paused") }
+                    )
+                }
+            }
+
+            // sort by
+            item {
+                StyledDropdown(
+                    label = "Sort by",
+                    selected = when (sort) {
+                        EndpointSort.NAME -> "Name"
+                        EndpointSort.INTERVAL -> "Interval"
+                        EndpointSort.NEWEST -> "Newest"
+                    },
+                    options = listOf(
+                        "Name",
+                        "Interval",
+                        "Newest"
+                    ),
+                    onSelected = {
+
+                        sort = when (it) {
+                            "Interval" -> EndpointSort.INTERVAL
+                            "Newest" -> EndpointSort.NEWEST
+                            else -> EndpointSort.NAME
+                        }
+
+                    }
+                )
+            }
+
             // stats strip (only when loaded)
             if (state.monitoredEndpoints.isNotEmpty()) {
                 item {
@@ -121,12 +198,12 @@ fun EndpointsScreen(
                         ) {
                             StatPill(
                                 label = "Total",
-                                value = state.monitoredEndpoints.size.toString(),
+                                value = totalCount.toString(),
                                 modifier = Modifier.weight(1f)
                             )
                             StatPill(
                                 label = "Active",
-                                value = state.monitoredEndpoints.size.toString(),
+                                value = activeCount.toString(),
                                 color = Primary,
                                 modifier = Modifier.weight(1f)
                             )
@@ -395,6 +472,17 @@ private fun EndpointListCard(
     }
 }
 
+private enum class EndpointFilter {
+    ALL,
+    ACTIVE,
+    PAUSED
+}
+
+private enum class EndpointSort {
+    NAME,
+    INTERVAL,
+    NEWEST
+}
 
 // stat pill
 @Composable

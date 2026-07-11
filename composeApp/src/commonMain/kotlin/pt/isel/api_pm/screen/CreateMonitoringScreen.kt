@@ -456,11 +456,9 @@ private fun SectionCard(
     }
 }
 
-
-// styled dropdown (replaces the raw ExposedDropdownMenuBox boilerplate)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StyledDropdown(
+fun StyledDropdown(
     label: String,
     selected: String,
     options: List<String>,
