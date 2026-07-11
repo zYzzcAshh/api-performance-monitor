@@ -22,6 +22,7 @@ import io.ktor.client.statement.bodyAsText
 import pt.isel.api_pm.alert.AlertRule
 import pt.isel.api_pm.notification.NotificationConfig
 import pt.isel.api_pm.domain.agent.AgentUiModel
+import pt.isel.api_pm.dto.endpoint.StopContinueEndpointRequest
 import pt.isel.api_pm.dto.metric.AgentAggregatedMetric
 import pt.isel.api_pm.dto.metric.AgentRequestMetric
 
@@ -277,5 +278,47 @@ class ApiClient(
                 )
 
             }.body()
+        }
+
+    override suspend fun stopEndpoint(
+        token: String,
+        endpointId: UInt
+    ): Result<Unit> =
+        runCatching {
+
+            client.post("${ApiConfig.BASE_URL}/endpoints/stop") {
+
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    StopContinueEndpointRequest(endpointId)
+                )
+            }
+        }
+
+    override suspend fun continueEndpoint(
+        token: String,
+        endpointId: UInt
+    ): Result<Unit> =
+        runCatching {
+
+            client.post("${ApiConfig.BASE_URL}/endpoints/continue") {
+
+                header(
+                    "Authorization",
+                    "Bearer $token"
+                )
+
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    StopContinueEndpointRequest(endpointId)
+                )
+            }
         }
 }

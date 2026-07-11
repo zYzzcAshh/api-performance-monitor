@@ -9,5 +9,6 @@ data class EndpointUiModel(
     val url: String,
     val name: String,
     val intervalSeconds: Long,
-    val createdAt: String
+    val createdAt: String,
+    val active: Boolean
 )

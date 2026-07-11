@@ -74,4 +74,14 @@ interface Api {
         token: String,
         agentId: UInt
     ): Result<AgentAggregatedMetric>
+
+    suspend fun stopEndpoint(
+        token: String,
+        endpointId: UInt
+    ): Result<Unit>
+
+    suspend fun continueEndpoint(
+        token: String,
+        endpointId: UInt
+    ): Result<Unit>
 }

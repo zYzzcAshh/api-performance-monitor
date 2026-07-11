@@ -176,7 +176,14 @@ fun EndpointsScreen(
                     title = endpoint.name,
                     url = endpoint.url,
                     interval = endpoint.intervalSeconds,
+                    active = endpoint.active,
                     onViewMetrics = { onOpenEndpoint(endpoint.id) },
+                    onToggle = {
+                        if (endpoint.active)
+                            viewModel.stopEndpoint(endpoint.id)
+                        else
+                            viewModel.continueEndpoint(endpoint.id)
+                    },
                     onDelete = { viewModel.deleteEndpoint(endpoint.id) }
                 )
             }
@@ -219,7 +226,9 @@ private fun EndpointListCard(
     title: String,
     url: String,
     interval: Long,
+    active: Boolean,
     onViewMetrics: () -> Unit,
+    onToggle: () -> Unit,
     onDelete: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -325,6 +334,17 @@ private fun EndpointListCard(
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
+
+                OutlinedButton(
+                    onClick = onToggle,
+                    modifier = Modifier.height(40.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        if (active) "Pause" else "Resume"
+                    )
+                }
+
                 OutlinedButton(
                     onClick = { showDeleteDialog = true },
                     modifier = Modifier.height(40.dp),

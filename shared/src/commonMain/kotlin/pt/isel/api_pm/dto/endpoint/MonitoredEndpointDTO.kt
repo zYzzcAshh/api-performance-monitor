@@ -11,6 +11,7 @@ data class MonitoredEndpointDTO(
     val name: String,
     val intervalSeconds: Long,
     val createdAt: String,
+    val active: Boolean
 )
 
 fun MonitoredEndpoint.toDTO() = MonitoredEndpointDTO(
@@ -19,7 +20,8 @@ fun MonitoredEndpoint.toDTO() = MonitoredEndpointDTO(
     url = url.value,
     name = name,
     intervalSeconds = interval.value,
-    createdAt = createdAt.toString()
+    createdAt = createdAt.toString(),
+    active = active
 )
 
 fun List<MonitoredEndpoint>.toDTO() = map { it.toDTO() }

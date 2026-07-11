@@ -282,4 +282,24 @@ class EndpointsViewModel(
                 }
         }
     }
+
+    fun stopEndpoint(endpointId: UInt) {
+        scope.launch {
+            api.stopEndpoint(
+                token,
+                endpointId
+            )
+            loadMonitored()
+        }
+    }
+
+    fun continueEndpoint(endpointId: UInt) {
+        scope.launch {
+            api.continueEndpoint(
+                token,
+                endpointId
+            )
+            loadMonitored()
+        }
+    }
 }
