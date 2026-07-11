@@ -28,6 +28,8 @@ import pt.isel.api_pm.theme.Surface
 import pt.isel.api_pm.theme.TextSecondary
 import pt.isel.api_pm.viewmodel.EndpointsViewModel
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.ui.graphics.Color
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 
 @Composable
 fun EndpointsScreen(
@@ -283,6 +285,7 @@ fun EndpointsScreen(
                 EndpointListCard(
                     title = endpoint.name,
                     url = endpoint.url,
+                    method = endpoint.method,
                     interval = endpoint.intervalSeconds,
                     active = endpoint.active,
                     onViewMetrics = { onOpenEndpoint(endpoint.id) },
@@ -338,6 +341,7 @@ fun EndpointsScreen(
 private fun EndpointListCard(
     title: String,
     url: String,
+    method: HttpMethod,
     interval: Long,
     active: Boolean,
     onViewMetrics: () -> Unit,
@@ -423,7 +427,26 @@ private fun EndpointListCard(
                 maxLines = 1
             )
 
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                StatusBadge(
+                    text = method.name,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                StatusBadge(
+                    text = if (active) "Active" else "Paused",
+                    color =
+                        if (active)
+                            Color(0xFF2E7D32)
+                        else
+                            Color(0xFFE67E22)
+                )
+            }
+
             Spacer(Modifier.height(8.dp))
+
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.outlineVariant,
                 thickness = 0.5.dp
@@ -503,6 +526,26 @@ private enum class EndpointSort {
     NAME,
     INTERVAL,
     NEWEST
+}
+
+@Composable
+private fun StatusBadge(
+    text: String,
+    color: Color
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50.dp))
+            .background(color.copy(alpha = 0.12f))
+            .padding(horizontal = 10.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = text,
+            color = color,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
 }
 
 // stat pill
