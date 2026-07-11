@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,10 +36,18 @@ fun EndpointsScreen(
     onOpenAgents: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    var search by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.loadMonitored()
     }
+
+    val filteredEndpoints =
+        state.monitoredEndpoints.filter {
+
+            it.name.contains(search, ignoreCase = true) ||
+                    it.url.contains(search, ignoreCase = true)
+        }
 
     ScreenContainer {
         LazyColumn(
@@ -78,6 +87,25 @@ fun EndpointsScreen(
                         )
                     }
                 }
+            }
+
+            item {
+                OutlinedTextField(
+                    value = search,
+                    onValueChange = { search = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text("Search by name or URL")
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(18.dp)
+                )
             }
 
             // stats strip (only when loaded)
@@ -171,7 +199,7 @@ fun EndpointsScreen(
             }
 
             // endpoint cards
-            items(state.monitoredEndpoints) { endpoint ->
+            items(filteredEndpoints) { endpoint ->
                 EndpointListCard(
                     title = endpoint.name,
                     url = endpoint.url,
