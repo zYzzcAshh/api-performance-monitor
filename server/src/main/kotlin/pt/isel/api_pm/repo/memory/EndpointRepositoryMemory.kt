@@ -28,6 +28,12 @@ class EndpointRepositoryMemory : EndpointRepository {
     }
 
     override suspend fun getByUser(userId: UInt): List<MonitoredEndpoint> = endpoints[userId]?.values?.toList() ?: emptyList()
+    override suspend fun getByIds(
+        userId: UInt,
+        monitoredEndpointId: UInt
+    ): MonitoredEndpoint? {
+        return endpoints[userId]?.get(monitoredEndpointId)
+    }
 
     override suspend fun add(
         userId: UInt,

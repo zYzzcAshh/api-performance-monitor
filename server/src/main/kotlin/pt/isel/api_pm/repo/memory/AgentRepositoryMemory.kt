@@ -109,6 +109,25 @@ class AgentRepositoryMemory : AgentRepository {
             )
     }
 
+    override suspend fun activeAgent(userId: UInt, agentId: UInt) {
+        val userAgents =
+            agents[userId]
+                ?: throw IllegalArgumentException(
+                    "User with id $userId not found"
+                )
+
+        val agent =
+            userAgents[agentId]
+                ?: throw IllegalArgumentException(
+                    "Agent with id $agentId not found"
+                )
+
+        userAgents[agentId] =
+            agent.copy(
+                active = true
+            )
+    }
+
     override suspend fun getById(
         userId: UInt,
         agentId: UInt

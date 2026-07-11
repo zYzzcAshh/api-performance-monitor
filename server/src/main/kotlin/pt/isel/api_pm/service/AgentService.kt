@@ -42,6 +42,10 @@ class AgentService(
         repo.inactiveAgent(userId, agentId)
     }
 
+    suspend fun activeAgent(userId: UInt, agentId: UInt) {
+        repo.activeAgent(userId, agentId)
+    }
+
     suspend fun getAll() = repo.getAll()
 
     suspend fun getAllByIntervalSeconds(intervalSeconds: IntervalSeconds) = repo.getAllByIntervalSeconds(intervalSeconds)

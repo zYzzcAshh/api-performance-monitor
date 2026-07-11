@@ -15,6 +15,8 @@ interface EndpointRepository {
 
     suspend fun getByUser(userId: UInt): List<MonitoredEndpoint>
 
+    suspend fun getByIds(userId: UInt, monitoredEndpointId: UInt): MonitoredEndpoint?
+
     suspend fun add(
         userId: UInt,
         url: String,

@@ -73,6 +73,23 @@ class EndpointRepositoryExposed(
                 }
         }
 
+    override suspend fun getByIds(
+        userId: UInt,
+        monitoredEndpointId: UInt
+    ): MonitoredEndpoint? {
+        return transaction(db) {
+
+            MonitoredEndpointTable
+                .selectAll()
+                .where {
+                    (MonitoredEndpointTable.userId eq userId.toInt()) and
+                            (MonitoredEndpointTable.id eq monitoredEndpointId.toInt())
+                }
+                .singleOrNull()
+                ?.toEndpoint()
+        }
+    }
+
     override suspend fun add(
         userId: UInt,
         url: String,

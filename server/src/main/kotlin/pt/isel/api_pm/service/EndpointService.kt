@@ -20,6 +20,8 @@ class EndpointService(
 
     suspend fun getByUser(userId: UInt) = repo.getByUser(userId)
 
+    suspend fun getByIds(userId: UInt, monitoredEndpointId: UInt) = repo.getByIds(userId, monitoredEndpointId)
+
     suspend fun add(
         userId: UInt,
         url: EndpointUrl,

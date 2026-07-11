@@ -22,7 +22,7 @@ class Root : NoOpCliktCommand(name = "app")
 fun main() {
     println("CLI started. Type a command (help, register, login, logout, agent-register, agent-create-endpoint, info, exit):")
     println("Usage: register --username <u> --password <p>")
-    val autoClear = true
+    val autoClear = false
 
     val propertiesFileStore = PropertiesFileStore()
     val authStore = AuthStore(propertiesFileStore)

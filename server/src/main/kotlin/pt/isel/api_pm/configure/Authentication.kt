@@ -21,7 +21,6 @@ fun Application.configureAuthentication() {
             )
 
             validate { credential ->
-                println("WS/HTTP auth check - claims: ${credential.payload.claims.keys}")
                 val userId =
                     credential.payload
                         .getClaim(AuthConfig.USER_ID_CLAIM)

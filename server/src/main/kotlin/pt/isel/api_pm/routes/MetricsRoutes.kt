@@ -13,6 +13,7 @@ import pt.isel.api_pm.domain.metrics.toAgentMessageMetrics
 import pt.isel.api_pm.domain.metrics.toAgentMessageMetricsList
 import pt.isel.api_pm.domain.metrics.toRequestMetric
 import pt.isel.api_pm.domain.metrics.toRequestMetrics
+import pt.isel.api_pm.exceptions.EndpointNotFoundException
 import pt.isel.api_pm.exceptions.MissingTokenException
 import pt.isel.api_pm.service.AgentService
 import pt.isel.api_pm.service.EndpointService
@@ -32,7 +33,6 @@ fun Route.metricsRoutes(
     val logger = LoggerFactory.getLogger("MetricsRoutes")
 
     get("/metrics/agent") {
-        // TODO: Just for testing, needs to be removed in the future
         call.respond(metricsService.getAllAgentMetrics().toAgentMessageMetricsList())
     }
 
@@ -49,17 +49,7 @@ fun Route.metricsRoutes(
                 call.parameters["endpointId"]
                     .requireUIntParameter("endpoint ID")
 
-
-            //TODO: NEEDS TO HAVE A getByIds() in endpointService()
-            val endpoint = endpointService.getByUser(userId).firstOrNull { it.id == endpointId } ?: throw NotFoundException("Endpoint not found")
-
-
-//            val heartbeat = launch {
-//                while (isActive) {
-//                    delay(15.seconds)
-//                    send(ServerSentEvent(comments = "keep-alive"))
-//                }
-//            }
+            val endpoint = endpointService.getByIds(userId, endpointId) ?: throw EndpointNotFoundException("Endpoint not found")
 
             try {
                 heartbeat {
@@ -118,7 +108,6 @@ fun Route.metricsRoutes(
         }
 
         get(Routes.Metrics.BY_ENDPOINT) {
-
             val principal =
                 call.principal<JWTPrincipal>()
                     ?: throw MissingTokenException()
@@ -141,7 +130,6 @@ fun Route.metricsRoutes(
         }
 
         get(Routes.Metrics.BY_AGENT) {
-
             val principal =
                 call.principal<JWTPrincipal>()
                     ?: throw MissingTokenException()
@@ -163,7 +151,6 @@ fun Route.metricsRoutes(
         }
 
         get(Routes.Metrics.AGENT_SUMMARY) {
-
             val principal =
                 call.principal<JWTPrincipal>()
                     ?: throw MissingTokenException()
@@ -185,7 +172,6 @@ fun Route.metricsRoutes(
         }
 
         get(Routes.Metrics.SUMMARY) {
-
             val principal =
                 call.principal<JWTPrincipal>()
                     ?: throw MissingTokenException()

@@ -25,6 +25,8 @@ interface AgentRepository {
 
     suspend fun inactiveAgent(userId: UInt, agentId: UInt)
 
+    suspend fun activeAgent(userId: UInt, agentId: UInt)
+
     suspend fun getById(
         userId: UInt,
         agentId: UInt

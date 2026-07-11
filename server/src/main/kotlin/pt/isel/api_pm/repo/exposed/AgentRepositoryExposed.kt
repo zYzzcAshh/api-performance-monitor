@@ -112,7 +112,6 @@ class AgentRepositoryExposed(
 
     override suspend fun inactiveAgent(userId: UInt, agentId: UInt) {
         transaction(db) {
-
             val existing =
                 AgentTable
                     .selectAll()
@@ -125,19 +124,36 @@ class AgentRepositoryExposed(
                         "Agent with id $agentId not found"
                     )
 
-            if (!existing[AgentTable.active]) {
-
-                throw IllegalStateException(
-                    "Agent with id $agentId is already inactive"
-                )
-            }
-
             AgentTable.update({
                 (AgentTable.id eq agentId.toInt()) and
                         (AgentTable.userId eq userId.toInt())
             }) {
 
                 it[active] = false
+            }
+        }
+    }
+
+    override suspend fun activeAgent(userId: UInt, agentId: UInt) {
+        transaction(db) {
+            val existing =
+                AgentTable
+                    .selectAll()
+                    .where {
+                        (AgentTable.id eq agentId.toInt()) and
+                                (AgentTable.userId eq userId.toInt())
+                    }
+                    .singleOrNull()
+                    ?: throw IllegalArgumentException(
+                        "Agent with id $agentId not found"
+                    )
+
+            AgentTable.update({
+                (AgentTable.id eq agentId.toInt()) and
+                        (AgentTable.userId eq userId.toInt())
+            }) {
+
+                it[active] = true
             }
         }
     }

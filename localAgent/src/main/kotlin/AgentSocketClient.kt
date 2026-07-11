@@ -43,11 +43,19 @@ class AgentSocketClient(
                 throw e
             } catch (e: Exception) {
                 if (retries++ >= maxRetries) {
-                    println("Max retries reached. Exiting...")
+                    println("Max retries reached. Do you want to clean you data or just exit? (clean, exit)")
+                    print("> ")
+                    val line = readlnOrNull()?.trim() ?: break
+                    if (line == "clean") {
+                        println("Cleaned user data")
+                        authStore.clear()
+                        agentController.clear()
+                    }
+                    println("Bye!")
                     close()
                     break
                 }
-                println("Agent connection lost: ${e.message}. ($retries/$maxRetries retries) Retrying in ${backoffMs}ms...")
+                println("Agent connection lost: ${e.message}. ($retries/$maxRetries retries) Retrying in ${backoffMs}ms... $e")
             }
             delay(backoffMs)
             backoffMs = (backoffMs * 2).coerceAtMost(maxBackoffMs)

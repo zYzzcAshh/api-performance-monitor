@@ -30,9 +30,10 @@ class AgentSessionManager(
 
     private val sessions = ConcurrentHashMap<UInt, ConcurrentHashMap<UInt, DefaultWebSocketSession>>()
 
-    fun register(userId: UInt, agentId: UInt, session: DefaultWebSocketServerSession) {
+    suspend fun register(userId: UInt, agentId: UInt, session: DefaultWebSocketServerSession) {
         val userSessions = sessions.computeIfAbsent(userId) { ConcurrentHashMap() }
         userSessions[agentId] = session
+        agentService.activeAgent(userId, agentId)
     }
 
     suspend fun unregister(userId: UInt, agentId: UInt) {
