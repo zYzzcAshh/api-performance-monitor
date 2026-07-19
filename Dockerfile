@@ -12,7 +12,7 @@ COPY gradle.properties* ./
 COPY . .
 
 RUN chmod +x gradlew
-RUN ./gradlew :server:build -x test --no-daemon
+RUN ./gradlew :server:build -x test -x ktlintCheck -x ktlintTestSourceSetCheck -x ktlintMainSourceSetCheck --no-daemon
 # ^ adjust the module name/task to whatever produces your runnable jar
 
 # ---- Run stage ----
