@@ -11,7 +11,7 @@ plugins {
 group = "pt.isel.api_pm"
 version = "1.0.0"
 application {
-    mainClass.set("pt.isel.api_pm.ApplicationKt")
+    mainClass.set("pt.isel.api_pm.App.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
