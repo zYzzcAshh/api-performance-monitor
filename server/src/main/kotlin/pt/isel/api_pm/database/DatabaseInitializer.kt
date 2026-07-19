@@ -17,7 +17,8 @@ object DatabaseInitializer {
             url = config.jdbcUrl,
             driver = config.driver,
             user = config.username,
-            password = config.password
+            password = config.password,
+
         )
     }
 
