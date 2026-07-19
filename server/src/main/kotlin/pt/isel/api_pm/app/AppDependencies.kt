@@ -28,7 +28,7 @@ import pt.isel.api_pm.utils.SmtpEmailSender
 
 class AppDependencies(
     useMemory: Boolean = false,
-    useH2: Boolean = true
+    useH2: Boolean = false
 ) {
 
     private val passwordHasher = PasswordHasher()
