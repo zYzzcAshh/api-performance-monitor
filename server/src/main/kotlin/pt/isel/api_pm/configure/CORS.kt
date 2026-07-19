@@ -22,5 +22,6 @@ fun Application.configureCORS() {
         allowHost("localhost:8080", schemes = listOf("http"))
         allowHost("localhost:8081", schemes = listOf("http"))
         allowHost("127.0.0.1:8081", schemes = listOf("http"))
+        allowHost("api-performance-monitor-g1oj.vercel.app", schemes = listOf("https"))
     }
 }
