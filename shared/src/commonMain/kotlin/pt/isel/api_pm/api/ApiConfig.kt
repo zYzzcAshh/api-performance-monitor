@@ -7,7 +7,7 @@ object ApiConfig {
     init {
         // Bad hardcoded approach
         if (!isLocalhost) {
-            BASE_URL = "https://api-performance-monitor-cnyy.onrender.com/"
+            BASE_URL = "https://api-performance-monitor-cnyy.onrender.com"
         }
     }
 }
