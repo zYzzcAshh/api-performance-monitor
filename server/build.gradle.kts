@@ -46,6 +46,7 @@ dependencies {
     implementation("io.ktor:ktor-server-sse:3.4.1")
     implementation("io.ktor:ktor-server-core:3.4.1")
     implementation("io.ktor:ktor-server-sse:3.4.1")
+    implementation("org.postgresql:postgresql:42.7.7")
 
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(kotlin("test"))
