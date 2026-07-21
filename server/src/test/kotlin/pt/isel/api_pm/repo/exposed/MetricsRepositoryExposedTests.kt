@@ -6,6 +6,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import pt.isel.api_pm.database.tables.MonitoredEndpointTable
 import pt.isel.api_pm.database.tables.UserTable
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import pt.isel.api_pm.dto.metric.RequestMetric
 import kotlin.test.*
 import kotlin.time.Clock
@@ -68,7 +69,12 @@ class MetricsRepositoryExposedTests {
             repository.save(
                 userId = 1u,
                 monitoredEndpointId = 1u,
-                metric = metric()
+                metric = EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val metrics =
@@ -93,7 +99,12 @@ class MetricsRepositoryExposedTests {
             repository.save(
                 1u,
                 1u,
-                metric()
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val metrics =
@@ -123,13 +134,23 @@ class MetricsRepositoryExposedTests {
             repository.save(
                 1u,
                 1u,
-                metric()
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             repository.save(
                 1u,
                 1u,
-                metric(statusCode = 500)
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val metrics =
@@ -154,10 +175,10 @@ class MetricsRepositoryExposedTests {
             repository.save(
                 1u,
                 1u,
-                RequestMetric(
+                EndpointMetrics(
                     endpoint = EndpointUrl("https://api.github.com"),
-                    timestamp = now,
-                    latency = 100,
+                    timestamp = Clock.System.now(),
+                    latency = 60,
                     statusCode = 200
                 )
             )

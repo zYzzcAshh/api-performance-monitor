@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.deleteAll
 import pt.isel.api_pm.database.tables.RequestMetricsTable
 import pt.isel.api_pm.database.tables.UserTable
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.notification.NotificationConfig
 import kotlin.time.Clock
 
@@ -60,7 +61,8 @@ class EndpointRepositoryExposedTests {
                 name = "github",
                 intervalSeconds = 60,
                 notification = NotificationConfig.None,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET,
             )
 
             val endpoints =
@@ -91,15 +93,18 @@ class EndpointRepositoryExposedTests {
                 1u,
                 "https://api1.com",
                 "api1",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
-                null
+                null,
+
             )
 
             repository.add(
                 2u,
                 "https://api2.com",
                 "api2",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -127,6 +132,7 @@ class EndpointRepositoryExposedTests {
                 1u,
                 "https://api.com",
                 "api",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -161,6 +167,7 @@ class EndpointRepositoryExposedTests {
                 1u,
                 "https://api.github.com",
                 "github",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null

@@ -7,9 +7,14 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.test.runTest
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.endpoint.HttpMethod
+import pt.isel.api_pm.domain.endpoint.IntervalSeconds
+import pt.isel.api_pm.domain.endpoint.MonitoredEndpoint
+import pt.isel.api_pm.notification.NotificationConfig
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Clock
 
 class MonitoringServiceTests {
 
@@ -42,7 +47,18 @@ class MonitoringServiceTests {
 
             val metric =
                 service.checkEndpoint(
-                    EndpointUrl("https://api.github.com")
+                    MonitoredEndpoint(
+                        id = 1u,
+                        userId = 1u,
+                        name = "Monitored endpoint",
+                        url = EndpointUrl("https://api.github.com"),
+                        method = HttpMethod.GET,
+                        interval = IntervalSeconds(60),
+                        createdAt = Clock.System.now(),
+                        notification = NotificationConfig.None,
+                        alertRule = null,
+                        active = true
+                    )
                 )
 
             assertEquals(
@@ -81,7 +97,18 @@ class MonitoringServiceTests {
 
             val metric =
                 service.checkEndpoint(
-                    EndpointUrl("https://api.github.com")
+                    MonitoredEndpoint(
+                        id = 1u,
+                        userId = 1u,
+                        name = "Monitored endpoint",
+                        url = EndpointUrl("https://api.github.com"),
+                        method = HttpMethod.GET,
+                        interval = IntervalSeconds(60),
+                        createdAt = Clock.System.now(),
+                        notification = NotificationConfig.None,
+                        alertRule = null,
+                        active = true
+                    )
                 )
 
             assertEquals(

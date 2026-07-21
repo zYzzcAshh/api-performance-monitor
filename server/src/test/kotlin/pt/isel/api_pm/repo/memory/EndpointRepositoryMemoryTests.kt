@@ -1,6 +1,7 @@
 package pt.isel.api_pm.repo.memory
 
 import kotlinx.coroutines.test.runTest
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.notification.NotificationConfig
 import kotlin.test.*
 
@@ -22,7 +23,8 @@ class EndpointRepositoryMemoryTests {
                 name = "github",
                 intervalSeconds = 60,
                 notification = NotificationConfig.None,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET
             )
 
             val endpoints =
@@ -63,6 +65,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://api1.com",
                 "api1",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -72,6 +75,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://api2.com",
                 "api2",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -102,6 +106,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://user1-api.com",
                 "u1",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -111,6 +116,7 @@ class EndpointRepositoryMemoryTests {
                 2u,
                 "https://user2-api.com",
                 "u2",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -154,6 +160,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://api1.com",
                 "api1",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -163,6 +170,7 @@ class EndpointRepositoryMemoryTests {
                 2u,
                 "https://api2.com",
                 "api2",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -188,6 +196,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://api.com",
                 "api",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -217,6 +226,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://api.github.com",
                 "github",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null
@@ -242,6 +252,7 @@ class EndpointRepositoryMemoryTests {
                 1u,
                 "https://api.github.com/",
                 "github",
+                HttpMethod.GET,
                 60,
                 NotificationConfig.None,
                 null

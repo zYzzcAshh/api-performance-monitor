@@ -5,7 +5,9 @@ import kotlin.test.*
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import pt.isel.api_pm.database.tables.UserTable
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
+import pt.isel.api_pm.notification.NotificationConfig
 
 import kotlin.time.Clock
 
@@ -46,8 +48,7 @@ class AgentRepositoryExposedTests {
             val agent =
                 repository.register(
                     userId = 1u,
-                    name = "agent-1",
-                    token = "token-123"
+                    name = "agent-1"
                 )
 
             assertEquals(
@@ -58,11 +59,6 @@ class AgentRepositoryExposedTests {
             assertEquals(
                 "agent-1",
                 agent.name
-            )
-
-            assertEquals(
-                "token-123",
-                agent.token
             )
 
             assertNull(
@@ -83,7 +79,6 @@ class AgentRepositoryExposedTests {
                 repository.register(
                     userId = 1u,
                     name = "agent-1",
-                    token = "token-123"
                 )
 
             val agent =
@@ -118,14 +113,16 @@ class AgentRepositoryExposedTests {
                 repository.register(
                     userId = 1u,
                     name = "agent-1",
-                    token = "token-123"
                 )
 
             repository.addEndpoint(
                 userId = 1u,
                 agentId = agent.id,
                 name = "health-check",
-                intervalSeconds = IntervalSeconds(60)
+                intervalSeconds = IntervalSeconds(60),
+                method = HttpMethod.GET,
+                notification = NotificationConfig.None,
+                alertRule = null
             )
 
             val updated =
@@ -183,14 +180,16 @@ class AgentRepositoryExposedTests {
                 repository.register(
                     userId = 1u,
                     name = "agent-1",
-                    token = "token-123"
                 )
 
             repository.addEndpoint(
                 userId = 1u,
                 agentId = agent.id,
                 name = "endpoint-1",
-                intervalSeconds = IntervalSeconds(60)
+                intervalSeconds = IntervalSeconds(60),
+                notification = NotificationConfig.None,
+                alertRule = null,
+                method = HttpMethod.GET,
             )
 
             assertFailsWith<IllegalStateException> {
@@ -199,7 +198,10 @@ class AgentRepositoryExposedTests {
                     userId = 1u,
                     agentId = agent.id,
                     name = "endpoint-2",
-                    intervalSeconds = IntervalSeconds(120)
+                    intervalSeconds = IntervalSeconds(120),
+                    method = HttpMethod.GET,
+                    notification = NotificationConfig.None,
+                    alertRule = null,
                 )
             }
         }

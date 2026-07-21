@@ -2,9 +2,11 @@ package pt.isel.api_pm.service
 
 import kotlinx.coroutines.test.runTest
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import pt.isel.api_pm.dto.metric.RequestMetric
 import pt.isel.api_pm.repo.memory.MetricsRepositoryMemory
 import kotlin.test.*
+import kotlin.time.Clock
 
 class MetricsServiceTests {
 
@@ -17,21 +19,21 @@ class MetricsServiceTests {
     private fun successMetric(
         latency: Long = 100
     ) =
-        RequestMetric(
+        EndpointMetrics(
             endpoint = EndpointUrl("https://api.github.com"),
-            timestamp = kotlin.time.Clock.System.now(),
-            statusCode = 200,
-            latency = latency
+            timestamp = Clock.System.now(),
+            latency = 60,
+            statusCode = 200
         )
 
     private fun failedMetric(
         latency: Long = 500
     ) =
-        RequestMetric(
+        EndpointMetrics(
             endpoint = EndpointUrl("https://api.github.com"),
-            timestamp = kotlin.time.Clock.System.now(),
-            statusCode = 500,
-            latency = latency
+            timestamp = Clock.System.now(),
+            latency = 60,
+            statusCode = 200
         )
 
     @Test

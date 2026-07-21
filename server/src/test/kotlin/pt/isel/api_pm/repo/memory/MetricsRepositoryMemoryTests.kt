@@ -2,6 +2,7 @@ package pt.isel.api_pm.repo.memory
 
 import kotlinx.coroutines.test.runTest
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.metrics.EndpointMetrics
 import pt.isel.api_pm.dto.metric.RequestMetric
 import kotlin.test.*
 import kotlin.time.Clock
@@ -34,7 +35,12 @@ class MetricsRepositoryMemoryTests {
             repository.save(
                 userId = 1u,
                 monitoredEndpointId = 1u,
-                metric = metric()
+                metric = EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val metrics =
@@ -59,13 +65,23 @@ class MetricsRepositoryMemoryTests {
             repository.save(
                 1u,
                 1u,
-                metric(latency = 100)
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             repository.save(
                 1u,
                 2u,
-                metric(latency = 200)
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val endpoint1Metrics =
@@ -111,13 +127,23 @@ class MetricsRepositoryMemoryTests {
             repository.save(
                 1u,
                 1u,
-                metric()
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             repository.save(
                 2u,
                 2u,
-                metric()
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val metrics =
@@ -158,13 +184,19 @@ class MetricsRepositoryMemoryTests {
                 Clock.System.now()
 
             val oldMetric =
-                metric(
-                    timestamp = now.minus(10.minutes)
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
                 )
 
             val recentMetric =
-                metric(
-                    timestamp = now
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
                 )
 
             repository.save(
@@ -208,13 +240,23 @@ class MetricsRepositoryMemoryTests {
             repository.save(
                 1u,
                 1u,
-                metric(latency = 100)
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             repository.save(
                 2u,
                 1u,
-                metric(latency = 200)
+                EndpointMetrics(
+                    endpoint = EndpointUrl("https://api.github.com"),
+                    timestamp = Clock.System.now(),
+                    latency = 60,
+                    statusCode = 200
+                )
             )
 
             val user1Metrics =

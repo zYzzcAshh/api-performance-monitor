@@ -2,6 +2,7 @@ package pt.isel.api_pm.service
 
 import kotlinx.coroutines.test.runTest
 import pt.isel.api_pm.domain.endpoint.EndpointUrl
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
 import pt.isel.api_pm.exceptions.DuplicateEndpointException
 import pt.isel.api_pm.exceptions.InvalidIntervalException
@@ -30,7 +31,8 @@ class EndpointServiceTests {
                 name = "github",
                 interval = IntervalSeconds(60),
                 notification = notification,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET
             )
 
             val endpoints =
@@ -57,7 +59,8 @@ class EndpointServiceTests {
                 name = "github",
                 interval = IntervalSeconds(60),
                 notification = notification,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET
             )
 
             assertFailsWith<DuplicateEndpointException> {
@@ -68,7 +71,8 @@ class EndpointServiceTests {
                     name = "github2",
                     interval = IntervalSeconds(60),
                     notification = notification,
-                    alertRule = null
+                    alertRule = null,
+                    method = HttpMethod.GET
                 )
             }
         }
@@ -91,7 +95,8 @@ class EndpointServiceTests {
                 name = "github",
                 interval = IntervalSeconds(60),
                 notification = notification,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET
             )
 
             service.delete(
@@ -117,7 +122,8 @@ class EndpointServiceTests {
                 name = "github",
                 interval = IntervalSeconds(60),
                 notification = notification,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET
             )
 
             service.add(
@@ -126,7 +132,8 @@ class EndpointServiceTests {
                 name = "google",
                 interval = IntervalSeconds(60),
                 notification = notification,
-                alertRule = null
+                alertRule = null,
+                method = HttpMethod.GET
             )
 
             val user1Endpoints =

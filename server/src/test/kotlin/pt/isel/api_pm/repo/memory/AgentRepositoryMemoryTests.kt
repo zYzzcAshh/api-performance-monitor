@@ -1,7 +1,9 @@
 package pt.isel.api_pm.repo.memory
 
 import kotlinx.coroutines.test.runTest
+import pt.isel.api_pm.domain.endpoint.HttpMethod
 import pt.isel.api_pm.domain.endpoint.IntervalSeconds
+import pt.isel.api_pm.notification.NotificationConfig
 import kotlin.test.*
 
 class AgentRepositoryMemoryTests {
@@ -20,7 +22,6 @@ class AgentRepositoryMemoryTests {
                 repository.register(
                     userId = 1u,
                     name = "agent-1",
-                    token = "token-123"
                 )
 
             assertEquals(
@@ -36,11 +37,6 @@ class AgentRepositoryMemoryTests {
             assertEquals(
                 "agent-1",
                 agent.name
-            )
-
-            assertEquals(
-                "token-123",
-                agent.token
             )
 
             assertNull(
@@ -59,14 +55,12 @@ class AgentRepositoryMemoryTests {
                 repository.register(
                     1u,
                     "agent-1",
-                    "token-1"
                 )
 
             val second =
                 repository.register(
                     1u,
                     "agent-2",
-                    "token-2"
                 )
 
             assertEquals(
@@ -91,14 +85,16 @@ class AgentRepositoryMemoryTests {
                 repository.register(
                     1u,
                     "agent-1",
-                    "token-1"
                 )
 
             repository.addEndpoint(
                 userId = 1u,
                 agentId = agent.id,
                 name = "local-api",
-                intervalSeconds = IntervalSeconds(60)
+                intervalSeconds = IntervalSeconds(60),
+                method = HttpMethod.GET,
+                notification = NotificationConfig.None,
+                alertRule = null
             )
 
             val updatedAgent =
@@ -132,7 +128,10 @@ class AgentRepositoryMemoryTests {
                     userId = 999u,
                     agentId = 0u,
                     name = "local-api",
-                    intervalSeconds = IntervalSeconds(60)
+                    intervalSeconds = IntervalSeconds(60),
+                    method = HttpMethod.GET,
+                    notification = NotificationConfig.None,
+                    alertRule = null
                 )
             }
         }
@@ -147,7 +146,6 @@ class AgentRepositoryMemoryTests {
             repository.register(
                 1u,
                 "agent-1",
-                "token-1"
             )
 
             assertFailsWith<IllegalArgumentException> {
@@ -156,7 +154,10 @@ class AgentRepositoryMemoryTests {
                     userId = 1u,
                     agentId = 999u,
                     name = "local-api",
-                    intervalSeconds = IntervalSeconds(60)
+                    intervalSeconds = IntervalSeconds(60),
+                    method = HttpMethod.GET,
+                    notification = NotificationConfig.None,
+                    alertRule = null
                 )
             }
         }
@@ -172,14 +173,16 @@ class AgentRepositoryMemoryTests {
                 repository.register(
                     1u,
                     "agent-1",
-                    "token-1"
                 )
 
             repository.addEndpoint(
                 userId = 1u,
                 agentId = agent.id,
                 name = "endpoint-1",
-                intervalSeconds = IntervalSeconds(60)
+                intervalSeconds = IntervalSeconds(60),
+                method = HttpMethod.GET,
+                notification = NotificationConfig.None,
+                alertRule = null
             )
 
             assertFailsWith<IllegalStateException> {
@@ -188,7 +191,10 @@ class AgentRepositoryMemoryTests {
                     userId = 1u,
                     agentId = agent.id,
                     name = "endpoint-2",
-                    intervalSeconds = IntervalSeconds(60)
+                    intervalSeconds = IntervalSeconds(60),
+                    method = HttpMethod.GET,
+                    notification = NotificationConfig.None,
+                    alertRule = null
                 )
             }
         }

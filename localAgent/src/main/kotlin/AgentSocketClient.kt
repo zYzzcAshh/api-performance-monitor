@@ -66,7 +66,7 @@ class AgentSocketClient(
         val token = authStore.getAgentToken() ?: return
         client.webSocket(
             request = {
-                url("ws://localhost:8080/ws/agent")
+                url("wss://api-performance-monitor-cnyy.onrender.com/ws/agent")
                 header(HttpHeaders.Authorization, "Bearer $token")
             }
         ) {
